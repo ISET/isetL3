@@ -1,0 +1,4 @@
+We started to re-organize the scripts for better ISET integration and further experiments at SVN revision 789.
+
+We should create a version of that revision somewhere and check new code against that revision as we develop.
+
