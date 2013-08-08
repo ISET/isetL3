@@ -1,52 +1,24 @@
 function filters = L3findfilters(L3,noiseFlag,patchindices,symmetryflag)
-%L3FINDFILTERS calculates Wiener filters for patches in a particular cluster
+%L3FINDFILTERS calculates Wiener filters for patches in a specific cluster
 %
-% OLD: L3findfilters(patches,centeroutput,patchindices,flip,blockpattern,nummissingcolors,...
-%     sensor,noiseflag,sigmafactor,means,contrasts,meansfilter)
+%    filters= L3findfilter(L3,noiseflag,patchindices,symmetryflag)
 %
-%    [filters,trainsnrclusters]= L3findfilter(L3,noiseflag,patchindices)
-%
-%INPUTS:
-%   patches:    
-%   centeroutput:   matrix giving the values at the center pixel for all
-%                   desired output bands
-%                   (size(centeroutput)=nummissingcolors x numpatches)
-%   patchindices:  vector of binaries describing which patches belong to
-%                    the cluster
-%   flip:       structure containing binaries that describe whether the
-%               filters should be forced to have symmetry along a direction
-%   blockpattern:   matrix containing index of color channel that is
-%                   measured at each pixel in the patch    (can be 3-D 
-%                   array if multiple measurements at each pixel)
-%   nummissingcolors:  number of bands in desired output image
-%   sensor:     structure containing sensor and pixel parameters for noise
+% INPUTS:
+%   L3:         L3 structure
 %   noiseflag:  scalar indicating whether the filter should be optimized
 %               assuming the incoming patch measurements will be further 
 %               corrupted by noise that is not already in patches
 %               (0 means fit assuming no noise will be added later,
 %                otherwise fit assuming noise will be added later)
-%   sigmafactor: scalar factor that describes the believed noise variance
-%                when the actual noise variance corresponds to sigmafactor=1
-%   means:      matrix giving the predicted mean in each measured band for
-%               the center pixel in each patch
-%   contrasts:     vector giving the sum of the deviation from the predicted
-%               mean for each patch
-%   meansfilter:  matrix that gives means (means=meansfilter*patches)
+%   patchindices:  vector of binaries describing which patches belong to
+%                    the cluster
+%   symmetryflag: 0 or 1 saying whether to make filter be symmetric over
+%                 certain directions
 %
-%OUTPUTS:
-%   filters:     matrix giving Wiener filter, xhat=filters*[x,means]
-%   trainsnrclusters:  scalar giving the SNR for the derived estimator
-%                       (does not include any measurement noise)
+% OUTPUTS:
+%   filters:     matrix giving Wiener filter, estimate = filters * patches
 %
-% Copyright Steven Lansel, 2010
-
-
-
-% This is very similar to L3findglobalpipelinefilter.m.  These two files
-% should probably be merged.  (In the past this file was different because
-% the flat and texture filters had a different format than the direct
-% global pipeline filter.  But this has now changed so the filters are very
-% similar.)
+% (c) Stanford VISTA Team 2013
 
 %% Check inputs
 if ieNotDefined('L3'), error('Require L3'); end
@@ -72,6 +44,17 @@ nIdealFilters  = L3Get(L3,'n ideal filters');
 centeroutput   = L3Get(L3,'ideal vector');
 saturationpixels = L3Get(L3, 'saturation pixels');  % indicates which pixels should be ignored
 
+balanceThreshold = L3Get(L3, 'balance threshold');
+lumList = L3Get(L3,'luminance list');
+lumType = L3Get(L3,'luminance type');
+
+if lumList(lumType) <= balanceThreshold
+    weightColorTransform = L3Get(L3, 'weight color transform');
+    weightbiasvariance = L3Get(L3, 'weight bias variance');
+else
+    weightbiasvariance = 1;
+end    
+
 %% Find Noise Variance
 if noiseFlag == 0
     patches  = L3Get(L3,'sensor patches noisy');
@@ -91,11 +74,33 @@ end
 patches(saturationpixels,:) = [];
 
 %% Find Wiener filter
-smallfilters = L3Wiener(patches(:,patchindices), centeroutput(:,patchindices), noisevar);
+if length(weightbiasvariance)>1 & any(abs(diff(weightbiasvariance))~=0)
+    % If channels are weighted differently, do color transform
+   centeroutput = weightColorTransform * centeroutput; 
+
+   smallfilters = zeros(nIdealFilters, size(patches, 1));
+   for channel = 1:nIdealFilters
+       smallfilters(channel, :) = L3Wiener(patches(:,patchindices), ...
+           centeroutput(channel, patchindices), noisevar * weightbiasvariance(channel));
+       % If more than 1 channel has same weight, this could be performed
+       % slightly more efficient by combining those cases.  We don't now
+       % for ease of coding.
+   end   
+else
+    % If channels are weighted same, no need to do color transform
+    smallfilters = L3Wiener(patches(:,patchindices), ...
+        centeroutput(:, patchindices), noisevar * weightbiasvariance(1));    
+end
 
 %% Put 0's in Filter for Pixels belong to Saturated Channels
 filters = zeros(size(smallfilters,1), length(saturationpixels));
 filters(:,~saturationpixels) = smallfilters;
+
+%% If needed, transform filters back to XYZ space
+if length(weightbiasvariance)>1 & any(abs(diff(weightbiasvariance))~=0)
+    % If color transform applied before, remove it
+    filters = inv(weightColorTransform) * filters;
+end
 
 %% Enforce Symmetry if desired
 if symmetryflag

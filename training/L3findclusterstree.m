@@ -1,22 +1,11 @@
 function L3 = L3findclusterstree(L3)
-% [pcas,thresholds,clustermembers,centroids,variances]=...
-%    L3findclusterstree(patches,blockwidth,treedepth,projection,contrasts)
 
 %L3FINDCLUSTERSTREE performs hierarchical clustering on patches
 %
-%[pcas,thresholds,clustermembers,centroids,variances]=
-%   L3findclusterstree(patches,blockwidth,treedepth,projection,contrasts)
+%  L3 = L3findclusterstree(L3)
 %
-%INPUTS:
-%   patches:
-%   blockpattern:   2 entry vector with rows, columns in patch
-%   treedepth:  scalar giving the maximum depth of the tree (number of
-%               leaves is 2^(treedepth-1))
-%   projection: binary of whether to project to unit norm for clustering
-%   contrasts:  vector giving the sum of the deviation from the predicted
-%               mean for each patch, this is used only if projection=1
 %
-%OUTPUTS:
+%OUTPUTS
 %   pcas:       matrix with columns giving the PCA directions for each
 %               binary decision, these only exist for non-leaf nodes
 %   thresholds: vector giving the threshold value for which branch to go

@@ -1,8 +1,7 @@
 function [tMatrix,pMatrix] = L3trainingPatches(L3,desiredIm,inputIm)
 % Create the target and patch matrices for a pixel type in the cfaPattern
 %
-% RENAME THIS ROUTINE ONCE YOU UNDERSTAND IT BETTER.  IT IS USED FOR
-% RENDERING AS WELL AS FOR TRAINING.
+% RENAME THIS ROUTINE.  IT IS USED FOR TESTING AS WELL AS FOR TRAINING.
 %
 % [tMatrix,pMatrix] = L3trainingPatches(L3, desiredIm,inputIm)
 % 
@@ -15,7 +14,7 @@ function [tMatrix,pMatrix] = L3trainingPatches(L3,desiredIm,inputIm)
 % different scene.  See s_L3Scenes2SensorData.m
 %
 % Inputs:
-%  L3:
+%  L3:          L3 structure
 %  desiredIm:   The full target values in a calibrated space, as a 3D matrix
 %  inputIm:     The full sensor data, no mosaic, as 3D matrix
 %
@@ -83,7 +82,4 @@ for ii=1:nScenes
 end
 
 return
-
-
-
 

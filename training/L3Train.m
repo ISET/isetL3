@@ -1,8 +1,8 @@
-function L3 = L3Train(L3,desiredIm,inputIm)
+function L3 = L3Train(L3)
 % Train the L3 processing pipeline based on the calibrated and sensor
 % design images
 %
-%    L3 = L3Train(L3,desiredIm,inputIm)
+%    L3 = L3Train(L3)
 %
 % Take input patches from the sensor and the noise-free desired XYZ values
 % as inputs.  Also, a description of the data (e.g., the cfaPattern, and so
@@ -25,9 +25,11 @@ function L3 = L3Train(L3,desiredIm,inputIm)
 %
 % (c) Stanford VISTA Team
 
-%%
+%% Compute sensor volts for a monochrome sensor
+[desiredIm, inputIm] = L3SensorImageNoNoise(L3);
 
-% Texture tree variables
+
+%% Load texture tree variables
 numclusters    = L3Get(L3,'n clusters');
 lumList    = L3Get(L3,'luminance list');
 
@@ -70,7 +72,7 @@ for rr=1:size(cfaPattern,1)
 
                 % Scale the light so that each patch has desired luminance
                 L3 = L3AdjustPatchLuminance(L3);
-
+                
                 % Check and add to list any new saturation cases from data
                 L3 = L3findnewsaturationcases(L3);
                 

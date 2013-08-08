@@ -33,7 +33,7 @@ L3 = L3ClearIndicesData(L3);  % delete any old flat and saturation indices
 desiredluminance = L3Get(L3,'desiredpatchluminance');
 npixelsperpatch = L3Get(L3,'n pixels per patch');
 nidealfilters = L3Get(L3,'n ideal filters');
-patches = L3Get(L3,'sensor patches');
+patches = L3Get(L3,'sensor patches no 0');
 idealVec = L3Get(L3,'ideal vector');
 
 

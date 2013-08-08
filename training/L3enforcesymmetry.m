@@ -3,9 +3,9 @@ function filter=L3enforcesymmetry(filter,nummissingcolors,blockpattern,flip)
 %L3ENFORCESYMMETRY forces a filter to have certain symmetries as motivated by
 %assumption of direction independence
 %
-%filter=L3enforcesymmetry(filter,nummissingcolors,blockpattern,flip)
+% filter=L3enforcesymmetry(filter,nummissingcolors,blockpattern,flip)
 %
-%INPUTS:  
+%INPUTS
 %   filter:         matrix where the vectors are a filter for a patch
 %                   (typically is a global filter)
 %   nummissingcolors:  number of bands in desired output image
@@ -15,7 +15,7 @@ function filter=L3enforcesymmetry(filter,nummissingcolors,blockpattern,flip)
 %   flip:           structure containing binaries that determine whether a 
 %                   flipping operation should be performed along a direction
 %
-%OUTPUT:
+%OUTPUT
 %   filter:         matrix giving the transformed symmetric filters
 %
 % Copyright Steven Lansel, 2010

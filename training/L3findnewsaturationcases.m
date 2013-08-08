@@ -22,7 +22,7 @@ for listindex = 1:size(saturationlist,2)
     % saturation case from list to look for
     desiredsaturationcase = saturationlist(:, listindex);    
     saturationindices = L3findsaturationindices(saturationcases, ...
-                                        desiredsaturationcase);                                    
+                                        desiredsaturationcase);
     saturationcases(:, saturationindices) = [];  % delete matching entries
 end
 

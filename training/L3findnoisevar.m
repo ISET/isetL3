@@ -33,12 +33,8 @@ function noisevar = L3findnoisevar(sensor,centroid)
 %
 % Copyright Stanford VISTA Team 2012
 
-%
-pixel=sensorGet(sensor,'pixel');
 
-% This should be a call to sensor.  It might be 
-%  sensorGet(sensor,'noise variance',centroid)
-% It could be documented in that routine and refer to the thesis.
+pixel=sensorGet(sensor,'pixel');
 
 darkvoltage  = pixelGet(pixel,'darkvoltage');  % units are volts/sec
 exposuretime = sensorGet(sensor,'exposuretime');  % units are sec
