@@ -1,7 +1,7 @@
-function [uData, f] = L3plotFilters(L3,plotType,patchType,lumType,textureType)
+function [uData, f] = L3plotFilters(L3,plotType,patchType,lumType,satType,textureType)
 % Make images of the various L3 trained filters 
 %
-%   [uData, f] = L3plotFilters(L3,plotType,patchType,lumType,textureType)
+%   [uData, f] = L3plotFilters(L3,plotType,patchType,satType,lumType,textureType)
 %   
 % These should be called from L3plot rather than directly here.
 %
@@ -13,7 +13,8 @@ function [uData, f] = L3plotFilters(L3,plotType,patchType,lumType,textureType)
 if ieNotDefined('L3'),        error('L3 structure required'); end
 if ieNotDefined('plotType'),  error('plot type required'); end
 if ieNotDefined('patchType'), patchType = L3Get(L3,'patch type'); end
-if ieNotDefined('lumType'),   lumType = L3Get(L3,'lum type'); end
+if ieNotDefined('satType'), satType = L3Get(L3,'saturation type'); end
+if ieNotDefined('lumType'), lumType = L3Get(L3,'lum type'); end
 
 %%
 % Check if a figure is needed
@@ -41,9 +42,9 @@ switch plotType
     case {'globalfilter','flatfilter','texturefilter'}
         if strcmp(plotType,'texturefilter')
             if ieNotDefined('textureType'), error('Texture tree depth required'); end
-            filters = L3Get(L3,plotType,patchType,lumType,textureType);
+            filters = L3Get(L3,plotType,patchType,lumType, satType, textureType);
         else            
-            filters = L3Get(L3,plotType,patchType,lumType);
+            filters = L3Get(L3,plotType,patchType,lumType,satType);
         end
         
         for ii=1:nColors

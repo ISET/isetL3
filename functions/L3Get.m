@@ -134,8 +134,31 @@ switch(param)
                 ~isempty(L3.training.saturationindices);
             % Return only patches for current saturation case
             val = L3.data.patches(:, L3.training.saturationindices);
+            
+            % Put 0 for all pixels that measure the saturated channel.
+            % With this approach, there is no risk of using these
+            % measurements.  This is specifically considered in
+            % L3findfilters but otherwise all the code just runs and uses 0
+            % values.
+            saturationpixels = L3Get(L3, 'saturation pixels');
+            val(saturationpixels,:) = 0;
         else  % Return all patches
             val = L3.data.patches;
+        end
+
+    case{'sensorpatchesno0'}
+        % val= L3Get(L3,'sensor patches no 0')        
+        % Patches but with measurements for saturated channels not replaced
+        % with 0.  Getting sensor patches (above) returns 0 for all pixels
+        % that measure a saturated channel for the current saturated index.
+        % Sometimes we don't want that such as get 
+        % 'sensor patch saturation'.
+        if isfield(L3.training,'saturationindices') & ...
+                ~isempty(L3.training.saturationindices)
+            % Return only patches for current saturation case
+            val = L3.data.patches(:, L3.training.saturationindices);
+        else  % Return all patches
+            val = L3.data.patches;            
         end
         
     case {'nsensorpatches','nspatches'}
@@ -204,8 +227,8 @@ switch(param)
         pixel = sensorGet(sensorD,'pixel');
         voltageSwing = pixelGet(pixel,'voltage swing');
         blockPattern = L3Get(L3,'block pattern');
-        nfilters = L3Get(L3, 'n filters');
-        patches = L3Get(L3,'sensor patches');
+        nfilters = L3Get(L3, 'n filters');        
+        patches = L3Get(L3,'sensor patches no 0'); % saturated colors are not 0ed
         saturated = (patches >= voltageSwing-.001);
         val = zeros(nfilters,size(patches,2));
         for filternum = 1:nfilters
@@ -520,16 +543,41 @@ switch(param)
         % flat (0) or texture (positive number giving texture cluster)
         if checkfields(L3,'processing','clusterIdx')
             val = L3.processing.clusterIdx;
-        end              
+        end
+        
     case{'borderwidth'}
         %Tells how many pixels wide the black border is around an image.
         %The border is caused by the inability to fit an entire patch
         %centered at a pixel near the edge of the image.
         blockWidth = L3Get(L3,'block width');
         val = floor(blockWidth/2);
+        
     case {'xyzresult'}
         % When we process an image, we can remember here the xyz output.
         val = L3.processing.xyz;
+    
+    case {'weightcolortransform'}
+        % Color transform used to weight cost of bias and variance errors.
+        % If we want to choose different weights for bias/variance tradeoff
+        % for each color channel, this matrix is needed to define the color
+        % channels where the weighting is performed.  If this is not
+        % desired, an identity matrix or a scalar of 1 can be used.
+        % See L3findRGBWcolortransform        
+        val = L3.training.weightColorTransform;
+        
+    case {'weightbiasvariance'}
+        % Weights for bias and variance tradeoff when finding filters.
+        % Larger value means variance (noise) is more costly and should be
+        % avoided. 
+        % Can either be a scalar -or- a length 3 vector if different
+        % weights are desired for output channels.
+        % See L3findfilters.        
+        val = L3.training.weightBiasVariance;
+        
+    case {'balancethreshold'}
+        % If we want to do this, let's add more comments.  
+        % If not, let's delete.        
+        val = L3.training.balanceThreshold;
         
     otherwise
         error('Unknown %s\n',param);

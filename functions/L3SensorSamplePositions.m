@@ -3,7 +3,6 @@ function [xPos,yPos] = L3SensorSamplePositions(L3)
 %
 %  [xPos,yPos] = L3SensorSamplePositions(L3)
 %
-%
 % (c) Stanford VISTA Team
 
 cfaPattern = sensorGet(L3Get(L3,'design sensor'),'cfaPattern');
@@ -29,8 +28,5 @@ yPos = targetCFAPosition(1):size(cfaPattern,1):(sz(1)-borderWidth);
 %a patch to fit.
 xPos(xPos<=borderWidth) = [];
 yPos(yPos<=borderWidth) = [];
-
-
-
 
 return

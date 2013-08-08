@@ -1,7 +1,7 @@
 function [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
-% Compute sensor volts for a monochrome monoSensor
+% Compute sensor volts for a monochrome sensor
 %
-%   im = L3SensorImageNoNoise(L3)
+%   [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
 %
 % Compute the monochromne sensor pixel voltages for a series of filters in
 % the monochrome sensor.
@@ -16,11 +16,6 @@ function [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
 %   design sensor.
 %
 %  No noise is added.
-%
-% Example:
-%   [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
-%
-% See Also
 %
 % (c) Stanford VISTA Team
 
@@ -49,7 +44,7 @@ end
 end
 
 
-% ---
+% Image with individual monochrome sensor
 function im = monoCompute(sensorM,oi,cFilters)
 
 sz = sensorGet(sensorM,'size');

@@ -12,7 +12,6 @@
 %
 % (c) Stanford VISTA Team
 
-s_initISET
 
 %% File locations
 
@@ -20,12 +19,12 @@ s_initISET
 % A basic camera will be trained for each of the file of the form
 % L3camera_XXX.mat in the following directory.  Generally XXX is the CFA
 % name.
-cameraFolder = fullfile(L3rootpath, 'Cameras', 'L3_1strun');
+cameraFolder = fullfile(L3rootpath, 'Cameras', 'L3');
 
 % All basic cameras will be saved in the following subfolder of the Cameras
 % folder.  The filename will be basiccamera_XXX.mat where XXX is the same
 % as the L3 camera file.
-saveFolder = fullfile(L3rootpath, 'Cameras', 'global_1strun');
+saveFolder = fullfile(L3rootpath, 'Cameras', 'global');
 
 %% If it doesn't exist, create the folder where files will be saved
 if exist(saveFolder, 'dir')~=7

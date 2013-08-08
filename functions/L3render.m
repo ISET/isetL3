@@ -31,8 +31,6 @@ function [resultL3,resultL3LumIdx, resultL3SatIdx, resultL3ClusterIdx] = ...
 %
 % Copyright Steven Lansel, 2010
 
-% Other things
-% patchluminances - derived from the patch samples
 
 %% Variables
 if ieNotDefined('L3'),     error('L3 structure required'); end

@@ -1,11 +1,11 @@
 function pMatrix = L3sensorPlane2Patch(sensorPlane,patchSize,xPos,yPos)
+
 % Compute  patches from sensor plane
 %
+% pMatrix = L3sensorPlane2Patch(sensorPlane,patchSize,xPos,yPos)
 %
 % Group the sensor patches surrounding each xPos,yPos into the pMatrix
 % For each xPos and yPos, find the surrounding patch.
-
-%% Should check stuff here
 
 
 %% Create matrix of patch data used for processing or testing

@@ -1,23 +1,23 @@
-function L3 = L3Create(L3name,varargin)
-% Create an L3 structure
+function L3 = L3Create(L3name)
+% Create an empty L3 structure
 %
-%  L3 = L3Create(L3Name,varargin)
+%  L3 = L3Create(L3name)
 %
-% An L3 (l-cubed) structure contains the data, filters, and related
-% parameters for an L3 experiment.  The L3 experiments begin with images
-% obtained by a specific sensor under specific conditions.
+% L3 structure contains the data, filters, and related parameters for an L3
+% experiment.  The L3 experiments begin with images obtained by a specific
+% sensor under specific conditions.
 %
 %  * The sensor and scene descriptions, produce corresponding sets of
-%  sensor patches and ideal patches for training.
+%    sensor patches and ideal patches for training.
 %  * The training produces the filters.
 %  * The filters can then be applied to data under similar conditions from
-%  the original sensor.
+%    the original sensor.
 %
 %
 % Examples:
 %    L3 = L3Create;
 %
-% See also:
+% See also:   L3Initialize that sets default values
 %
 % (c) Stanford VISTA Team 2012
 
@@ -48,6 +48,10 @@ L3.training.flatPercent = [];
 L3.training.luminanceList = [];  % We should create filters for each luminance level
 L3.training.saturationList = [];
 L3.training.treeDepth  = [];
+L3.training.colortransformmatrix = [];
+L3.training.balanceWeights = [];
+L3.training.balanceThreshold = [];
+
 
 
 % These will become cell arrays of structures of
@@ -63,25 +67,8 @@ L3.clusters= [];
 L3.data.patches =   [];   % Save training patches from sensor?
 L3.data.ideal = [];   % These are the ideal (correct) values.
 
-% % These are cell arrays, one array for each color filter type in the CFA.
-% for rr=1:cfaSize(1)
-%     for cc = 1:cfaSize(2)
-%         % Filter structure
-%         L3.filters{rr,cc}.flat = [];
-%         L3.filters{rr,cc}.texture = [];
-%         
-%         % Clusters (Texture) related
-%         L3.clusters{rr,cc}.pca = [];
-%         L3.clusters{rr,cc}.thresholds = [];
-%         
-%         % Special status for threshold  contrast that defines a flat texture
-%         L3.clusters{rr,cc}.flat       = [];
-%         L3.clusters{rr,cc}.members    = [];
-%     end
-% end
 
-%% Set numerical default parameters
-
+%%
 % Set according to name?  Or just do parameter assignments?
 L3name = ieParamFormat(L3name);
 switch L3name
@@ -89,13 +76,6 @@ switch L3name
     otherwise
         error('Unknown L3 name %s',L3name);
 end
-
-L3 = L3Set(L3,'n oversample',0);
-L3 = L3Set(L3,'saturation flag', 1);
-L3 = L3Set(L3,'sigma factor',1);
-L3 = L3Set(L3,'random seed',0);
-L3 = L3Set(L3,'max tree depth',3);
-L3 = L3Set(L3,'flat percent',0.6);
 
 end
 

@@ -1,11 +1,8 @@
 function L3 = L3Set(L3,param,val)
+
 %Set the parameters in an L3 structure
 %
 %   L3 = L3Set(L3,param,val)
-%
-% Set L3 parameters
-%
-% Settable parameters
 %
 % (c) Stanford VISTA Team
 
@@ -204,6 +201,31 @@ switch param
     case {'xyzresult'}
         % When we process an image, we can remember here the xyz output.
         L3.processing.xyz = val;
+        
+    case {'weightcolortransform'}
+        % Color transform used to weight cost of bias and variance errors.
+        % If we want to choose different weights for bias/variance tradeoff
+        % for each color channel, this matrix is needed to define the color
+        % channels where the weighting is performed.  If this is not
+        % desired, an identity matrix or a scalar of 1 can be used.
+        % See L3findRGBWcolortransform
+        L3.training.weightColorTransform = val;
+        
+    case {'weightbiasvariance'}
+        % Weights for bias and variance tradeoff when finding filters.
+        % Larger value means variance (noise) is more costly and should be
+        % avoided. 
+        % Can either be a scalar -or- a length 3 vector if different
+        % weights are desired for output channels.
+        % Value of 1 implies minimum squared error is desired 
+        % (equal weight to bias and variance).
+        % See L3findfilters.
+        L3.training.weightBiasVariance = val;
+        
+    case {'balancethreshold'}
+        % If we want to do this, let's add more comments.  
+        % If not, let's delete.
+        L3.training.balanceThreshold = val;
         
     otherwise
         error('Unknown %s\n',param);

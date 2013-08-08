@@ -1,5 +1,8 @@
 function patches=L3adjustpatchmean(patches,means,blockpattern)
+
 % L3ADJUSTPATCHMEAN adds a constant to each measured color channel
+%
+%  patches=L3adjustpatchmean(patches,means,blockpattern)
 %
 % For each patch, values are entered for each meaured color channel.  
 % For a given patch and a specific measured color channel, this value is

@@ -1,4 +1,5 @@
 function [noise,snr] = L3noisegenerate(measurements,sensor)
+
 % Simulates noise for measurements from a sensor
 % 
 %   [noise,snr] = L3noisegenerate(measurements,cameraparams)

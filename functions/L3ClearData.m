@@ -18,7 +18,7 @@ L3small = L3Set(L3small,'clusters',L3Get(L3,'clusters'));
 % change in the illuminant structure.
 
 trainingilluminant = sceneGet(L3Get(L3,'scene',1),'illuminant');
-%This should be the illumianint in energy
+%This should be the illuminant in energy
 % The updated line that should work with new scenes is below.            
 %             trainingilluminant = sceneGet(L3Get(L3,'scene',1),'illuminant energy');
 L3small = L3Set(L3small,'trainingilluminant',trainingilluminant);            

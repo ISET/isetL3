@@ -16,8 +16,8 @@ function blockpattern = L3TrainBlockPattern(patchtype,blockwidth,cfapattern)
 %
 % (c) Stanford VISTA Team
 
-% I believe that SL considers x to be the row rather than the column.
-% Maybe we should regularize this.  SL:  Yes, I have bad notation here.
+% Notation comment:         x is row, y is column
+
 patchtypex = patchtype(1);
 patchtypey = patchtype(2);
 

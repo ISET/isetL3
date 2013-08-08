@@ -1,5 +1,5 @@
 function L3 = L3flippatches(L3)
-% L3 = L3flippatches(L3)
+
 % Flips texture patches before hierarchical clustering
 %
 %    L3 = L3flippatches(L3)
@@ -8,12 +8,16 @@ function L3 = L3flippatches(L3)
 
 if ieNotDefined('L3'), error('L3 required'); end
 
-patches        = L3Get(L3,'sensor patches');
+patches        = L3Get(L3,'sensor patches no 0');
 textureindices = L3Get(L3,'texture indices');
 flip      = L3Get(L3,'flip');
 blocksize = L3Get(L3,'block size');
 blockpattern = L3Get(L3,'block pattern');
+saturationpixels = L3Get(L3, 'saturation pixels');
 
+% When calculating whether a patch should be flipped, ignore any pixels
+% that measure a channel that is saturated
+notsaturated = find(~saturationpixels);
 
 %% Flip across vertical line so left side has higher average than right side
 if flip.v
@@ -23,11 +27,13 @@ if flip.v
 
     [lindexes,rindexes] = findindexes(selected, flipcommand, blockpattern);    
 
+    llogical = zeros(size(saturationpixels));   llogical(lindexes) = 1;
+    rlogical = zeros(size(saturationpixels));   rlogical(rindexes) = 1;        
     % These are the patches whose left indices sum to less than their right
     % indices.  
     needflip = false(size(textureindices));
-    textureneedflip = sum(patches(lindexes,textureindices)) ...
-                              < sum(patches(rindexes,textureindices));
+    textureneedflip = sum(patches(llogical & ~saturationpixels,textureindices)) ...
+                    < sum(patches(rlogical & ~saturationpixels,textureindices));
     needflip(textureindices) = textureneedflip;                        
     
     patches([lindexes,rindexes],needflip) = ...
@@ -42,11 +48,13 @@ if flip.h
 
     [tindexes,bindexes] = findindexes(selected,flipcommand,blockpattern);    
     
+    tlogical = zeros(size(saturationpixels));   tlogical(tindexes) = 1;
+    blogical = zeros(size(saturationpixels));   blogical(bindexes) = 1;
     % These are the patches whose top indices sum to less than their
-    % bottom indices.    
-    needflip = false(size(textureindices));
-    textureneedflip = sum(patches(tindexes,textureindices)) ...
-                              < sum(patches(bindexes,textureindices));
+    % bottom indices.        
+    needflip = false(size(textureindices));    
+    textureneedflip = sum(patches(tlogical & ~saturationpixels,textureindices)) ...
+                    < sum(patches(blogical & ~saturationpixels,textureindices));
     needflip(textureindices) = textureneedflip;        
     
     patches([tindexes,bindexes],needflip) = ...
@@ -62,11 +70,13 @@ if flip.t
 
     [uindexes,lindexes] = findindexes(selected,flipcommand,blockpattern);
     
+    llogical = zeros(size(saturationpixels));   llogical(lindexes) = 1;
+    ulogical = zeros(size(saturationpixels));   ulogical(uindexes) = 1;        
     % These are the patches whose above the diagonal indices sum to less
     % than their below the diagonal indices.
     needflip = false(size(textureindices));
-    textureneedflip = sum(patches(lindexes,textureindices)) ...
-                              > sum(patches(uindexes,textureindices));
+    textureneedflip = sum(patches(llogical & ~saturationpixels,textureindices)) ...
+                    > sum(patches(ulogical & ~saturationpixels,textureindices));
     needflip(textureindices) = textureneedflip;
     
     patches([uindexes,lindexes],needflip) = ...

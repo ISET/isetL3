@@ -1,11 +1,12 @@
 function [rows, cols] = L3SensorSize(sensor,hfov,scene,oi)
 
-% [rows, cols] = L3SensorSize(sensor,hfov,scene,oi)
-%
 % Find size of sensor given desired field of view
 %
+% [rows, cols] = L3SensorSize(sensor,hfov,scene,oi)
+%
 % Use following line to set the sensor size.
-% sensor = sensorSet(sensor,'size',[rows cols]);
+%   sensor = sensorSet(sensor,'size',[rows cols]);
+
 
 sensor = sensorSetSizeToFOV(sensor,hfov,scene,oi);   % deg of visual angle
 

@@ -16,7 +16,7 @@ cfaFiles = dir(fullfile(L3rootpath,'Data','Sensors','CFA','Derived','*.mat'));
 
 % All L3 cameras will be saved in the following subfolder of the Cameras
 % folder.  The filename will be L3camera_XXX where XXX is the cfa filename.
-saveFolder = fullfile(L3rootpath, 'Cameras', 'L3_1strun');
+saveFolder = fullfile(L3rootpath, 'Cameras', 'L3');
 
 %% If it doesn't exist, create the folder where files will be saved
 if exist(saveFolder, 'dir')~=7
@@ -27,7 +27,7 @@ end
 for cfaFilenum = 1:length(cfaFiles)
     cfaFile = cfaFiles(cfaFilenum).name;
     disp(['CFA:  ', cfaFile, '  ', num2str(cfaFilenum),' / ', num2str(length(cfaFiles))])    
-    camera = L3TrainCameraforCFA(cfaFile);        
+    camera = L3TrainCameraforCFA(cfaFile);
     saveFile = fullfile(saveFolder, ['L3camera_', cfaFile]);
     save(saveFile, 'camera')
 end

@@ -5,23 +5,24 @@ function [xhatL3, luminanceindex, saturationindex, clustermembers] = ...
 %    [xhatL3, luminanceindex,saturationindex] = ...
 %           L3applyPipeline2Patches(L3,allpatches,L3Type)
 %
-%INPUTS:
-%  L3 structure is computed in s_L3TrainCamera.m, for an example.
+% INPUTS
+%  L3:          structure is computed in s_L3TrainCamera.m, for an example
 %  allpatches:  A matrix of CFA measurements from the image.  The patches
-%  are stacked into blockSize^2 rows into a matrix.
+%               are stacked into blockSize^2 rows into a matrix
+%  L3Type:      string that selects L3mode:
+%                   'global'   no flat/texture classification
+%                   'local'    flat/texture classification 
 %
-%OUTPUTS:
-%   xhatL3:        matrix of the L^3 estimates
-%   luminanceindex: Which luminance from list was used for each patch.
+% OUTPUTS
+%   xhatL3:          matrix of the L^3 estimates
+%   luminanceindex:  Which luminance from list was used for each patch.
 %   saturationindex: Which saturation case from list used for each patch
 %   clustermembers:  Vector with an entry for each patch, entry is 0 if
 %                    flat, positive number for texture where number is the
 %                    specific texture cluster  (all 0 for global type)
 %
-% Copyright Steven Lansel, 2010
+% Copyright Steven Lansel, 2013
 
-
-%% Possibly check input arguments
 
 %% Find saturation cases
 L3 = L3Set(L3,'sensor patches', allpatches);

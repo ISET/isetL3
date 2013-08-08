@@ -1,26 +1,10 @@
 function L3=L3clustertexturepatches(L3)
 
-%clustermembers=L3clustertexturepatches(patches,textureindices,pcas,thresholds)
-% 
 %L3CLUSTERTEXTUREPATCHES determines cluster for each texture patch
 %
-%clustermembers=L3clustertexturepatches(patches,textureindices,pcas,thresholds)
+%  L3=L3clustertexturepatches(L3)
 %
-%INPUTS:
-%   patches:    matrix with columns giving patches to process
-%               (size(patches)=patchsize x numpatches)
-%   textureindices:  vector giving indices of texture patches to cluster
-%                   (variable length vector)
-%   pcas:       matrix with columns giving the PCA directions for each
-%               binary decision, these only exist for non-leaf nodes
-%   thresholds: vector giving the threshold value for which branch to go
-%               down, these only exist for non-leaf nodes
-%               size(thresholds)=1 x (2^(treedepth-1)-1)
-%OUTPUTS:
-%   clustermembers:  vector giving the cluster index that each patch is in
-%                    (size(clustermembers)=1 x numclusters)
-%
-% Copyright Steven Lansel, 2010
+% Copyright Steven Lansel, 2013
 
 patches    = L3Get(L3,'spatches');
 clustermembers = double(L3Get(L3,'texture indices'));

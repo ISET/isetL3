@@ -3,8 +3,7 @@
 % After creating L3 cameras, say, s_L3TrainCamera, we 
 % render an image using the L3 pipeline using this script
 %
-%
-% See also: s_L3TrainCamera, L3render, cameraCompute
+% See also: s_L3TrainCamera, L3render, cameraCompute, cameraComputesrgb
 %
 % (c) Stanford Vista Team 2012
 
@@ -24,7 +23,6 @@ fovScene      = 10;
 % scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
 % scene = sceneCreate('zone plate',[1000,1000]); %sz = number of pixels of scene
 % scene = sceneCreate('freq orient');
-
 scene = sceneCreate('moire orient');
 
 %% Adjust FOV of camera to match scene, no extra pixels needed. 
@@ -34,27 +32,8 @@ camera = cameraSet(camera,'sensor fov',fovScene);
 wave = cameraGet(camera,'sensor','wave');
 scene = sceneSet(scene,'wave',wave');
 
-%% Chagne scene illuminant if it is different than used for training
-testingilluminant = sceneGet(scene,'illuminant energy');
-
-L3 = cameraGet(camera,'vci','L3');
-trainingilluminant = L3Get(L3,'training illuminant');
-% %Following might need to be changed to illuminantGet( ,'energy') for new
-% scenes
-trainingilluminant = trainingilluminant.data;
-
-%Normalize since the scale is adjusted later when setting mean luminance.
-testingilluminant = testingilluminant/mean(testingilluminant);
-trainingilluminant = trainingilluminant/mean(trainingilluminant);
-
-percenterror = max(abs(trainingilluminant - testingilluminant)...
-                / trainingilluminant);
-            
-if percenterror > .01
-    warning(['Scene illuminant does not match illuminant used for testing.',...
-            '  Now changing scene illuminant to make it match.'])
-    scene = sceneAdjustIlluminant(scene,trainingilluminant');
-end
+%% Change scene illuminant if it is different than used for training
+scene = L3AdjustSceneIlluminant(scene, camera);
 
 %% Find white point
 whitept = sceneGet(scene,'illuminant xyz');
@@ -66,7 +45,6 @@ whitept = whitept/max(whitept);
 %% Set scene FOV and mean luminance
 scene = sceneSet(scene,'hfov',fovScene);
 scene = sceneAdjustLuminance(scene,meanLuminance);
-
 
 %% Calculate ideal XYZ image
 [camera,xyzIdeal] = cameraCompute(camera,scene,'idealxyz');
@@ -134,31 +112,7 @@ vcNewGraphWin; imagesc(srgbBasic); axis image
 title('Basic Pipeline')
 
 %% Show luminance index used for each patch
-% vcNewGraphWin;
-% imagesc(lumIdx)
-% title('Luminance Index')
+vcNewGraphWin;
+imagesc(lumIdx)
+title('Luminance Index')
 
-%% We need to write the series of evaluation functions
-% L3Evaluate(L3,resultImage,idealImage)
-
-%% Other random stuff
-
-
-%% Compare the two algorithms in srgb space
-% % Let's start getting metrics running at some point.  Probably move it into
-% % an s_L3Evaluate script.
-% vcNewGraphWin([],'tall');
-% eImg = abs(srgbL3 - srgbG);
-% eImg = eImg/max(eImg(:));
-% 
-% subplot(2,1,1), imagesc(eImg);
-% subplot(2,1,2), hist(srgbL3(:)-srgbG(:)); title('RGB error')
-% 
-% %% Build a new sensor image and look again
-% scene = sceneCreate;
-% oi     = L3Get(L3,'oi');
-% oi     = oiCompute(scene,oi);
-% sensor = L3Get(L3,'sensor design');
-% sensor = sensorSet(sensor,'NoiseFlag',2);  % Turn on noise
-% sensor = sensorCompute(sensor,oi,0);
-% % vcAddAndSelectObject(sensor); sensorImageWindow

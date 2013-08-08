@@ -1,8 +1,11 @@
 function L3 = L3AdjustSensorSize(L3,desiredhorizontalFOV,scene,oi)
 
+%  Adjust sensor size to get desired horizontal field of view
+%
 % L3 = L3AdjustSensorSize(L3,desiredhorizontalFOV,scene,oi)
 %
-%  Adjust sensor size to get desired horizontal field of view
+% Horizontal field of view should be measured in degrees.
+
 
 sensorM = L3Get(L3,'monochrome sensor');
 sensorD = L3Get(L3,'design sensor');

@@ -45,6 +45,8 @@ if ieNotDefined('plotType'), error('plot type required.'); end
 g = [];
 patchType = L3Get(L3,'patch type');   % Start with default patch type
 lumType   = L3Get(L3,'lum type');   % Start with default luminance type
+satType   = L3Get(L3,'saturation type');   % Start with default saturation type
+ 
 
 plotType = ieParamFormat(plotType);
 
@@ -61,7 +63,7 @@ switch plotType
         [uData,g] = L3plotFilters(L3,'mean filter',patchType);
         
     case {'globalfilter'}
-        % L3plot(L3,'global filter',[1,1],1);
+        % L3plot(L3,'global filter',[1,1],1,1);
         if ~isempty(varargin), patchType = varargin{1}; end
         if isempty(patchType)
             patchType = [1,1];
@@ -72,7 +74,12 @@ switch plotType
             lumType = 1;
             warning('No default luminance type.  Using 1.')
         end
-        [uData,g] = L3plotFilters(L3,'global filter',patchType,lumType);
+        if length(varargin) > 2, satType = varargin{3}; end
+        if isempty(satType)
+            satType = 1;
+            warning('No default saturation type.  Using 1.')
+        end
+        [uData,g] = L3plotFilters(L3,'global filter',patchType,lumType,satType);
         
     case {'flatfilter'}
         if ~isempty(varargin), patchType = varargin{1}; end
@@ -84,8 +91,13 @@ switch plotType
         if isempty(lumType)
             lumType = 1;
             warning('No default luminance type.  Using 1.')
-        end                  
-        [uData,g] = L3plotFilters(L3,'flat filter',patchType,lumType);
+        end
+        if length(varargin) > 2, satType = varargin{3}; end
+        if isempty(satType)
+            satType = 1;
+            warning('No default saturation type.  Using 1.')
+        end
+        [uData,g] = L3plotFilters(L3,'flat filter',patchType,lumType, satType);
         
     case {'texturefilter'}
         % L3Plot(L3,'texture filter',patchType,lumType,textureType)
@@ -98,11 +110,16 @@ switch plotType
         if isempty(lumType)
             lumType = 1;
             warning('No default luminance type.  Using 1.')
-        end                  
-        if length(varargin) < 3, error('Texture type required');
-        else textureType = varargin{3};
         end
-        [uData,g] = L3plotFilters(L3,'texture filter',patchType,lumType,textureType);
+        if length(varargin) > 2, satType = varargin{3}; end
+        if isempty(satType)
+            satType = 1;
+            warning('No default saturation type.  Using 1.')
+        end
+        if length(varargin) < 4, error('Texture type required');
+        else textureType = varargin{4};
+        end
+        [uData,g] = L3plotFilters(L3,'texture filter',patchType,lumType,satType,textureType);
         
     case {'luminancefilter'}
         if ~isempty(varargin), patchType = varargin{1}; end
