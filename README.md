@@ -33,6 +33,6 @@ The following describes the contents of some of the folders of interest:
 	-Scripts to Show Results:  Contains a few scripts to display the 
      	 original and estimated images, the derived filters, etc.
 
-The L3 algorithm and software were developed by Steven Lansel and Brian Wandell at Stanford University.  The code in this repository was initially drafted by SL, then edited to work with ISET by SL and BW, and then further developed by Qiyuan Tian.
+The L3 algorithm and software were developed by Steven Lansel and Brian Wandell at Stanford University.  The code in this repository was initially drafted by SL, then edited to work with ISET by SL and BW, and then further developed by Qiyuan Tian with help from SL and BW.
 
 Copyright Steven Lansel, 2013
