@@ -13,7 +13,7 @@ function L3 = L3InitTrainingScenes(L3, hfov)
 
 
 %% Load scenes
-sceneFolder = fullfile(L3rootpath,'Data','Scenes');
+sceneFolder = fullfile(L3rootpath,'data','scenes');
 scenes = L3LoadTrainingScenes(sceneFolder);
 
 %% Adjust FOV

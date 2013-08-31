@@ -35,15 +35,38 @@ npixelsperpatch = L3Get(L3,'n pixels per patch');
 nidealfilters = L3Get(L3,'n ideal filters');
 patches = L3Get(L3,'sensor patches no 0');
 idealVec = L3Get(L3,'ideal vector');
+lt = L3Get(L3, 'luminance type');
+lumList = L3Get(L3, 'luminance list');
 
+if lt == 1
+    maxLum = (desiredluminance + lumList(lt + 1)) / 2;    
+    minLum = 2 * desiredluminance - maxLum;
+    if minLum < 0
+        minLum = desiredluminance / 10;
+    end
+elseif lt == length(lumList)
+    minLum = (lumList(lt - 1) + desiredluminance) / 2;
+    maxLum = 2 * desiredluminance - minLum;
+            
+    sensorD = L3Get(L3,'sensordesign');
+    pixel = sensorGet(sensorD,'pixel');
+    voltageSwing = pixelGet(pixel,'voltage swing');
+    if maxLum > voltageSwing
+        maxLum = voltageSwing;
+    end
+else
+    minLum = (lumList(lt - 1) + desiredluminance) / 2;
+    maxLum = (desiredluminance + lumList(lt + 1)) / 2;
+end
 
+desiredluminancevector = rand(1, size(patches, 2)) * (maxLum - minLum) + minLum;
 
 %% Perform scaling
 luminance = L3Get(L3, 'sensor patch luminance');
 
 %Following is amount we need to scale the illuminant to get desired 
 %luminance.
-scale = desiredluminance ./ luminance;
+scale = desiredluminancevector ./ luminance;
 
 patches = repmat(scale,npixelsperpatch,1) .* patches;
 idealVec = repmat(scale,nidealfilters,1) .* idealVec;
