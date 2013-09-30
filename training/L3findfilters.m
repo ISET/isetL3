@@ -44,16 +44,8 @@ nIdealFilters  = L3Get(L3,'n ideal filters');
 centeroutput   = L3Get(L3,'ideal vector');
 saturationpixels = L3Get(L3, 'saturation pixels');  % indicates which pixels should be ignored
 
-balanceThreshold = L3Get(L3, 'balance threshold');
-lumList = L3Get(L3,'luminance list');
-lumType = L3Get(L3,'luminance type');
-
-if lumList(lumType) <= balanceThreshold
-    weightColorTransform = L3Get(L3, 'weight color transform');
-    weightbiasvariance = L3Get(L3, 'weight bias variance');
-else
-    weightbiasvariance = 1;
-end    
+weightColorTransform = L3Get(L3, 'weight color transform');
+weightbiasvariance = L3Get(L3, 'weight bias variance');
 
 %% Find Noise Variance
 if noiseFlag == 0

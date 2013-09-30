@@ -27,7 +27,7 @@ val = [];
 if isfield(L3,'patchType'), pt = L3.patchType; end
 if isfield(L3,'lumType'), lt = L3.lumType; end  % integer pointer for lum level
 if isfield(L3,'saturationType'), st = L3.saturationType; end  % saturation type
-
+if isfield(L3,'contrastType'), ct = L3.contrastType; end  % contrast type
 
 param = ieParamFormat(param);
 
@@ -568,16 +568,28 @@ switch(param)
     case {'weightbiasvariance'}
         % Weights for bias and variance tradeoff when finding filters.
         % Larger value means variance (noise) is more costly and should be
-        % avoided. 
-        % Can either be a scalar -or- a length 3 vector if different
-        % weights are desired for output channels.
-        % See L3findfilters.        
-        val = L3.training.weightBiasVariance;
+        % avoided. Value of 1 implies minimum squared error is desired 
+        % (equal weight to bias and variance). See L3findfilters.  
+        % It's a length 3 vector with each component corresponding to the 
+        % desired weight for output channels. In luminance channel, large
+        % weight blurs images. In chromance channel, large weight
+        % desaturats color. 
+        % Flat and texture regions have different weights setting. In this
+        % way, we can blur the flat regions more to decrease noise while
+        % keeping the sharpness of the texture regions. 
+        % It's used across the full range of luminance levels. It mainly
+        % works for low light condition, and has neglectable influence when
+        % it's bright. 
+        if ct == 1
+            val = L3.training.weightBiasVariance.global;
+        elseif ct == 2
+            val = L3.training.weightBiasVariance.flat;
+        else
+            val = L3.training.weightBiasVariance.texture;
+        end
         
-    case {'balancethreshold'}
-        % If we want to do this, let's add more comments.  
-        % If not, let's delete.        
-        val = L3.training.balanceThreshold;
+    case {'contrasttype'}
+        val = L3.contrastType;
         
     otherwise
         error('Unknown %s\n',param);

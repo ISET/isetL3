@@ -125,7 +125,8 @@ for rr=1:size(cfaPattern,1)
                         % Upsample number of patches
                         L3 = L3PatchesOversample(L3,oversample);
                     end
-
+                    
+                    L3 = L3Set(L3, 'contrast type', 1);
                     globalpipelinefilter = L3findfilters(L3,noiseFlag);
                     L3 = L3Set(L3,'global filter',globalpipelinefilter);
 
@@ -167,6 +168,7 @@ for rr=1:size(cfaPattern,1)
 
                     %enforce symmetry for flat filters
                     symmetryflag = 1; 
+                    L3 = L3Set(L3, 'contrast type', 2);
                     flatfilters = L3findfilters(L3,noiseFlag,flatindices,symmetryflag);
 
                     % This is set for a particular cfaPosition (could be the current default)
@@ -221,6 +223,7 @@ for rr=1:size(cfaPattern,1)
                     maxtreedepth = L3Get(L3,'max tree depth');
 
                     % Find the filter for each cluster
+                    L3 = L3Set(L3, 'contrast type', 3);
                     for clusternum = 1:numclusters
                         clusterindices = ...
                             floor(trainclustermembers/2^(maxtreedepth-floor(log2(clusternum))-1))==clusternum;

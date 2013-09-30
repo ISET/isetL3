@@ -210,22 +210,18 @@ switch param
         % desired, an identity matrix or a scalar of 1 can be used.
         % See L3findRGBWcolortransform
         L3.training.weightColorTransform = val;
+            
+    case {'globalweightbiasvariance'}
+        L3.training.weightBiasVariance.global = val;
+
+    case {'flatweightbiasvariance'}
+        L3.training.weightBiasVariance.flat = val;
+    
+    case {'textureweightbiasvariance'}
+        L3.training.weightBiasVariance.texture = val;
         
-    case {'weightbiasvariance'}
-        % Weights for bias and variance tradeoff when finding filters.
-        % Larger value means variance (noise) is more costly and should be
-        % avoided. 
-        % Can either be a scalar -or- a length 3 vector if different
-        % weights are desired for output channels.
-        % Value of 1 implies minimum squared error is desired 
-        % (equal weight to bias and variance).
-        % See L3findfilters.
-        L3.training.weightBiasVariance = val;
-        
-    case {'balancethreshold'}
-        % If we want to do this, let's add more comments.  
-        % If not, let's delete.
-        L3.training.balanceThreshold = val;
+    case {'contrasttype'}
+        L3.contrastType = val;
         
     otherwise
         error('Unknown %s\n',param);

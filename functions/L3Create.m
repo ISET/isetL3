@@ -29,6 +29,7 @@ L3.type = 'L3';
 L3.patchType = [];    % Assumed entry to analyze in the CFA
 L3.lumType = [];      % Index of desired patch luminance value
 L3.saturationType = [];      % Index of desired saturation case
+L3.contrastType = [];      % Index of desired contrast case, i.e global, flat and texture
 
 % Common to all of the patch types (pixel positions in the cfa)
 
@@ -50,9 +51,6 @@ L3.training.saturationList = [];
 L3.training.treeDepth  = [];
 L3.training.colortransformmatrix = [];
 L3.training.balanceWeights = [];
-L3.training.balanceThreshold = [];
-
-
 
 % These will become cell arrays of structures of
 % [cfaSize(1),cfaSize(2),length(patchLuminanceLevels)]

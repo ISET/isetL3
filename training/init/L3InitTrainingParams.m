@@ -42,5 +42,7 @@ L3 = L3Set(L3,'random seed',0);
 L3 = L3Set(L3,'max tree depth',1);
 L3 = L3Set(L3,'flat percent',0.6);
 L3 = L3Set(L3,'weight color transform',1);
-L3 = L3Set(L3,'weight bias variance',1);
+L3 = L3Set(L3,'global weight bias variance',1);
+L3 = L3Set(L3,'flat weight bias variance',1);
+L3 = L3Set(L3,'texture weight bias variance',1);
 

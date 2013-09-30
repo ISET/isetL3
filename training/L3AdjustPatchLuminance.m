@@ -38,13 +38,15 @@ idealVec = L3Get(L3,'ideal vector');
 lt = L3Get(L3, 'luminance type');
 lumList = L3Get(L3, 'luminance list');
 
-if lt == 1
+%% Find the range around the current training luminance level.
+% Training patches will be randomly scaled into this range. 
+if lt == 1 % low end special case
     maxLum = (desiredluminance + lumList(lt + 1)) / 2;    
     minLum = 2 * desiredluminance - maxLum;
     if minLum < 0
         minLum = desiredluminance / 10;
     end
-elseif lt == length(lumList)
+elseif lt == length(lumList) % high end special case
     minLum = (lumList(lt - 1) + desiredluminance) / 2;
     maxLum = 2 * desiredluminance - minLum;
             
