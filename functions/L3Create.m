@@ -49,8 +49,8 @@ L3.training.flatPercent = [];
 L3.training.luminanceList = [];  % We should create filters for each luminance level
 L3.training.saturationList = [];
 L3.training.treeDepth  = [];
-L3.training.colortransformmatrix = [];
-L3.training.balanceWeights = [];
+L3.training.weightColorTransform = [];
+L3.training.weightBiasVariance = [];
 
 % These will become cell arrays of structures of
 % [cfaSize(1),cfaSize(2),length(patchLuminanceLevels)]

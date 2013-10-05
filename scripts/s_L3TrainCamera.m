@@ -24,4 +24,4 @@ L3 = L3Train(L3);
 %% Setup L3 camera
 camera = L3CameraCreate(L3);
 
-%% Use the camera with s_L3render, cameraCompute, or cameraComputesRGB
+%% Use the camera with s_L3Render, cameraCompute, or cameraComputesRGB

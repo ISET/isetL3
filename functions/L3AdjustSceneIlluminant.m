@@ -32,7 +32,7 @@ trainingilluminant = trainingilluminant.data;
 testingilluminant = testingilluminant/ mean(testingilluminant);
 trainingilluminant = trainingilluminant/ mean(trainingilluminant);
 
-percenterror = max(abs(trainingilluminant - testingilluminant)/ trainingilluminant);          
+percenterror = max(abs(trainingilluminant' - testingilluminant)/ trainingilluminant');          
 if percenterror > .01
     warning(['Scene illuminant does not match illuminant used for testing.',...
             '  Now changing scene illuminant to make it match.'])

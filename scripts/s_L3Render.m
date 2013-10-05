@@ -14,16 +14,16 @@ fovScene      = 10;
 
 %% Load scene included in L3 directory
 % ii = 5;
-% sNames     = dir(fullfile(L3rootpath,'Data','Scenes','*scene.mat'));
-% thisName   = fullfile(L3rootpath,'Data','Scenes',sNames(ii).name);
+% sNames     = dir(fullfile(L3rootpath,'data','scenes','*scene.mat'));
+% thisName   = fullfile(L3rootpath,'data','scenes',sNames(ii).name);
 % data       = load(thisName,'scene');
 % scene  = data.scene;
 
 %% Alternative Scenes
-% scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
+scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
 % scene = sceneCreate('zone plate',[1000,1000]); %sz = number of pixels of scene
 % scene = sceneCreate('freq orient');
-scene = sceneCreate('moire orient');
+% scene = sceneCreate('moire orient');
 
 %% Adjust FOV of camera to match scene, no extra pixels needed. 
 camera = cameraSet(camera,'sensor fov',fovScene);

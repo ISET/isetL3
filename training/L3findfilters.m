@@ -78,6 +78,8 @@ if length(weightbiasvariance)>1 & any(abs(diff(weightbiasvariance))~=0)
        % slightly more efficient by combining those cases.  We don't now
        % for ease of coding.
    end   
+   % transform filters back to XYZ space
+   smallfilters = inv(weightColorTransform) * smallfilters;
 else
     % If channels are weighted same, no need to do color transform
     smallfilters = L3Wiener(patches(:,patchindices), ...
@@ -87,12 +89,6 @@ end
 %% Put 0's in Filter for Pixels belong to Saturated Channels
 filters = zeros(size(smallfilters,1), length(saturationpixels));
 filters(:,~saturationpixels) = smallfilters;
-
-%% If needed, transform filters back to XYZ space
-if length(weightbiasvariance)>1 & any(abs(diff(weightbiasvariance))~=0)
-    % If color transform applied before, remove it
-    filters = inv(weightColorTransform) * filters;
-end
 
 %% Enforce Symmetry if desired
 if symmetryflag

@@ -26,8 +26,8 @@ voltageswing = pixelGet(pixel, 'voltageswing');
 % bright, a sparse linear sampling is enough. The number of samples was
 % chosen based on subjective experiments. The cut-off point between low and
 % high light conditions is chosen as 0.45, when W pixels start saturation.
-% The sampling might vary for different CFAs, voltage swing etc and should 
-% properly tuned. The simplest way is linear sampling as:
+% The sampling might vary for different CFAs, voltage swing etc and should
+% be properly tuned. The simplest way is linear sampling as:
 % nLuminanceSteps = 10;
 % patchLuminanceSamples = linspace(0.05*voltageswing,0.9*voltageswing,nLuminanceSteps);
 patchLuminanceSamples = [0.001, 0.0016, 0.0026, 0.0041, 0.0065, 0.0104, 0.0166, 0.0266, 0.0424, 0.0678, 0.1082, 0.1729, 0.2762,...

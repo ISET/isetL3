@@ -12,11 +12,11 @@ s_initISET
 %% File locations
 % An L3 camera will be trained for each of the .mat files in the following
 % directory which should contain a CFA.
-cfaFiles = dir(fullfile(L3rootpath,'Data','Sensors','CFA','Derived','*.mat'));
+cfaFiles = dir(fullfile(L3rootpath,'data','sensors','CFA','Derived','*.mat'));
 
 % All L3 cameras will be saved in the following subfolder of the Cameras
 % folder.  The filename will be L3camera_XXX where XXX is the cfa filename.
-saveFolder = fullfile(L3rootpath, 'Cameras', 'L3');
+saveFolder = fullfile(L3rootpath, 'cameras', 'L3');
 
 %% If it doesn't exist, create the folder where files will be saved
 if exist(saveFolder, 'dir')~=7
