@@ -14,7 +14,7 @@ The main scripts involved in using the L^3 algorithm are
 	-s_L3TrainCamera:  Trains L^3 camera for a specific CFA using a set of 
 	 multispectral scenes for training.
 
-	-s_L3render:  Applies the L^3 camera to a multispectral scene. 
+	-s_L3Render:  Applies the L^3 camera to a multispectral scene. 
 	Result images are shown.
 
 For more instructions and references see the Docs folder and http://white.stanford.edu/pdcwiki/index.php/L3_Algorithm
