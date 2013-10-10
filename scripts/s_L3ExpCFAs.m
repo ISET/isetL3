@@ -1,8 +1,8 @@
 %% s_L3ExpCFAs
 %
-% This script shows how to set up L3 structures to train and create an L3
-% camera with low light balancing scheme, and render images using the L3
-% pipeline with the created camera.
+% This script shows how to change L3 structure parameters to experiment
+% with different CFA layouts
+%
 %
 % (c) Stanford VISTA Team
 
@@ -17,6 +17,7 @@ dataroot = '/biac4/wandell/data/qytian/L3Project';
 % Create and initialize L3 structure
 L3 = L3Initialize();  % use default parameters
 
+% Change the CFA to Aptina's new RWBW design
 sensorD = L3Get(L3,'design sensor');
 cfaPattern = [1 4; 4 3];
 sensorD = sensorSet(sensorD, 'cfa pattern', cfaPattern);
