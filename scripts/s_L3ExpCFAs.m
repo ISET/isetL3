@@ -19,7 +19,7 @@ L3 = L3Initialize();  % use default parameters
 
 % Change the CFA to Aptina's new RWBW design
 sensorD = L3Get(L3,'design sensor');
-cfaPattern = [1 4; 4 3];
+cfaPattern = [1 4; 4 3]; 
 sensorD = sensorSet(sensorD, 'cfa pattern', cfaPattern);
 L3 = L3Set(L3,'design sensor', sensorD);
 
