@@ -50,6 +50,11 @@ resultL3LumIdx = zeros(sz(1),sz(2));
 resultL3SatIdx = zeros(sz(1),sz(2));
 resultL3ClusterIdx = zeros(sz(1),sz(2));
 
+% Adjust the L3 sensor size to match the size of the input image
+sensorD  = L3Get(L3,'design sensor');
+sensorD  = sensorSet(sensorD,'size',sz);
+L3 = L3Set(L3,'design sensor',sensorD);
+
 % Build the image one cfa pattern position at a time
 for rr = 1:cfaSize(1)
     for cc = 1:cfaSize(2)
