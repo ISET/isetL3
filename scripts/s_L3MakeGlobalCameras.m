@@ -1,14 +1,16 @@
-%% s_L3MakeBasicCameras
+%% s_L3MakeGlobalCameras
 %
-% This script creates basic cameras for a series of L3 cameras.
+% This script creates global cameras for a series of L3 cameras.
+% Global is a bad name but it means there are separate filters for each
+% patch type (color of center pixel), luminance level, and saturation
+% level.  But no separate filters for flat and texture.
 %
-% The basic cameras inherit the sensor and optics from the L3 cameras but
-% the L3 processing properties are ignored.
+% The global cameras inherit the sensor and optics from the L3 cameras but
+% the flat and texture filters are ignored.  This is achieved by just
+% changing the name of the camera to start with 'L3 Global' (vcimageCompute
+% operates differently with this name).
 %
-% Basic camera means the processing is the default processing in ISET that
-% uses bilinear demosaicking.
-%
-% See s_L3TrainCamerasforCFAs to train L3 cameras for a variet of CFAs.
+% See s_L3TrainCamerasforCFAs to train L3 cameras for a variety of CFAs.
 %
 % (c) Stanford VISTA Team
 
@@ -16,14 +18,14 @@
 %% File locations
 
 
-% A basic camera will be trained for each of the file of the form
+% A global camera will be trained for each of the file of the form
 % L3camera_XXX.mat in the following directory.  Generally XXX is the CFA
 % name.
 cameraFolder = fullfile(L3rootpath, 'Cameras', 'L3');
 
-% All basic cameras will be saved in the following subfolder of the Cameras
-% folder.  The filename will be basiccamera_XXX.mat where XXX is the same
-% as the L3 camera file.
+% All global cameras will be saved in the following subfolder of the
+% Cameras folder.  The filename will be globalcamera_XXX.mat where XXX is
+% the same as the L3 camera file.
 saveFolder = fullfile(L3rootpath, 'Cameras', 'global');
 
 %% If it doesn't exist, create the folder where files will be saved
