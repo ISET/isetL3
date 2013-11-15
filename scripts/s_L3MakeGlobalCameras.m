@@ -53,7 +53,7 @@ for cameraFilenum = 1:length(cameraFiles)
         camera.metrics=[];
 
         namesuffix = cameraFile(10:end);    %generally CFA name
-        saveFile = fullfile(saveFolder, ['gloablcamera_', namesuffix]);
+        saveFile = fullfile(saveFolder, ['globalcamera_', namesuffix]);
         save(saveFile, 'camera')
     end
 end

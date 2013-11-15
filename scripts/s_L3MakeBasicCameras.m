@@ -14,8 +14,6 @@
 
 
 %% File locations
-
-
 % A basic camera will be trained for each of the file of the form
 % L3camera_XXX.mat in the following directory.  Generally XXX is the CFA
 % name.

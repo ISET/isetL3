@@ -20,9 +20,9 @@ fovScene      = 10;
 % scene  = data.scene;
 
 %% Alternative Scenes
-scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
+% scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
 % scene = sceneCreate('zone plate',[1000,1000]); %sz = number of pixels of scene
-% scene = sceneCreate('freq orient');
+scene = sceneCreate('freq orient');
 % scene = sceneCreate('moire orient');
 
 %% Adjust FOV of camera to match scene, no extra pixels needed. 
