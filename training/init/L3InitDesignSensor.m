@@ -19,7 +19,7 @@ wave = sceneGet(scenes{1}, 'wave');   %use the wavelength samples from the first
 sensorD = sensorM; 
 
 % Design sensor color filter array and exposure duration
-designFilters.name = 'RGBW';  %name of file containing spectral curves
+designFilters.name = fullfile(L3rootpath,'data','sensors','CFA','RGBW');  %name of file containing spectral curves
 designFilters.filterNames = {'r','g','b','w'};    %name for filters, only used to color plots
 cfaPattern = [1 2; 4 3];    %arrangement of the above filters
 designFilters.wave = wave;
