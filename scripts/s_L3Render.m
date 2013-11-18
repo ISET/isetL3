@@ -22,8 +22,18 @@ fovScene      = 10;
 %% Alternative Scenes
 % scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
 % scene = sceneCreate('zone plate',[1000,1000]); %sz = number of pixels of scene
-scene = sceneCreate('freq orient');
+% scene = sceneCreate('freq orient');
 % scene = sceneCreate('moire orient');
+scene = sceneCreate('macbethd65');
+
+
+% oi     = cameraGet(camera,'oi');
+% sensor = cameraGet(camera,'sensor');
+% sDist  = 1000;       % distance of scene from main lens (m)
+% fov    = sensorGet(sensor,'fov',sDist,oi);
+% imSize = 128;  flgRead = false;
+% scene = sceneDeadLeave([], imSize, flgRead);
+% scene  = sceneSet(scene,'fov',fov);
 
 %% Adjust FOV of camera to match scene, no extra pixels needed. 
 camera = cameraSet(camera,'sensor fov',fovScene);

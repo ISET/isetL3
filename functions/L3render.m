@@ -61,7 +61,7 @@ for rr = 1:cfaSize(1)
         
         % Create  target patches for this cfa position
         L3 = L3Set(L3,'patch type',[rr,cc]);
-        [foo,inputPatches] = L3trainingPatches(L3,[],{inputIm}); 
+        inputPatches = L3sensor2Patches(L3,inputIm);
         
         [xhatL3,lumIdx, satIdx, clustermembers] = L3applyPipeline2Patches(L3,inputPatches,L3Type);
         

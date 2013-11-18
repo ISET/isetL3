@@ -129,7 +129,7 @@ Saved using svd method
       L3 = L3Set(L3,<span class="string">'patch type'</span>,[rr,cc]);
 
       <span class="comment">% Load all patches of this cfa position from RAW image</span>
-      [foo,inputPatches] = L3trainingPatches(L3,[],{inputIm});
+      inputPatches = L3sensor2Patches(L3,inputIm);
 
       <span class="comment">% Patches are stored as a matrix where each vectorized patch is</span>
       <span class="comment">% stored in a row.</span>
@@ -413,7 +413,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
       L3 = L3Set(L3,'patch type',[rr,cc]);
       
       % Load all patches of this cfa position from RAW image
-      [foo,inputPatches] = L3trainingPatches(L3,[],{inputIm}); 
+      inputPatches = L3sensor2Patches(L3,inputIm); 
       
       % Patches are stored as a matrix where each vectorized patch is
       % stored in a row.

@@ -104,7 +104,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
       L3 = L3Set(L3,'patch type',[rr,cc]);
       
       % Load all patches of this cfa position from RAW image
-      [foo,inputPatches] = L3trainingPatches(L3,[],{inputIm}); 
+      inputPatches = L3sensor2Patches(L3,inputIm);
       
       % Patches are stored as a matrix where each vectorized patch is
       % stored in a row.

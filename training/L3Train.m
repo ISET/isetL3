@@ -60,7 +60,7 @@ for rr=1:size(cfaPattern,1)
             saturationtype = 1 + L3Get(L3, 'saturation type');
             L3 = L3Set(L3, 'saturation type', saturationtype);            
             
-            [idealVec, sensorPatches] = L3trainingPatches(L3, desiredIm, inputIm);        
+            [sensorPatches, idealVec] = L3trainingPatches(L3, inputIm, desiredIm);
 
             % Store the answer.
             L3 = L3Set(L3,'sensor patches',sensorPatches);

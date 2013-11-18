@@ -1,9 +1,7 @@
-function [tMatrix,pMatrix] = L3trainingPatches(L3,desiredIm,inputIm)
+function [pMatrix,tMatrix] = L3trainingPatches(L3,inputIm,desiredIm)
 % Create the target and patch matrices for a pixel type in the cfaPattern
 %
-% RENAME THIS ROUTINE.  IT IS USED FOR TESTING AS WELL AS FOR TRAINING.
-%
-% [tMatrix,pMatrix] = L3trainingPatches(L3, desiredIm,inputIm)
+% [pMatrix,tMatrix] = L3trainingPatches(L3, inputIm, desiredIm)
 % 
 % Creates vectors of patches that are for training (tMatrix) and a matrix
 % of input image patches (pMatrix).  These are for a particular patch type.
@@ -15,71 +13,50 @@ function [tMatrix,pMatrix] = L3trainingPatches(L3,desiredIm,inputIm)
 %
 % Inputs:
 %  L3:          L3 structure
-%  desiredIm:   The full target values in a calibrated space, as a 3D matrix
 %  inputIm:     The full sensor data, no mosaic, as 3D matrix
+%  desiredIm:   The full target values in a calibrated space, as a 3D matrix
 %
 % Outputs:
-%  tMatrix: The (r*c,3) matrix of vectors, from desiredIm, of the target solution
 %  pMatrix: The [r*c,patchSize^2] matrix of the measured samples 
+%  tMatrix: The (r*c,3) matrix of vectors, from desiredIm, of the target solution
 %
 % Checks that the patch size is odd.
-% Extracts the target values from desiredIm into tMatrix
 % Extracts the sensor data from inputIm into the pMatrix
+% Extracts the target values from desiredIm into tMatrix
 %
 % (c) Stanford Vista Team
 
-%% Create the first matrix, tMatrix
 
-% Sample positions, xPos,yPos.  Make this a function that can be called
-% from other places.  We use it in L3render, for example.  We want
-% xPos,yPos to be returned.  This is based on the sensor and is the same
-% for all the scenes.
-[xPos,yPos] = L3SensorSamplePositions(L3);
-sz = length(xPos)*length(yPos);
+dSensor = L3Get(L3,'design sensor');
+cfaPattern = sensorGet(dSensor,'cfa pattern');
+patchtype = L3Get(L3,'patch type');
 
-if isempty(desiredIm), nScenes = 1;
-else nScenes = L3Get(L3,'n scenes');
-end
-
-% Target matrix, typically (r,c,3) for XYZ values.  That's easy.
-tMatrix = [];
-if ~isempty(desiredIm)
-    nColor = size(desiredIm{1},3);
-    for ii=1:nScenes
-        tmp = desiredIm{ii};  % vcNewGraphWin; imagescRGB(tmp);
-        tmpTMatrix = tmp(yPos,xPos,:);
-        tmpTMatrix = reshape(tmpTMatrix,sz,nColor)';
-        % vcNewGraphWin;
-        % foo = reshape(tmpTMatrix,length(yPos),length(xPos),nColor);
-        % imagescRGB(foo);
-        tMatrix = cat(2,tMatrix,tmpTMatrix);
+pMatrix = cell(size(cfaPattern));
+tMatrix = cell(size(cfaPattern));
+for rowshift = 1:size(cfaPattern,1)
+    for colshift = 1:size(cfaPattern,2)
+        cfashift = [rowshift-1, colshift-1];
+        newcfaPattern = circshift(cfaPattern,cfashift);
+        dSensor = sensorSet(dSensor,'cfa pattern',newcfaPattern);
+        L3 = L3Set(L3,'design sensor',dSensor);
+        
+        newpatchtype = patchtype+cfashift;
+        if newpatchtype(1)>size(cfaPattern,1)
+            newpatchtype(1) = newpatchtype(1) - size(cfaPattern,1);
+        end
+        if newpatchtype(2)>size(cfaPattern,2)
+            newpatchtype(2) = newpatchtype(2) - size(cfaPattern,2);
+        end        
+        L3 = L3Set(L3,'patch type',newpatchtype);
+        
+        [pMatrix{rowshift,colshift},tMatrix{rowshift,colshift}] = ...
+            L3sensor2Patches(L3,inputIm,desiredIm);
     end
 end
-% Reshape the returned data into vectors and matrices
-% imagescRGB(tMatrix)
 
-%% Convert the multiple plane inputIm data into a sensor plane, pMatrix.
-cfaPattern = sensorGet(L3Get(L3,'design sensor'),'cfa pattern');
-blockWidth = L3Get(L3,'block width');
-nBlock = blockWidth*blockWidth;
+%% Covnert from cell array to big matrix
+pMatrix = cell2mat(reshape(pMatrix,1,prod(size(cfaPattern))));
+tMatrix = cell2mat(reshape(tMatrix,1,prod(size(cfaPattern))));
 
-pMatrix = [];
-for ii=1:nScenes
-    tmp = inputIm{ii};   % row, col, nColors
-    if ndims(tmp) == 3, sensorPlane = sensorRGB2Plane(tmp, cfaPattern);
-    else                sensorPlane = tmp;
-    end   % Sensor plane is row,col, 1
-    
-    % vcNewGraphWin; imagesc(sensorPlane); colormap(gray)
-    
-    % Convert the sensor data into the patch data matrix
-    tmppMatrix = L3sensorPlane2Patch(sensorPlane,blockWidth,xPos,yPos);
-    
-    % Arranged to be patchSize^2 x nSamples
-    tmppMatrix = reshape(tmppMatrix,sz,nBlock)';
-    
-    pMatrix = cat(2,pMatrix,tmppMatrix); 
-end
 
-return
-
+% No need to set the original cfa back into L3 because L3 is not returned

@@ -34,17 +34,6 @@ patchLuminanceSamples = [0.001, 0.0016, 0.0026, 0.0041, 0.0065, 0.0104, 0.0166, 
                            0.4505, 0.6753, 0.9, 1.1248, 1.3495, 1.5743, 0.99*voltageswing];
 L3 = L3Set(L3,'luminance list', patchLuminanceSamples);
 
-%% Bias and Variance Weights
-weights = [4, 4, 4];  
-L3 = L3Set(L3, 'global weight bias variance', weights);
-
-weights = [4, 16, 4];
-L3 = L3Set(L3, 'flat weight bias variance', weights);
-
-weights = [4, 1, 4];
-L3 = L3Set(L3, 'texture weight bias variance', weights);
-
-
 %% Defaults that were previously in L3Create
 L3 = L3Set(L3,'n oversample',0);
 L3 = L3Set(L3,'saturation flag', 1);
@@ -52,6 +41,17 @@ L3 = L3Set(L3,'sigma factor',1);
 L3 = L3Set(L3,'random seed',0);
 L3 = L3Set(L3,'max tree depth',1);
 L3 = L3Set(L3,'flat percent',0.6);
+
+%% Bias and Variance Weights
+% weights = 4;
+% L3 = L3Set(L3, 'global weight bias variance', weights);
+
+% weights = 10;
+% L3 = L3Set(L3, 'flat weight bias variance', weights);
+
+% weights = 2;
+% L3 = L3Set(L3, 'texture weight bias variance', weights);
+
 L3 = L3Set(L3,'weight color transform',1);
 L3 = L3Set(L3,'global weight bias variance',1);
 L3 = L3Set(L3,'flat weight bias variance',1);
