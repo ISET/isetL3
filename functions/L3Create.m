@@ -44,7 +44,6 @@ L3.sensor.design = [];   % Mosaic, noise, we are designing this one. Don't store
 L3.training.randomSeed  = [];
 L3.training.saturation  = [];
 L3.training.oversample  = [];
-L3.training.sigmaFactor = [];
 L3.training.flatPercent = [];
 L3.training.luminanceList = [];  % We should create filters for each luminance level
 L3.training.saturationList = [];

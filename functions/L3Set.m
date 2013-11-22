@@ -116,11 +116,12 @@ switch param
     case {'saturationflag'}
         % Use saturation or not ... probably shouldn't be a flag.
         L3.training.saturation = val;
-    case {'sigmafactor'}
-        % Not sure.  Almost always set to 1.
-        L3.training.sigmaFactor = val;
     case {'ntrainingpatches','npatches'}
         L3.training.nPatches = val;
+    case {'maxtrainingpatches'}
+        % Maximum number of training patches for patch type 
+        % (see L3trainingPatches.m)
+        L3.training.maxTrainingPatches = val;
     case {'randomseed','rinit'}
         L3.training.randomSeed = val;
     case {'flatpercent'}

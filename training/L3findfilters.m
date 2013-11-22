@@ -39,10 +39,13 @@ end
 %% Initialize parameters
 blockpattern   = L3Get(L3,'block pattern');
 sensor         = L3Get(L3,'sensor design');
-sigmafactor    = L3Get(L3,'sigma factor');
 nIdealFilters  = L3Get(L3,'n ideal filters');
 centeroutput   = L3Get(L3,'ideal vector');
-saturationpixels = L3Get(L3, 'saturation pixels');  % indicates which pixels should be ignored
+
+% following pixels should be ignored
+saturationpixels = L3Get(L3, 'saturation pixels');  
+Xpixels = L3Get(L3, 'X pixels');
+ignorepixels = saturationpixels | Xpixels;
 
 weightColorTransform = L3Get(L3, 'weight color transform');
 weightbiasvariance = L3Get(L3, 'weight bias variance');
@@ -56,14 +59,14 @@ else  % noiseFlag~=0
     patches = L3Get(L3,'sensor patches');
     centroid=mean(patches(:,patchindices),2);    
     noisevar=L3findnoisevar(sensor,centroid);
-    noisevar=sum(patchindices)*sigmafactor*noisevar;
+    noisevar=sum(patchindices)*noisevar;
 end
 
-%% Remove all pixels for saturated channels
+%% Remove all pixels for saturated or X channels
 if noiseFlag~=0
-    noisevar(saturationpixels) = [];
+    noisevar(ignorepixels) = [];
 end
-patches(saturationpixels,:) = [];
+patches(ignorepixels,:) = [];
 
 %% Find Wiener filter
 if length(weightbiasvariance)>1 & any(abs(diff(weightbiasvariance))~=0)
@@ -86,9 +89,9 @@ else
         centeroutput(:, patchindices), noisevar * weightbiasvariance(1));    
 end
 
-%% Put 0's in Filter for Pixels belong to Saturated Channels
-filters = zeros(size(smallfilters,1), length(saturationpixels));
-filters(:,~saturationpixels) = smallfilters;
+%% Put 0's in Filter for Pixels belong to Saturated or X Channels
+filters = zeros(size(smallfilters,1), length(ignorepixels));
+filters(:,~ignorepixels) = smallfilters;
 
 %% Enforce Symmetry if desired
 if symmetryflag

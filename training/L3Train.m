@@ -60,6 +60,8 @@ for rr=1:size(cfaPattern,1)
             saturationtype = 1 + L3Get(L3, 'saturation type');
             L3 = L3Set(L3, 'saturation type', saturationtype);            
             
+            % Let's try to move this outside of the saturation loop.  That
+            % way we only will have to load once per patch type.
             [sensorPatches, idealVec] = L3trainingPatches(L3, inputIm, desiredIm);
 
             % Store the answer.

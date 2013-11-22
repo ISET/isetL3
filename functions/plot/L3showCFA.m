@@ -1,4 +1,5 @@
-function cfa=L3showCFA(cfapattern,filterTransmissions,wave,numpatches,patchwidth,borderwidth,sigma)
+function cfa=L3showCFA(cfapattern,filterTransmissions,wave,numpatches,...
+    patchwidth,borderwidth,sigma)
 
 %L3SHOWCFA generates a figure with the CFA pattern illustrated
 %

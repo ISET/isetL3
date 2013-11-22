@@ -37,12 +37,12 @@ L3 = L3Set(L3,'luminance list', patchLuminanceSamples);
 %% Defaults that were previously in L3Create
 L3 = L3Set(L3,'n oversample',0);
 L3 = L3Set(L3,'saturation flag', 1);
-L3 = L3Set(L3,'sigma factor',1);
 L3 = L3Set(L3,'random seed',0);
 L3 = L3Set(L3,'max tree depth',1);
 L3 = L3Set(L3,'flat percent',0.6);
 
 %% Bias and Variance Weights
+% Let's do some experiments to find some generally good parameters.
 % weights = 4;
 % L3 = L3Set(L3, 'global weight bias variance', weights);
 
@@ -57,3 +57,9 @@ L3 = L3Set(L3,'global weight bias variance',1);
 L3 = L3Set(L3,'flat weight bias variance',1);
 L3 = L3Set(L3,'texture weight bias variance',1);
 
+%% Maximum number of training patches for each patch type
+% Following is a smaller value for quick testing.  This should probably be
+% increased for actual results.  81000 is similar to number of patches in
+% previous method (prior 11/2013) for 2x2 CFA.  On a regular laptop, around
+% 400000 is feasible but slow.
+L3 = L3Set(L3,'max training patches', 100000);

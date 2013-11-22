@@ -311,7 +311,7 @@ switch(param)
         % Line immediately following counts a completely black color
         % filter, X, when finding the luminance.  This can cause problems.
         % We can ignore the X pixels by checking if the filter has any
-        % positive values.
+        % positive values.  (Similar to L3Get(L3,'X pixels'))
 %         measuredColors   = L3Get(L3,'filter vals');
         transmissivities = L3Get(L3,'design filter transmissivities');
         measuredColors = find(sum(transmissivities)>0 & ~saturationcase');
@@ -379,16 +379,31 @@ switch(param)
         blockWidth = L3Get(L3,'blockrowcol');
         cfaPattern = L3Get(L3,'cfa pattern');
         val = L3TrainBlockPattern(rowcol,blockWidth,cfaPattern);
+    
     case {'saturationpixels'}
         % L3Get(L3, 'saturation pixels')
         % Binary vector indicating which pixels belong to saturated color
-        % channels for current saturation case  (Format is a same as a
+        % channels for current saturation case  (Format is same as a
         % column of patches)
         blockpattern = L3Get(L3, 'block pattern');
         saturationcase = L3Get(L3,'saturation list',st);
         satblockpattern = saturationcase(blockpattern);
         satblockpattern = logical(satblockpattern);
         val = satblockpattern(:);
+        
+    case {'xpixels'}
+        % L3Get(L3, 'X pixels')
+        % Binary vector indicating which pixels do not have a measurement
+        % In reality they probably have a measurement that should not be
+        % used for the current application.  (Format is same as a
+        % column of patches)
+        sensitivities = L3Get(L3, 'design filter transmissivities');
+        xfilters = sum(sensitivities)==0;
+        
+        blockpattern = L3Get(L3, 'block pattern');
+        xblockpattern = xfilters(blockpattern);
+        xblockpattern = logical(xblockpattern);
+        val = xblockpattern(:);    
 
     case {'flatindices'}
         % L3Get(L3,'flat indices');
@@ -452,11 +467,16 @@ switch(param)
         val = L3.training.oversample;
     case {'saturationflag'}
         val = L3.training.saturation;
-    case {'sigmafactor'}
-        val = L3.training.sigmaFactor;
-    case {'ntrainingpatches'}
-        % This might need to get changed or used or something
+    case {'ntrainingpatches'}        
         val = L3.training.nPatches;
+    case {'maxtrainingpatches'}
+        % Maximum number of training patches for patch type 
+        % (see L3trainingPatches.m)
+        if isfield(L3.training,'maxTrainingPatches')
+            val = L3.training.maxTrainingPatches;
+        else
+            val = [];
+        end
     case {'randomseed','rinit'}
         val = L3.training.randomSeed;
     case {'maxtreedepth','treedepth'}
