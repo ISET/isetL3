@@ -24,8 +24,7 @@ if exist(saveFolder, 'dir')~=7
 end
 
 %% Train Camera for each CFA 
-% for cfaFilenum = 1:length(cfaFiles)
-for cfaFilenum = 29
+for cfaFilenum = 1:length(cfaFiles)
     cfaFile = cfaFiles(cfaFilenum).name;
     disp(['CFA:  ', cfaFile, '  ', num2str(cfaFilenum),' / ', num2str(length(cfaFiles))])    
     camera = L3TrainCameraforCFA(cfaFile);
