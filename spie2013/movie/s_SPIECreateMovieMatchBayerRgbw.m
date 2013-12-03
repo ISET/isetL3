@@ -31,7 +31,7 @@ scene = sceneFromFile(loadScene, 'multispectral');
 sz = sceneGet(scene, 'size');
 
 %% Set up video 
-saveMovie = 0;
+saveMovie = 1;
 if saveMovie
     fps = 15;
     writerObj = VideoWriter(fullfile(saveFolder, 'movie_match_bayer_rgbw_tradeoff'), 'Motion JPEG AVI');
@@ -42,11 +42,11 @@ end
 
 %% Specify light levels 
 luminances = logspace(-2, log(2)/log(10), 80);
-ratio = 4;
+ratio = 3.5;
 
 %% Render images
 if ~saveMovie
-    satPercent_bayer = rendervideoframes(L3camera_bayer, scene, luminances, saveFolder);
+    satPercent_bayer = rendervideoframes(L3camera_bayer, scene, luminances * ratio, saveFolder);
     satPercent_rgbw_tradeoff = rendervideoframes(L3camera_rgbw_tradeoff, scene, luminances, saveFolder);
     saveFile = [saveFolder, 'satPercent'];
     save(saveFile, 'satPercent_bayer', 'satPercent_rgbw_tradeoff');

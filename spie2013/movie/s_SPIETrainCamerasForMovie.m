@@ -7,7 +7,10 @@
 %
 % (c) Stanford VISTA Team
 
-%%% Train and create a L3 camera for Bayer pattern
+%% Start ISET
+s_initISET
+
+%% Train and create a L3 camera for Bayer pattern
 L3 = L3Initialize(); % use default parameters
 sensorD = L3Get(L3,'design sensor');
 
@@ -22,7 +25,7 @@ name = 'L3camera_bayer';
 camera = cameraSet(camera, 'name', name);
 save(name, 'camera'); % save camera
 
-%%% Train and create a L3 camera for RGBW pattern with bias and variance
+%% Train and create a L3 camera for RGBW pattern with bias and variance
 % tradeoff
 L3 = L3Initialize();  % use default parameters
 

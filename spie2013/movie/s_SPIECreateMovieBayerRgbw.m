@@ -31,10 +31,10 @@ scene = sceneFromFile(loadScene, 'multispectral');
 sz = sceneGet(scene, 'size');
 
 %% Set up video 
-saveMovie = 0;
+saveMovie = 1;
 if saveMovie
     fps = 15;
-    writerObj = VideoWriter(fullfile(dataroot, 'movie_bayer_rgbw_tradeoff'), 'Motion JPEG AVI');
+    writerObj = VideoWriter(fullfile(saveFolder, 'movie_bayer_rgbw_tradeoff'), 'Motion JPEG AVI');
     writerObj.FrameRate = fps;
     writerObj.Quality = 95;
     open(writerObj);
