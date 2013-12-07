@@ -15,12 +15,7 @@ function L3camera = L3TrainCameraforCFA(cfaFile)
 
 
 %% Create and initialize L3 structure
-hfov = 10;   % horizontal field of view of scenes is 4 degrees
-L3 = L3Initialize([], hfov);  % use default parameters
-
-%% Adjust patch size from 9 to 5 pixels for faster computation
-blockSize = 7;               % Size of the solution patch used by L3
-L3 = L3Set(L3,'block size', blockSize);
+L3 = L3Initialize();  % use default parameters
 
 %% Change CFA
 scenes = L3Get(L3,'scene');
@@ -33,13 +28,6 @@ sensorD = sensorSet(sensorD,'filter names',cfaData.filterNames);
 sensorD = sensorSet(sensorD,'cfa pattern',cfaData.filterOrder);
 
 L3 = L3Set(L3,'design sensor', sensorD);
-
-
-%%
-weights = 1;  
-L3 = L3Set(L3, 'global weight bias variance', weights);
-L3 = L3Set(L3, 'flat weight bias variance', weights);
-L3 = L3Set(L3, 'texture weight bias variance', weights);
 
 %% Perform training
 L3 = L3Train(L3);
