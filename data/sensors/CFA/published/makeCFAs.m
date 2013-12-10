@@ -70,7 +70,7 @@ showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB4
-name = 'RGB4';
+name = 'RGB4';RGBW10
 comment = 'Arrangement:  K. Hirakawa and P. J.Wolfe, �Spatio-spectral color filter array design for optimal image recovery,� Image Processing, IEEE Transactions on, vol. 17, no. 10, pp. 1876�1890, 2008.';
 data = [r, g, b];
 filterNames = {'r', 'g', 'b'};
@@ -302,14 +302,14 @@ filterOrder = [4, 3, 4, 2;...
 showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
-%% RGBW10
-name = 'RGBW10';
+%% RWBW
+name = 'RWBW';
 comment = ['Arrangement: Aptina’s Clarity+ Solution.   '...
            'http://www.aptina.com/Aptina_ClarityPlus_WhitePaper.pdf'];
-data = [r, g, b, w];
-filterNames = {'r', 'g', 'b', 'w'};
-filterOrder = [1, 4;...               
-               4, 3];
+data = [r, b, w];
+filterNames = {'r', 'b', 'w'};
+filterOrder = [1, 3;...               
+               3, 2];
 showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
