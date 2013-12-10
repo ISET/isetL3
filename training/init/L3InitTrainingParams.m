@@ -6,8 +6,7 @@ function L3 = L3InitTrainingParams(L3)
 %
 % Default values:
 %       Block size for the L3 patch is set to 9 pixels
-%       Patch luminance levels are 10 linear samples that span the linear
-%       Voltage range located between [0.05,0.9] * voltage swing
+%       
 %       See below for more defaults
 %
 % (c) Stanford VISTA Team 2013
@@ -42,20 +41,17 @@ L3 = L3Set(L3,'max tree depth',1);
 L3 = L3Set(L3,'flat percent',0.6);
 
 %% Bias and Variance Weights
-% Let's do some experiments to find some generally good parameters.
-% weights = 4;
-% L3 = L3Set(L3, 'global weight bias variance', weights);
+% Find color space conversion matrix
+A = L3findweightcolortransform(); 
+L3 = L3Set(L3, 'weight color transform', A);
 
-% weights = 10;
-% L3 = L3Set(L3, 'flat weight bias variance', weights);
-
-% weights = 2;
-% L3 = L3Set(L3, 'texture weight bias variance', weights);
-
-L3 = L3Set(L3,'weight color transform',1);
-L3 = L3Set(L3,'global weight bias variance',1);
-L3 = L3Set(L3,'flat weight bias variance',1);
-L3 = L3Set(L3,'texture weight bias variance',1);
+% Set optimal bias and variance tradeoff weights
+weights = [4, 4, 4];  
+L3 = L3Set(L3, 'global weight bias variance', weights);
+weights = [4, 16, 4]; 
+L3 = L3Set(L3, 'flat weight bias variance', weights);
+weights = [4, 1, 4]; 
+L3 = L3Set(L3, 'texture weight bias variance', weights);
 
 %% Maximum number of training patches for each patch type
 % Following is a smaller value for quick testing.  This should probably be

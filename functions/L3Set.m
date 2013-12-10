@@ -209,7 +209,7 @@ switch param
         % for each color channel, this matrix is needed to define the color
         % channels where the weighting is performed.  If this is not
         % desired, an identity matrix or a scalar of 1 can be used.
-        % See L3findRGBWcolortransform
+        % See L3findweightcolortransform
         L3.training.weightColorTransform = val;
             
     case {'globalweightbiasvariance'}

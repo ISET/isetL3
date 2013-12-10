@@ -1,8 +1,8 @@
-function A = L3findRGBWcolortransform()
+function A = L3findweightcolortransform()
 % Find transform from XYZ to opponent color space that depends on D65
 % illuminant.
 %
-%  A = L3findRGBWcolortransform()
+%  A = L3findweightcolortransform()
 %
 %
 % Output:
