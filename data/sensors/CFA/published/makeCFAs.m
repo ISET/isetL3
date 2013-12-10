@@ -4,6 +4,7 @@ wavelength = 400:10:700;
 NikonD100 = ieReadColorFilter(wavelength,'NikonD100');
 RGBW = ieReadColorFilter(wavelength,'RGBW_Manu');
 CMY = ieReadColorFilter(wavelength,'KodakDCS620x-CMY');
+RGBN = ieReadColorFilter(wavelength, 'RGBN');
 
 
 % Scale down maximums to have a more realistic quantum efficiency.  These
@@ -18,6 +19,7 @@ w = RGBW(:,4);
 c = CMY(:,1);
 m = CMY(:,2);
 y = CMY(:,3);
+n = RGBN(:,4);
 
 %% Show spectra
 figure
@@ -29,6 +31,7 @@ plot(wavelength,w,'k')
 plot(wavelength,c,'c')
 plot(wavelength,m,'m')
 plot(wavelength,y,'y')
+plot(wavelength,n,'k')
 
 %% Bayer
 name = 'Bayer';
@@ -355,6 +358,16 @@ comment = 'Bayer pattern with one G removed';
 k = zeros(size(r));
 data = [r, g, b, k];
 filterNames = {'r', 'g', 'b', 'k'};
+filterOrder = [1, 2;...
+               4, 3];
+showCFA(filterNames,filterOrder);   title(name)
+save(name,'comment','data','filterNames','filterOrder','wavelength')
+
+%% RGBN
+name = 'RGBN';
+comment = 'Bayer pattern with one G replaced with narrow band';
+data = [r, g, b, n];
+filterNames = {'r', 'g', 'b', 'n'};
 filterOrder = [1, 2;...
                4, 3];
 showCFA(filterNames,filterOrder);   title(name)
