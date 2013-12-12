@@ -1,8 +1,8 @@
-function L3 = L3InitTrainingParams(L3)
+function L3 = L3InitParams(L3)
 
-% Initialize L3 training parameters with default values
+% Initialize L3 training and rendering parameters with default values
 %
-%   L3 = L3InitTrainingParams(L3)
+%   L3 = L3InitParams(L3)
 %
 % Default values:
 %       Block size for the L3 patch is set to 9 pixels
@@ -59,3 +59,16 @@ L3 = L3Set(L3, 'texture weight bias variance', weights);
 % previous method (prior 11/2013) for 2x2 CFA.  On a regular laptop, around
 % 400000 is feasible but slow.
 L3 = L3Set(L3,'max training patches', 100000);
+
+%% Set flat and texture transition contrast bounds
+% Flat and texture filters are optimized on differnt set of training
+% patches and thus are differnt. Thus the transition between flat and
+% texture regions is not smooth. This is a problem for Wiener filters and
+% becomes more obvious if we perform bias and variance tradeoff, i.e. we
+% blur the flat regions more than texture regions. Thus during the
+% transition regions, we linearly interpolate the filters in order to
+% smoothen the transition. The bounds are specified as the ratios of the 
+% flat and texture contrast threshold. They are not necessarily symmetic 
+% on each side.
+L3 = L3Set(L3, 'transition contrast low', 0.8);
+L3 = L3Set(L3, 'transition contrast high', 1.3);

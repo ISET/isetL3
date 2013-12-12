@@ -43,6 +43,6 @@ L3 = L3InitIdealFilters(L3);
 L3 = L3InitDesignSensor(L3);
 
 %% L3 Training Parameters
-L3 = L3InitTrainingParams(L3);
+L3 = L3InitParams(L3);
 
 end

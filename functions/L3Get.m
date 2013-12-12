@@ -417,7 +417,7 @@ switch(param)
                 ~isempty(L3.training.flatindices);
             % Just load previously saved flat indices
             val = L3.training.flatindices;
-        else        
+        else       
             % Find flat indices and then save them
             flatThreshold = L3Get(L3,'flat threshold');
             contrasts     = L3Get(L3,'sensor patch contrasts');
@@ -611,6 +611,41 @@ switch(param)
     case {'contrasttype'}
         val = L3.contrastType;
         
+    case {'rendering'}
+        % The whole structure.
+        val = L3.rendering;
+        
+    case {'transitioncontrastlow'}
+        val = L3.rendering.transitionContrastLow;
+        
+    case {'transitioncontrasthigh'}
+        val = L3.rendering.transitionContrastHigh;
+        
+    case {'transitionindices'}
+        if isfield(L3.rendering,'transitionindices') & ...
+                ~isempty(L3.rendering.transitionindices);
+            % Just load previously saved transition indices
+            val = L3.rendering.transitionindices;
+        else       
+            % Find transition indices and then save them
+            flatThreshold = L3Get(L3,'flat threshold');
+            contrasts     = L3Get(L3,'sensor patch contrasts');
+            transitionContrastHigh = L3Get(L3, 'transition contrast high');
+            transitionContrastLow = L3Get(L3, 'transition contrast low');
+            val = (contrasts <= flatThreshold * transitionContrastHigh) & ...
+                  (contrasts >= flatThreshold * transitionContrastLow);
+            L3.rendering.transitionindices = val;
+        end
+        
+    case {'transitionweightsflat'}
+        flatThreshold = L3Get(L3,'flat threshold');
+        contrasts = L3Get(L3,'sensor patch contrasts');
+        upper = flatThreshold * L3Get(L3, 'transition contrast high');
+        lower = flatThreshold * L3Get(L3, 'transition contrast low');
+        transitionindices = L3Get(L3,'transition indices');
+        val = (contrasts(transitionindices) - lower) / (upper - lower);
+        val = repmat(val, [L3Get(L3,'nideal filters'), 1]);
+                    
     otherwise
         error('Unknown %s\n',param);
         

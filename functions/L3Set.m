@@ -224,6 +224,16 @@ switch param
     case {'contrasttype'}
         L3.contrastType = val;
         
+    case {'rendering'}
+        % The whole structure.
+        L3.rendering = val;
+    
+    case {'transitioncontrastlow'}
+        L3.rendering.transitionContrastLow = val;
+        
+    case {'transitioncontrasthigh'}
+        L3.rendering.transitionContrastHigh = val;
+           
     otherwise
         error('Unknown %s\n',param);
 end

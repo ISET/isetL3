@@ -12,6 +12,7 @@ L3small = L3Set(L3small,'type',L3Get(L3,'type'));
 L3small = L3Set(L3small,'design sensor',L3Get(L3,'design sensor'));
 L3small = L3Set(L3small,'filters',L3Get(L3,'filters'));
 L3small = L3Set(L3small,'training',L3Get(L3,'training'));
+L3small = L3Set(L3small,'rendering',L3Get(L3,'rendering'));
 L3small = L3Set(L3small,'clusters',L3Get(L3,'clusters'));
 
 % Following probably will break with new scenes because of the
