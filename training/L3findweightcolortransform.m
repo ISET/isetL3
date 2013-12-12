@@ -1,10 +1,9 @@
-function A = L3findRGBWcolortransform(L3)
-% Find transform from XYZ to opponent color space that depends on W
+function A = L3findweightcolortransform()
+% Find transform from XYZ to opponent color space that depends on D65
+% illuminant.
 %
-%  A = L3findRGBWcolortransform(L3)
+%  A = L3findweightcolortransform()
 %
-% Input:
-%   L3: L3 structure  (with W sensitivity as 4th design filter curve)
 %
 % Output:
 %   A: color transform matrix described below
@@ -29,18 +28,16 @@ function A = L3findRGBWcolortransform(L3)
 %
 % (c) Stanford VISTA Team 2013
 
-%% Check inputs
-if ieNotDefined('L3'), error('Requires L3'); end
-
-%% Read XYZ data and W sensitivity
-XYZ = L3Get(L3, 'idealfiltertransmissivities');
+%% Read in data
+wavelength = 400 : 10 : 680; 
+XYZ = vcReadSpectra('XYZQuanta', wavelength); % read XYZ data 
 X = XYZ(:, 1);
 Z = XYZ(:, 3);
 
-RGBW = L3Get(L3, 'designfiltertransmissivities');
-W = RGBW(:, 4);
+W = vcReadSpectra('D65', wavelength); % read D65 illuminant data
+W = Energy2Quanta(W, wavelength'); % from energy to quanta
 
-%% Compute new basis that depends on W
+%% Compute new basis that depends on D65 illuminant
 
 % Wy is projection of W onto XYZ so it is the visible part of W.
 % Wx and Wz are components of X and Z that are orthogonal to Wy.

@@ -51,6 +51,10 @@ L3.training.treeDepth  = [];
 L3.training.weightColorTransform = [];
 L3.training.weightBiasVariance = [];
 
+% Rendering parameters
+L3.rendering.transition.low = [];
+L3.rendering.transition.high = [];
+
 % These will become cell arrays of structures of
 % [cfaSize(1),cfaSize(2),length(patchLuminanceLevels)]
 % Ordinarily, they are allocated in L3Train.  We should worry about

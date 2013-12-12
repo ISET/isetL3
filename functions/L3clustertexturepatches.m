@@ -1,4 +1,4 @@
-function L3=L3clustertexturepatches(L3)
+function L3=L3clustertexturepatches(L3, varargin)
 
 %L3CLUSTERTEXTUREPATCHES determines cluster for each texture patch
 %
@@ -7,7 +7,15 @@ function L3=L3clustertexturepatches(L3)
 % Copyright Steven Lansel, 2013
 
 patches    = L3Get(L3,'spatches');
-clustermembers = double(L3Get(L3,'texture indices'));
+textureindices = L3Get(L3,'texture indices');
+% Transition
+low = L3Get(L3, 'transition contrast low');
+high = L3Get(L3, 'transition contrast high');
+if ~isempty(low) & ~isempty(high) & (low ~= high) 
+    transitionindices = L3Get(L3,'transition indices');
+    textureindices = textureindices | transitionindices;
+end
+clustermembers = double(textureindices);
 pcas = L3Get(L3,'cluster directions');
 thresholds = L3Get(L3,'cluster thresholds');
 

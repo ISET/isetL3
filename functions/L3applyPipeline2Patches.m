@@ -31,7 +31,10 @@ neededsaturations = unique(saturationindex(:));
 
 numpatches = size(allpatches,2);
 luminanceindex = zeros(1, numpatches);
-xhatL3 = zeros(L3Get(L3,'nideal filters'), numpatches);
+nideal = L3Get(L3,'nideal filters');
+xhatL3 = zeros(nideal, numpatches);
+xhatL3flat = zeros(nideal, numpatches);
+xhatL3texture = zeros(nideal, numpatches);
 clustermembers = zeros(1, numpatches);
 for st = neededsaturations'    
     L3 = L3Set(L3,'sensor patches', allpatches);
@@ -75,15 +78,22 @@ for st = neededsaturations'
                 %Apply flat filters
                 flatfilters = L3Get(L3,'flat filters');
                 [flatindices, L3] = L3Get(L3,'flat indices');
-
-                xhatL3(:,currentpatches(flatindices)) = flatfilters * allpatches(:,currentpatches(flatindices));
+                % Transition
+                low = L3Get(L3, 'transition contrast low');
+                high = L3Get(L3, 'transition contrast high');
+                if ~isempty(low) & ~isempty(high) & (low ~= high) 
+                    [transitionindices, L3] = L3Get(L3,'transition indices');
+                    flatindices = flatindices | transitionindices;
+                end
+                
+                xhatL3flat(:,currentpatches(flatindices)) = flatfilters * allpatches(:,currentpatches(flatindices));
                 
                 %Flip texure patches into canonical form
                 L3 = L3flippatches(L3);
                 patches = L3Get(L3, 'sensor patches');
                 
                 %Perform texture clustering
-                L3 = L3clustertexturepatches(L3);                
+                L3 = L3clustertexturepatches(L3);  
                 
                 %Apply texture filters
                 texturefilters = L3Get(L3,'texture filters');
@@ -100,9 +110,23 @@ for st = neededsaturations'
                     clusterindices = ...
                         floor(currentclustermembers/2^(treedepth-floor(log2(clusternum))-1))==clusternum;
 
-                    xhatL3(:,currentpatches(clusterindices)) = ...
+                    xhatL3texture(:,currentpatches(clusterindices)) = ...
                     texturefilters{clusternum} * patches(:,clusterindices);                                
-                end                
+                end              
+                
+                % Perform linear combination in flat and texture transition
+%                 % regions
+                flatindices = L3Get(L3,'flat indices');
+                xhatL3(:,currentpatches(flatindices)) = xhatL3flat(:,currentpatches(flatindices));
+                textureindices = L3Get(L3,'texture indices');
+                xhatL3(:,currentpatches(textureindices)) = xhatL3texture(:,currentpatches(textureindices));
+                
+                if ~isempty(low) & ~isempty(high) & (low ~= high) & any(transitionindices)
+                    weightsflat = L3Get(L3,'transition weights flat');
+                    xhatL3(:,currentpatches(transitionindices)) = ...
+                        xhatL3flat(:,currentpatches(transitionindices)) .* weightsflat + ...
+                        xhatL3texture(:,currentpatches(transitionindices)) .* (1 - weightsflat);   
+                end
         end
     end
 end

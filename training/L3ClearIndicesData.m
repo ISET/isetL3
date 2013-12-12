@@ -26,3 +26,6 @@ end
 if isfield(L3.training, 'saturationindices')
     L3.training.saturationindices = [];
 end
+if isfield(L3.rendering, 'transitionindices')
+    L3.rendering.transitionindices = [];
+end

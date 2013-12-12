@@ -4,6 +4,7 @@ wavelength = 400:10:700;
 NikonD100 = ieReadColorFilter(wavelength,'NikonD100');
 RGBW = ieReadColorFilter(wavelength,'RGBW_Manu');
 CMY = ieReadColorFilter(wavelength,'KodakDCS620x-CMY');
+RGBN = ieReadColorFilter(wavelength, 'RGBN');
 
 
 % Scale down maximums to have a more realistic quantum efficiency.  These
@@ -18,6 +19,7 @@ w = RGBW(:,4);
 c = CMY(:,1);
 m = CMY(:,2);
 y = CMY(:,3);
+n = RGBN(:,4);
 
 %% Show spectra
 figure
@@ -29,6 +31,7 @@ plot(wavelength,w,'k')
 plot(wavelength,c,'c')
 plot(wavelength,m,'m')
 plot(wavelength,y,'y')
+plot(wavelength,n,'k')
 
 %% Bayer
 name = 'Bayer';
@@ -67,7 +70,7 @@ showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB4
-name = 'RGB4';
+name = 'RGB4';RGBW10
 comment = 'Arrangement:  K. Hirakawa and P. J.Wolfe, �Spatio-spectral color filter array design for optimal image recovery,� Image Processing, IEEE Transactions on, vol. 17, no. 10, pp. 1876�1890, 2008.';
 data = [r, g, b];
 filterNames = {'r', 'g', 'b'};
@@ -299,14 +302,14 @@ filterOrder = [4, 3, 4, 2;...
 showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
-%% RGBW10
-name = 'RGBW10';
+%% RWBW
+name = 'RWBW';
 comment = ['Arrangement: Aptina’s Clarity+ Solution.   '...
            'http://www.aptina.com/Aptina_ClarityPlus_WhitePaper.pdf'];
-data = [r, g, b, w];
-filterNames = {'r', 'g', 'b', 'w'};
-filterOrder = [1, 4;...               
-               4, 3];
+data = [r, b, w];
+filterNames = {'r', 'b', 'w'};
+filterOrder = [1, 3;...               
+               3, 2];
 showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
@@ -355,6 +358,16 @@ comment = 'Bayer pattern with one G removed';
 k = zeros(size(r));
 data = [r, g, b, k];
 filterNames = {'r', 'g', 'b', 'k'};
+filterOrder = [1, 2;...
+               4, 3];
+showCFA(filterNames,filterOrder);   title(name)
+save(name,'comment','data','filterNames','filterOrder','wavelength')
+
+%% RGBN
+name = 'RGBN';
+comment = 'Bayer pattern with one G replaced with narrow band';
+data = [r, g, b, n];
+filterNames = {'r', 'g', 'b', 'n'};
 filterOrder = [1, 2;...
                4, 3];
 showCFA(filterNames,filterOrder);   title(name)

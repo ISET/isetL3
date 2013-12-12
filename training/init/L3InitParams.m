@@ -1,13 +1,12 @@
-function L3 = L3InitTrainingParams(L3)
+function L3 = L3InitParams(L3)
 
-% Initialize L3 training parameters with default values
+% Initialize L3 training and rendering parameters with default values
 %
-%   L3 = L3InitTrainingParams(L3)
+%   L3 = L3InitParams(L3)
 %
 % Default values:
 %       Block size for the L3 patch is set to 9 pixels
-%       Patch luminance levels are 10 linear samples that span the linear
-%       Voltage range located between [0.05,0.9] * voltage swing
+%       
 %       See below for more defaults
 %
 % (c) Stanford VISTA Team 2013
@@ -42,20 +41,17 @@ L3 = L3Set(L3,'max tree depth',1);
 L3 = L3Set(L3,'flat percent',0.6);
 
 %% Bias and Variance Weights
-% Let's do some experiments to find some generally good parameters.
-% weights = 4;
-% L3 = L3Set(L3, 'global weight bias variance', weights);
+% Find color space conversion matrix
+A = L3findweightcolortransform(); 
+L3 = L3Set(L3, 'weight color transform', A);
 
-% weights = 10;
-% L3 = L3Set(L3, 'flat weight bias variance', weights);
-
-% weights = 2;
-% L3 = L3Set(L3, 'texture weight bias variance', weights);
-
-L3 = L3Set(L3,'weight color transform',1);
-L3 = L3Set(L3,'global weight bias variance',1);
-L3 = L3Set(L3,'flat weight bias variance',1);
-L3 = L3Set(L3,'texture weight bias variance',1);
+% Set optimal bias and variance tradeoff weights
+weights = [4, 4, 4];  
+L3 = L3Set(L3, 'global weight bias variance', weights);
+weights = [4, 16, 4]; 
+L3 = L3Set(L3, 'flat weight bias variance', weights);
+weights = [4, 1, 4]; 
+L3 = L3Set(L3, 'texture weight bias variance', weights);
 
 %% Maximum number of training patches for each patch type
 % Following is a smaller value for quick testing.  This should probably be
@@ -63,3 +59,16 @@ L3 = L3Set(L3,'texture weight bias variance',1);
 % previous method (prior 11/2013) for 2x2 CFA.  On a regular laptop, around
 % 400000 is feasible but slow.
 L3 = L3Set(L3,'max training patches', 100000);
+
+%% Set flat and texture transition contrast bounds
+% Flat and texture filters are optimized on differnt set of training
+% patches and thus are differnt. Thus the transition between flat and
+% texture regions is not smooth. This is a problem for Wiener filters and
+% becomes more obvious if we perform bias and variance tradeoff, i.e. we
+% blur the flat regions more than texture regions. Thus during the
+% transition regions, we linearly interpolate the filters in order to
+% smoothen the transition. The bounds are specified as the ratios of the 
+% flat and texture contrast threshold. They are not necessarily symmetic 
+% on each side.
+L3 = L3Set(L3, 'transition contrast low', 0.95);
+L3 = L3Set(L3, 'transition contrast high', 1.15);
