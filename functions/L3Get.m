@@ -615,11 +615,14 @@ switch(param)
         % The whole structure.
         val = L3.rendering;
         
+    case {'transitioncontrast'}
+        val = L3.rendering.transition;
+    
     case {'transitioncontrastlow'}
-        val = L3.rendering.transitionContrastLow;
+        val = L3.rendering.transition.low;
         
     case {'transitioncontrasthigh'}
-        val = L3.rendering.transitionContrastHigh;
+        val = L3.rendering.transition.high;
         
     case {'transitionindices'}
         if isfield(L3.rendering,'transitionindices') & ...

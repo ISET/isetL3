@@ -52,8 +52,8 @@ L3.training.weightColorTransform = [];
 L3.training.weightBiasVariance = [];
 
 % Rendering parameters
-L3.rendering.transitionContrastLow = [];
-L3.rendering.transitionContrastHigh = [];
+L3.rendering.transition.low = [];
+L3.rendering.transition.high = [];
 
 % These will become cell arrays of structures of
 % [cfaSize(1),cfaSize(2),length(patchLuminanceLevels)]

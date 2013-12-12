@@ -229,10 +229,10 @@ switch param
         L3.rendering = val;
     
     case {'transitioncontrastlow'}
-        L3.rendering.transitionContrastLow = val;
+        L3.rendering.transition.low = val;
         
     case {'transitioncontrasthigh'}
-        L3.rendering.transitionContrastHigh = val;
+        L3.rendering.transition.high = val;
            
     otherwise
         error('Unknown %s\n',param);

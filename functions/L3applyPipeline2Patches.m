@@ -78,9 +78,14 @@ for st = neededsaturations'
                 %Apply flat filters
                 flatfilters = L3Get(L3,'flat filters');
                 [flatindices, L3] = L3Get(L3,'flat indices');
-                [transitionindices, L3] = L3Get(L3,'transition indices');
-                flatindices = flatindices | transitionindices;
-
+                % Transition
+                low = L3Get(L3, 'transition contrast low');
+                high = L3Get(L3, 'transition contrast high');
+                if ~isempty(low) & ~isempty(high) & (low ~= high) 
+                    [transitionindices, L3] = L3Get(L3,'transition indices');
+                    flatindices = flatindices | transitionindices;
+                end
+                
                 xhatL3flat(:,currentpatches(flatindices)) = flatfilters * allpatches(:,currentpatches(flatindices));
                 
                 %Flip texure patches into canonical form
@@ -88,7 +93,7 @@ for st = neededsaturations'
                 patches = L3Get(L3, 'sensor patches');
                 
                 %Perform texture clustering
-                L3 = L3clustertexturepatches(L3, 'rendering');  
+                L3 = L3clustertexturepatches(L3);  
                 
                 %Apply texture filters
                 texturefilters = L3Get(L3,'texture filters');
@@ -116,10 +121,12 @@ for st = neededsaturations'
                 textureindices = L3Get(L3,'texture indices');
                 xhatL3(:,currentpatches(textureindices)) = xhatL3texture(:,currentpatches(textureindices));
                 
-                weightsflat = L3Get(L3,'transition weights flat');
-                xhatL3(:,currentpatches(transitionindices)) = ...
-                     xhatL3flat(:,currentpatches(transitionindices)) .* weightsflat + ...
-                     xhatL3texture(:,currentpatches(transitionindices)) .* (1 - weightsflat);     
+                if ~isempty(low) & ~isempty(high) & (low ~= high) 
+                    weightsflat = L3Get(L3,'transition weights flat');
+                    xhatL3(:,currentpatches(transitionindices)) = ...
+                        xhatL3flat(:,currentpatches(transitionindices)) .* weightsflat + ...
+                        xhatL3texture(:,currentpatches(transitionindices)) .* (1 - weightsflat);   
+                end
         end
     end
 end

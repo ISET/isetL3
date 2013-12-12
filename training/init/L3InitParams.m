@@ -70,5 +70,5 @@ L3 = L3Set(L3,'max training patches', 100000);
 % smoothen the transition. The bounds are specified as the ratios of the 
 % flat and texture contrast threshold. They are not necessarily symmetic 
 % on each side.
-L3 = L3Set(L3, 'transition contrast low', 0.8);
-L3 = L3Set(L3, 'transition contrast high', 1.3);
+L3 = L3Set(L3, 'transition contrast low', 0.95);
+L3 = L3Set(L3, 'transition contrast high', 1.15);

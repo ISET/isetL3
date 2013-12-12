@@ -8,7 +8,10 @@ function L3=L3clustertexturepatches(L3, varargin)
 
 patches    = L3Get(L3,'spatches');
 textureindices = L3Get(L3,'texture indices');
-if  ~isempty(varargin) && strcmp(varargin{1}, 'rendering')
+% Transition
+low = L3Get(L3, 'transition contrast low');
+high = L3Get(L3, 'transition contrast high');
+if ~isempty(low) & ~isempty(high) & (low ~= high) 
     transitionindices = L3Get(L3,'transition indices');
     textureindices = textureindices | transitionindices;
 end

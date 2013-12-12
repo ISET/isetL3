@@ -28,7 +28,7 @@ dataroot = '/biac4/wandell/data/qytian/L3Project';
 loadScene = fullfile(dataroot, 'scene', 'AsianWoman_1.mat');
 scene = sceneFromFile(loadScene, 'multispectral');
 sz = sceneGet(scene, 'size');
-meanLum = 80;
+meanLum = 1;
 
 %% Render image for each camera 
 for cameraFilenum = 1:length(cameraFiles)
