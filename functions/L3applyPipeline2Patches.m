@@ -121,7 +121,7 @@ for st = neededsaturations'
                 textureindices = L3Get(L3,'texture indices');
                 xhatL3(:,currentpatches(textureindices)) = xhatL3texture(:,currentpatches(textureindices));
                 
-                if ~isempty(low) & ~isempty(high) & (low ~= high) 
+                if ~isempty(low) & ~isempty(high) & (low ~= high) & any(transitionindices)
                     weightsflat = L3Get(L3,'transition weights flat');
                     xhatL3(:,currentpatches(transitionindices)) = ...
                         xhatL3flat(:,currentpatches(transitionindices)) .* weightsflat + ...

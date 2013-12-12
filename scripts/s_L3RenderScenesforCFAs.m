@@ -10,34 +10,46 @@
 s_initISET
 
 %% File locations
-% An image will be rendered for each of the .mat files in the following
-% directory which should contain a CFA.
-cameraFiles = dir(fullfile(L3rootpath, 'cameras', 'L3', '*.mat'));
+% Specify the directory that contain camera files.
+cameraFolder = fullfile(L3rootpath, 'cameras', 'L3');
 
-% All images will be saved in the following subfolder of the images
-% folder.  The filename will be srgbResult_XXX where XXX is the camera filename.
-saveFolder = fullfile(L3rootpath, 'images', 'L3');
+% Specify the directory that contain scene files.
+sceneFolder = '/biac4/wandell/data/qytian/L3Project/scene';
 
-%% If it doesn't exist, create the folder where files will be saved
+% Specify the directory in which the rendered images will be saved.
+saveFolder = '/home/qytian/Documents/L3images';
+
+% If it doesn't exist, create the folder where files will be saved
 if exist(saveFolder, 'dir')~=7
     mkdir(saveFolder)
 end
 
-%% Load scene
-dataroot = '/biac4/wandell/data/qytian/L3Project';
-loadScene = fullfile(dataroot, 'scene', 'AsianWoman_1.mat');
-scene = sceneFromFile(loadScene, 'multispectral');
-sz = sceneGet(scene, 'size');
-meanLum = 1;
+cameraFiles = dir(fullfile(cameraFolder, '*.mat'));
+sceneFiles = dir(fullfile(sceneFolder, '*.mat'));
 
-%% Render image for each camera 
-for cameraFilenum = 1:length(cameraFiles)
-    cameraFile = cameraFiles(cameraFilenum).name;
-    disp(['camera:  ', cameraFile, '  ', num2str(cameraFilenum),' / ', num2str(length(cameraFiles))])    
-    load(cameraFile);
-    [srgbResult, idealResult] = cameraComputesrgb(camera, scene, meanLum, sz);
+%% Render image for each scene, camera and luminance
+luminances = [1, 80, 350];
+
+for sceneFilenum = 1:length(sceneFiles)
+    sceneFile = sceneFiles(sceneFilenum).name;
+    [pathstr,scenename,ext] = fileparts(sceneFile);
+    disp(['scene:  ', sceneFile, '  ', num2str(sceneFilenum),' / ', num2str(length(sceneFiles))])    
+    loadFile = fullfile(sceneFolder, sceneFile);
+    scene = sceneFromFile(loadFile, 'multispectral');
+    sz = sceneGet(scene, 'size');
     
-    [pathstr,name,ext] = fileparts(cameraFile); 
-    saveFile = fullfile(saveFolder, ['srgbResult_' name '_lum' num2str(meanLum) '.png']);
-    imwrite(srgbResult, saveFile);
+    for cameraFilenum = 1:length(cameraFiles)
+        cameraFile = cameraFiles(cameraFilenum).name;
+        [pathstr,cameraname,ext] = fileparts(cameraFile); 
+        disp(['camera:  ', cameraFile, '  ', num2str(cameraFilenum),' / ', num2str(length(cameraFiles))])    
+        load(cameraFile);
+        
+        for lum = luminances
+            [srgbResult, idealResult] = cameraComputesrgb(camera, scene, lum, sz);
+            saveFile = fullfile(saveFolder, [cameraname '_' scenename '_lum' num2str(lum) '_srgb.png']);
+            imwrite(srgbResult, saveFile);
+        end        
+    end
+    saveFile = fullfile(saveFolder, [scenename '_ideal.png']);
+    imwrite(idealResult, saveFile);
 end
