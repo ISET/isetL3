@@ -1,7 +1,7 @@
 %% s_SPIEFigure4
 %
-% This script computes and plots the new opponent color space WvCbCr 
-% optimized for the W pixel for SPIE2013 paper figure 4.  
+% This script computes and plots the new opponent color space depends on 
+% D65 illuminant (we call it WCbCr) for SPIE2013 paper figure 4.  
 % 
 %
 %
@@ -11,23 +11,22 @@
 s_initISET
 
 %% Find conversion matrix  
-L3 = L3Initialize();  % initialize L3
-A = L3findRGBWcolortransform(L3); % from XYZ to WvCbCr
+A = L3findweightcolortransform(); % from XYZ to WCbCr
 
-%% Compute WvCbCr basis function
-XYZ = L3Get(L3, 'idealfiltertransmissivities');
-wavelength = L3Get(L3, 'idealfilterwave');
-WvCbCr = A * XYZ';
+%% Compute WCbCr basis function
+wavelength = 400 : 10 : 680; 
+XYZ = vcReadSpectra('XYZQuanta', wavelength); % read XYZ data 
+WCbCr = A * XYZ';
 
 %% Plot WvCbCr basis function
-plot(wavelength, WvCbCr(1, :), 'b', 'LineWidth', 3)
+plot(wavelength, WCbCr(1, :), 'b', 'LineWidth', 3)
 hold on
-plot(wavelength, WvCbCr(2, :), 'k', 'LineWidth', 3)
-plot(wavelength, WvCbCr(3, :), 'r', 'LineWidth', 3)
+plot(wavelength, WCbCr(2, :), 'k', 'LineWidth', 3)
+plot(wavelength, WCbCr(3, :), 'r', 'LineWidth', 3)
 grid on
 xlim([min(wavelength), max(wavelength)])
 set(gca,'fontsize',15)
-saveas(gcf, 'WvCbCr.png');
+saveas(gcf, 'WCbCr.png');
 
 
 

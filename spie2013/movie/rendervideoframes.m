@@ -10,17 +10,17 @@ function satPercent = rendervideoframes(camera, scene, luminances, savefolder)
     sz = sceneGet(scene, 'size');
     
     for ii = 1 : length(luminances)
-        meanLum = luminances(ii);
+        lum = luminances(ii);
         
         rand('seed', 10);
         randn('seed', 10);
         
         % Compute and save sRGB results
-        [srgbResult, srgbIdeal, raw] = cameraComputesrgb(camera, scene, meanLum, sz);
+        [srgbResult, srgbIdeal, raw] = cameraComputesrgb(camera, scene, lum, sz);
         
         name = cameraGet(camera, 'name');
-        saveFile = fullfile(savefolder, [name '_srgbResult_' num2str(meanLum) '.png']);
-        imwrite(srgbResult, saveFile, 'png');
+        saveFile = fullfile(savefolder, [name '_srgbResult_' num2str(lum) '.png']);
+        imwrite(srgbResult, saveFile);
               
         for rr = 1 : cfaSize(1)
             for cc = 1 : cfaSize(2)

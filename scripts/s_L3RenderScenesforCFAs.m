@@ -17,7 +17,7 @@ cameraFolder = fullfile(L3rootpath, 'cameras', 'L3');
 sceneFolder = '/biac4/wandell/data/qytian/L3Project/scene';
 
 % Specify the directory in which the rendered images will be saved.
-saveFolder = '/home/qytian/Documents/L3images';
+saveFolder = '/biac4/wandell/data/qytian/L3Project/spie2013/figure8';
 
 % If it doesn't exist, create the folder where files will be saved
 if exist(saveFolder, 'dir')~=7
@@ -28,7 +28,7 @@ cameraFiles = dir(fullfile(cameraFolder, '*.mat'));
 sceneFiles = dir(fullfile(sceneFolder, '*.mat'));
 
 %% Render image for each scene, camera and luminance
-luminances = [1, 80, 350];
+luminances = [200];
 
 for sceneFilenum = 1:length(sceneFiles)
     sceneFile = sceneFiles(sceneFilenum).name;
