@@ -29,7 +29,8 @@ sensorM = sensorSet(sensorM,'quantization method','analog');
 %% Initialize pixel parameters 
 pixel = sensorGet(sensorM,'pixel');
 pixel = pixelSet(pixel,'spectralQE',ones(length(wave),1));
-pixel = pixelSet(pixel,'size',[2.2e-6 2.2e-6]);                % Pixel Size in meters
+
+pixel = pixelSet(pixel,'size constant fill factor',[2.2e-6 2.2e-6]); % Pixel Size in meters
 pixel = pixelSet(pixel,'conversion gain', 2.0000e-004);        % Volts/e-
 pixel = pixelSet(pixel,'voltage swing', 1.8);                  % Volts/e-
 pixel = pixelSet(pixel,'dark voltage', 1e-005);                % units are volts/sec

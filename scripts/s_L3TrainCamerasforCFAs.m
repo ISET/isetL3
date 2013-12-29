@@ -2,12 +2,14 @@
 %
 % This script trains and creates L3 cameras for a series of CFAs.
 %
-% For each camera all parameters are identical except the CFA that is used.
-% All parameters are specified in L3TrainCameraforCFA.
+% For each camera all parameters are identical except a different CFA that
+% is used. All parameters are specified in the function
+% L3TrainCameraforCFA.
 %
 % (c) Stanford VISTA Team
 
-s_initISET
+%%
+% s_initISET
 
 %% File locations
 % An L3 camera will be trained for each of the .mat files in the following
@@ -31,3 +33,5 @@ for cfaFilenum = 1:length(cfaFiles)
     saveFile = fullfile(saveFolder, ['L3camera_', cfaFile]);
     save(saveFile, 'camera')
 end
+
+%%
