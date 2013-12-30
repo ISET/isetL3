@@ -32,11 +32,17 @@ f = vcNewGraphWin;
 luminances = [1, 80];
 loop = 0;
 for lum = luminances
-    srgbResult_Bayer = cameraComputesrgb(L3camera_Bayer, scene, lum, sz);
+    srgbResult_Bayer = cameraComputesrgb(L3camera_Bayer, scene, lum, sz,[],[],1);
     figure(f); subplot(2,2,1 + loop); imagescRGB(srgbResult_Bayer);
+    cName = cameraGet(L3camera_Bayer,'name');
+    cName = strrep(cName,'L3camera_','');
+    title(sprintf('Camera %s at lum %0.1f\n',cName,lum));
     
-    srgbResult_RGBW = cameraComputesrgb(L3camera_RGBW, scene, lum, sz);
-    figure(f); subplot(2,2,3 + loop); imagescRGB(srgbResult_Bayer);
+    srgbResult_RGBW = cameraComputesrgb(L3camera_RGBW, scene, lum, sz,[],[],1);
+    figure(f); subplot(2,2,3 + loop); imagescRGB(srgbResult_RGBW);
+    cName = cameraGet(L3camera_RGBW,'name');
+    cName = strrep(cName,'L3camera_','');
+    title(sprintf('Camera %s at %0.1f\n',cName,lum));
     
     saveFile = ['srgbResult_Bayer_lum' num2str(lum) '.png'];
     imwrite(srgbResult_Bayer, saveFile);

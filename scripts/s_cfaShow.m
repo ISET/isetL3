@@ -1,14 +1,16 @@
 %% s_cfaShow
 %
 % Let's the user select some of the published CFAs and show the pattern in
-% a window
+% a window.  A dialog box pops up with the comment about that CFA.
 %
 % 2013 Stanford VISTA Team
 
 %% These are all of the published arrays we know about
+
 cfaFiles = dir(fullfile(L3rootpath,'data','sensors','CFA','published','*.mat'));
 
-%% Have the user select
+%% Have the user select which CFA to show
+
 listStr = cell(length(cfaFiles),1);
 for ii=1:length(cfaFiles)
     listStr{ii} = cfaFiles(ii).name;
@@ -30,8 +32,10 @@ for ii=1:length(sel)
     [~,hdl] = plotSensor(sensor,'cfa block');
     set(hdl,'name',sprintf('%s',fName));
     
+    % Put up a display box so the user knows about that particular CFA
     str = sprintf('***\n%s\n%s\n***\n\n',fName,foo.comment);
     h = msgbox(str);
+    set(h,'name',sprintf('%s',fName));
     
 end
 
