@@ -22,7 +22,7 @@ L3camera_RGBW = camera;
 L3camera_RGBW = cameraSet(L3camera_RGBW, 'name', 'L3camera_RGBW');
 
 %% Load scene
-% I wonder if we could put the woman at a URL and download from there?
+
 scene = sceneFromFile(fullfile(L3rootpath,'spie2013','data','AsianWoman_1.mat'), 'multispectral');
 sz = sceneGet(scene, 'size');
 

@@ -13,16 +13,25 @@
 
 %% Choose the CFAs to train camera
 
-% These are all of the published arrays we know about
-cfaFiles = dir(fullfile(L3rootpath,'data','sensors','CFA','published','*.mat'));
-
-% Have the user select
-listStr = cell(length(cfaFiles),1);
-for ii=1:length(cfaFiles)
-    listStr{ii} = cfaFiles(ii).name;
+% The selected CFA List can be set prior to calling this script.
+% For example, for the SPIE paper we selected
+%
+%   selectedCFAList = [ 20    26    30];
+%
+% These were RGBW2, RGBW8 and RWBW
+%
+if ~exist('selectedCFAList','var')
+    % These are all of the published arrays we know about
+    cfaFiles = dir(fullfile(L3rootpath,'data','sensors','CFA','published','*.mat'));
+    
+    % Have the user select
+    listStr = cell(length(cfaFiles),1);
+    for ii=1:length(cfaFiles)
+        listStr{ii} = cfaFiles(ii).name;
+    end
+    selectedCFAList = listdlg('PromptString','Select CFAs for Training','ListString',listStr);
+    if isempty(selectedCFAList), disp('User canceled'); return; end
 end
-sel = listdlg('PromptString','Select CFAs for Training','ListString',listStr);
-if isempty(sel), disp('User canceled'); return; end
 
 %% Check or possibly make the save folder
 
@@ -35,7 +44,7 @@ end
 
 %% Train camera for each of the selected CFAs
 
-selectedFiles = cfaFiles(sel);
+selectedFiles = cfaFiles(selectedCFAList);
 
 for cfaFilenum = 1:length(selectedFiles)
     
