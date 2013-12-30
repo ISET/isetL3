@@ -44,20 +44,30 @@ lum = 50;  % Cd/m2
 
 cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RGBW2.mat');
 foo = load(cFile); L3camera_RGBW2 = foo.camera;
-
-cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RGBW8.mat');
-foo = load(cFile); L3camera_RGBW8 = foo.camera;
-
-cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RWBW.mat');
-foo = load(cFile); L3camera_RWBW = foo.camera;
-
 srgbResult = cameraComputesrgb(L3camera_RGBW2, scene, lum, sz,[],[],1);
 save('RGBW2','srgbResult')
+sensorShowCFA(cameraGet(L3camera_RGBW2,'sensor'));
+
+%%
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RGBW8.mat');
+foo = load(cFile); L3camera_RGBW8 = foo.camera;
+% p = cameraGet(L3camera_RGBW8,'sensor pattern');
+% L3camera_RGBW8 = cameraSet(L3camera_RGBW8,'sensor cfa pattern and size',p);
+% camera = L3camera_RGBW8; save(cFile,'camera');
 
 srgbResult = cameraComputesrgb(L3camera_RGBW8, scene, lum, sz,[],[],1);
 save('RGBW8','srgbResult')
+sensorShowCFA(cameraGet(L3camera_RGBW8,'sensor'));
+
+%%
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RWBW.mat');
+% foo = load(cFile); L3camera_RWBW = foo.camera;
+% p = cameraGet(L3camera_RWBW,'sensor pattern');
+% L3camera_RWBW = cameraSet(L3camera_RWBW,'sensor cfa pattern and size',p);
+% camera = L3camera_RWBW; save(cFile,'camera');
 
 srgbResult = cameraComputesrgb(L3camera_RWBW, scene, lum, sz,[],[],1);
 save('RWBW','srgbResult')
+sensorShowCFA(cameraGet(L3camera_RWBW,'sensor'));
 
 %% End
