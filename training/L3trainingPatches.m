@@ -54,7 +54,7 @@ for rowshift = 1:size(cfaPattern,1)
         % Circular shift for CFA
         cfashift = [rowshift-1, colshift-1];
         newcfaPattern = circshift(cfaPattern,cfashift);
-        dSensor = sensorSet(dSensor,'cfa pattern',newcfaPattern);
+        dSensor = sensorSet(dSensor,'cfa pattern and size',newcfaPattern);
         L3 = L3Set(L3,'design sensor',dSensor);
         
         % Update patch type so we use the same type of pixel in the new CFA
