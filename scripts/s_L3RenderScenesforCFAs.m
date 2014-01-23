@@ -7,7 +7,8 @@
 %
 % (c) Stanford VISTA Team
 
-s_initISET
+%%
+% s_initISET
 
 %% File locations
 % Specify the directory that contain camera files.

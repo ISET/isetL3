@@ -4,12 +4,10 @@ function A = L3findweightcolortransform()
 %
 %  A = L3findweightcolortransform()
 %
-%
 % Output:
 %   A: color transform matrix described below
 %      This is generally set using:  
 %           L3 = L3Set(L3, 'weight color transform', A)
-%
 %
 % Let Cx, Cy, Cz be XYZ measurements of a spectra, S (expressed in quanta):
 %   [Cx; Cy; Cz] = XYZ' * S
