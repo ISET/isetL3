@@ -28,7 +28,7 @@ cameraFiles = dir(fullfile(cameraFolder, '*.mat'));
 sceneFiles = dir(fullfile(sceneFolder, '*.mat'));
 
 %% Render image for each scene, camera and luminance
-luminances = [200];
+luminances = [100, 150];
 
 for sceneFilenum = 1:length(sceneFiles)
     sceneFile = sceneFiles(sceneFilenum).name;
