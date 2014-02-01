@@ -2,7 +2,7 @@
 %
 % This script trains L3 for Bayer and RGB/W (with bias and variance 
 % tradeoff) and compare results for low light and high light for SPIE2013 
-% paper figure 6.  
+% paper figure 7.  
 %
 % (c) Stanford VISTA Team
 

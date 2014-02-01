@@ -38,7 +38,7 @@ for jj=1:length(chromaWeight)
             L3 = L3Initialize();  % use default parameters
             
             % Use same weights for global, flat and texture
-            weights = [chromaWeight, lumaWeight, chromaWeight];
+            weights = [chromaWeight(jj), lumaWeight(ii), chromaWeight(jj)];
             L3 = L3Set(L3, 'global weight bias variance', weights);
             L3 = L3Set(L3, 'flat weight bias variance', weights);
             L3 = L3Set(L3, 'texture weight bias variance', weights);
@@ -47,7 +47,7 @@ for jj=1:length(chromaWeight)
             L3 = L3Train(L3);
             
             camera = L3CameraCreate(L3);
-            cameraFile = ['L3Camera_lw' num2str(lumaWeight) '_cw' num2str(chromaWeight)];
+            cameraFile = ['L3Camera_lw' num2str(lumaWeight(ii)) '_cw' num2str(chromaWeight(jj))];
             save(cameraFile, 'camera'); % save camera
         else
             fprintf('*** Found camera %s\n',cameraFile{ii,jj});
