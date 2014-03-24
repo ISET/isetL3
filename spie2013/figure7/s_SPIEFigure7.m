@@ -7,26 +7,42 @@
 % (c) Stanford VISTA Team
 
 %% Start ISET
-% s_initISET
+s_initISET
 
-%% Load pre-trained cameras
+%% Make sure you have trained the two relevant cameras
 
-% The standard Bayer camera
-load(fullfile(L3rootpath,'cameras','L3','L3camera_Bayer.mat')); 
-L3camera_Bayer = camera;
-L3camera_Bayer = cameraSet(L3camera_Bayer, 'name', 'L3camera_Bayer');
+% s_L3TrainCamerasforCFAs trains the CFA in selectedCFAList
+% This will work as long as we don't change the published CFAs.
+% A better method would be preferred.
 
-% The RGB/W camera
-load(fullfile(L3rootpath,'cameras','L3','L3camera_RGBW1.mat')); 
-L3camera_RGBW = camera;
-L3camera_RGBW = cameraSet(L3camera_RGBW, 'name', 'L3camera_RGBW');
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_Bayer.mat');
+if ~exist(cFile,'file')
+    fprintf('Training %s\n',cFile)
+    selectedCFAList = 1;
+    s_L3TrainCamerasforCFAs % train cameras for CFAs
+end
 
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RGBW1.mat');
+if ~exist(cFile,'file')
+    fprintf('Training %s\n',cFile)
+    selectedCFAList = 19;
+    s_L3TrainCamerasforCFAs % train cameras for CFAs
+end
 %% Load scene
 
 scene = sceneFromFile(fullfile(L3rootpath,'spie2013','data','AsianWoman_1.mat'), 'multispectral');
 sz = sceneGet(scene, 'size');
 
 %% Render images, save them, and also put them in a single window.
+
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_Bayer.mat');
+foo = load(cFile); L3camera_Bayer = foo.camera;
+L3camera_Bayer = cameraSet(L3camera_Bayer, 'name', 'L3camera_Bayer');
+
+
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RGBW1.mat');
+foo = load(cFile); L3camera_RGBW = foo.camera;
+L3camera_RGBW = cameraSet(L3camera_RGBW, 'name', 'L3camera_RGBW');
 
 f = vcNewGraphWin;
 luminances = [1, 80];
@@ -53,8 +69,7 @@ for lum = luminances
     loop = loop + 1;
  end
  
-
- %%
+ %% End
  
  
  

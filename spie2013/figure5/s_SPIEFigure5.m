@@ -9,9 +9,24 @@
 %% Start ISET
 s_initISET
 
+%% Make sure you have trained the three relevant cameras
+
+% s_L3TrainCamerasforCFAs trains the CFA in selectedCFAList
+% This will work as long as we don't change the published CFAs.
+% A better method would be preferred.
+
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RGBW1.mat');
+if ~exist(cFile,'file')
+    fprintf('Training %s\n',cFile)
+    selectedCFAList = 19;
+    s_L3TrainCamerasforCFAs % train cameras for CFAs
+end
+
+cFile = fullfile(L3rootpath,'cameras','L3','L3camera_RGBW1.mat');
+foo = load(cFile); camera = foo.camera;
+
 %% Set up the learned camera parameters
 
-load(fullfile(L3rootpath,'cameras','L3','L3camera_RGBW1.mat')); % load the trained L3 camera
 L3 = cameraGet(camera, 'L3');
 sz = L3Get(L3,'blocksize'); 
 r = sz(1); 
@@ -59,4 +74,4 @@ set(h,'name','Highest level coefficients')
 set(h,'Units','normalized'); wPos = get(h,'Position');
 set(h,'Position',[.25 .25 wPos(3) wPos(4)]);
 
-%%
+%% End

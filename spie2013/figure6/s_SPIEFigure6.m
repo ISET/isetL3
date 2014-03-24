@@ -7,7 +7,7 @@
 % (c) Stanford VISTA Team
 
 %% Start ISET
-% s_initISET
+s_initISET
 
 %% Initialize parameters
 
@@ -47,8 +47,8 @@ for jj=1:length(chromaWeight)
             L3 = L3Train(L3);
             
             camera = L3CameraCreate(L3);
-            cameraFile = ['L3Camera_lw' num2str(lumaWeight(ii)) '_cw' num2str(chromaWeight(jj))];
-            save(cameraFile, 'camera'); % save camera
+            saveFile = ['L3Camera_lw' num2str(lumaWeight(ii)) '_cw' num2str(chromaWeight(jj))];
+            save(saveFile, 'camera'); % save camera
         else
             fprintf('*** Found camera %s\n',cameraFile{ii,jj});
         end
@@ -69,8 +69,8 @@ for jj=1:length(chromaWeight)
         
         load(cameraFile{ii,jj}, 'camera');
         
-        % Compute, which produces both the ideal and noisy version.
-        srgbResult = cameraComputesrgb(camera, scene, meanLum, sz);
+        % Compute, which produces both the ideal and noisy version.        
+        srgbResult = cameraComputesrgb(camera, scene, meanLum, sz,[],[],1);
         
         % Save the files for the paper
         saveFile = ['srgbResult_lw' num2str(lumaWeight(ii)) '_cw' num2str(chromaWeight(jj)) '.png'];
@@ -78,7 +78,7 @@ for jj=1:length(chromaWeight)
     end
 end
 
-%%
+%% End
 
 
 

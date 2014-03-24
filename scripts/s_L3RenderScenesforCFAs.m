@@ -8,49 +8,33 @@
 % (c) Stanford VISTA Team
 
 %%
-% s_initISET
+s_initISET
 
-%% File locations
-% Specify the directory that contain camera files.
+%% Specify the directory that contain camera files.
 cameraFolder = fullfile(L3rootpath, 'cameras', 'L3');
-
-% Specify the directory that contain scene files.
-sceneFolder = '/biac4/wandell/data/qytian/L3Project/scene';
-
-% Specify the directory in which the rendered images will be saved.
-saveFolder = '/biac4/wandell/data/qytian/L3Project/spie2013/figure8';
-
-% If it doesn't exist, create the folder where files will be saved
-if exist(saveFolder, 'dir')~=7
-    mkdir(saveFolder)
-end
-
 cameraFiles = dir(fullfile(cameraFolder, '*.mat'));
-sceneFiles = dir(fullfile(sceneFolder, '*.mat'));
 
-%% Render image for each scene, camera and luminance
-luminances = [100, 150];
+%% Load scene
+scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
+% scene = sceneCreate('zone plate',[1000,1000]); %sz = number of pixels of scene
+% scene = sceneCreate('freq orient');
+% scene = sceneCreate('moire orient');
+% scene = sceneCreate('macbethd65');
 
-for sceneFilenum = 1:length(sceneFiles)
-    sceneFile = sceneFiles(sceneFilenum).name;
-    [pathstr,scenename,ext] = fileparts(sceneFile);
-    disp(['scene:  ', sceneFile, '  ', num2str(sceneFilenum),' / ', num2str(length(sceneFiles))])    
-    loadFile = fullfile(sceneFolder, sceneFile);
-    scene = sceneFromFile(loadFile, 'multispectral');
-    sz = sceneGet(scene, 'size');
+%% Specify luminance levels
+luminances = [1, 80];
+
+%% Render images
+sz = sceneGet(scene, 'size');
+
+for cameraFilenum = 1:length(cameraFiles)
+    cameraFile = cameraFiles(cameraFilenum).name;
+    [pathstr,cameraname,ext] = fileparts(cameraFile); 
+    disp(['camera:  ', cameraFile, '  ', num2str(cameraFilenum),' / ', num2str(length(cameraFiles))])    
+    load(cameraFile, 'camera');
     
-    for cameraFilenum = 1:length(cameraFiles)
-        cameraFile = cameraFiles(cameraFilenum).name;
-        [pathstr,cameraname,ext] = fileparts(cameraFile); 
-        disp(['camera:  ', cameraFile, '  ', num2str(cameraFilenum),' / ', num2str(length(cameraFiles))])    
-        load(cameraFile);
-        
-        for lum = luminances
-            [srgbResult, idealResult] = cameraComputesrgb(camera, scene, lum, sz);
-            saveFile = fullfile(saveFolder, [cameraname '_' scenename '_lum' num2str(lum) '_srgb.png']);
-            imwrite(srgbResult, saveFile);
-        end        
+    sensorShowCFA(cameraGet(camera,'sensor'));
+    for lum = luminances
+        srgbResult = cameraComputesrgb(camera, scene, lum, sz, [], [], 1);
     end
-    saveFile = fullfile(saveFolder, [scenename '_ideal.png']);
-    imwrite(idealResult, saveFile);
 end

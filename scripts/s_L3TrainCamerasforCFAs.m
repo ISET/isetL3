@@ -9,7 +9,7 @@
 % (c) Stanford VISTA Team
 
 %%
-% s_initISET
+s_initISET
 
 %% Choose the CFAs to train camera
 
@@ -60,4 +60,4 @@ for cfaFilenum = 1:length(selectedFiles)
     save(saveFile, 'camera')
 end
 
-%%
+%% End
