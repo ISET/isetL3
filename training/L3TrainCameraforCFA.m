@@ -25,9 +25,13 @@ sensorD = L3Get(L3,'design sensor');
 cfaData = load(cfaFile);
 sensorD = sensorSet(sensorD,'filterspectra',vcReadSpectra(cfaFile,wave));
 sensorD = sensorSet(sensorD,'filter names',cfaData.filterNames);
-sensorD = sensorSet(sensorD,'cfa pattern',cfaData.filterOrder);
-
+sensorD = sensorSet(sensorD,'cfa pattern and size',cfaData.filterOrder);
 L3 = L3Set(L3,'design sensor', sensorD);
+
+sensorM = L3Get(L3,'monochrome sensor');
+sz = sensorGet(sensorD, 'sensor size');
+sensorM = sensorSet(sensorM, 'sensor size', sz);
+L3 = L3Set(L3,'monochrome sensor', sensorM);
 
 %% Perform training
 L3 = L3Train(L3);

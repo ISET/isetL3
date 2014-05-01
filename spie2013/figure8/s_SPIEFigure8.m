@@ -5,6 +5,9 @@
 %
 % (c) Stanford VISTA Team
 
+%% Start ISET
+s_initISET
+
 %% Make sure you have trained the three relevant cameras
 
 % s_L3TrainCamerasforCFAs trains the CFA in selectedCFAList
