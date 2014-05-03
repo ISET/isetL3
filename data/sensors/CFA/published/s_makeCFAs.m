@@ -49,7 +49,6 @@ comment = 'Arrangement:  B. E. Bayer, �Color imaging array,� July 20, 1976, 
 data = [r, g, b];
 filterNames = {'r', 'g', 'b'};
 filterOrder = [1, 2; 2, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB1
@@ -58,7 +57,6 @@ comment = 'Arrangement:  S. Yamanaka, �Solid state color camera,� US Patent 
 data = [r, g, b];
 filterNames = {'r', 'g', 'b'};
 filterOrder = [2, 1, 2, 3; 2, 3, 2, 1];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB2
@@ -67,7 +65,6 @@ comment = 'Arrangement:  R. Lukac and K. N. Plataniotis, �Color filter arrays:
 data = [r, g, b];
 filterNames = {'r', 'g', 'b'};
 filterOrder = [2, 1; 2, 3; 1, 2; 3, 2];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB3
@@ -76,18 +73,16 @@ comment = 'Arrangement:  K. Hirakawa and P. J.Wolfe, �Spatio-spectral color fi
 data = [r, g, b];
 filterNames = {'r', 'g', 'b'};
 filterOrder = [2, 1, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB4
-name = 'RGB4';RGBW10
+name = 'RGB4';
 comment = 'Arrangement:  K. Hirakawa and P. J.Wolfe, �Spatio-spectral color filter array design for optimal image recovery,� Image Processing, IEEE Transactions on, vol. 17, no. 10, pp. 1876�1890, 2008.';
 data = [r, g, b];
 filterNames = {'r', 'g', 'b'};
 filterOrder = [1, 2, 3;...
                3, 1, 2;...
                2, 3, 1];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB5
@@ -99,7 +94,6 @@ filterOrder = [1, 2, 3, 2;...
                2, 1, 2, 3;...
                3, 2, 1, 2;...
                2, 3, 2, 1];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGB6
@@ -113,7 +107,6 @@ filterOrder = [2, 3, 2, 2, 1, 2; ...
                2, 1, 2, 2, 3, 2; ...
                3, 2, 3, 1, 2, 1; ...
                2, 1, 2, 2, 3, 2];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY1
@@ -122,7 +115,6 @@ comment = 'Arrangement:  K. Hirakawa and P. J.Wolfe, �Spatio-spectral color fi
 data = [c, m, y];
 filterNames = {'c', 'm', 'y'};
 filterOrder = [1, 2; 2, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY2
@@ -131,7 +123,6 @@ comment = 'Arrangement:  Behzad Sajadi, Aditi Majumder, Kazuhiro Hiwada, Atsuto 
 data = [c, m, y];
 filterNames = {'c', 'm', 'y'};
 filterOrder = [1, 2, 3; 2, 3, 1];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY3
@@ -142,7 +133,6 @@ comment = ['Arrangement:  I. Sato, K. Ooi, K. Saito, Y. Takemura, and T. Shinoha
 data = [g, c, m, y];
 filterNames = {'g', 'c', 'm', 'y'};
 filterOrder = [3, 4; 2, 1];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY4
@@ -151,7 +141,6 @@ comment = 'Arrangement:  Sony Corporation, �Realization of natural color repro
 data = [r, g, b, c];
 filterNames = {'r', 'g', 'b', 'c'};
 filterOrder = [1, 4; 2, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY5
@@ -160,7 +149,6 @@ comment = 'Arrangement:  Y. Li, P. Hao, and Z. Lin, �Color filter arrays: A de
 data = [r, c, m, y];
 filterNames = {'r', 'c', 'm', 'y'};
 filterOrder = [1, 2; 4, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY6
@@ -169,7 +157,6 @@ comment = 'Arrangement:  Y. Li, P. Hao, and Z. Lin, �Color filter arrays: A de
 data = [b, c, m, y];
 filterNames = {'b', 'c', 'm', 'y'};
 filterOrder = [1, 4; 3, 2];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY7
@@ -181,7 +168,6 @@ filterOrder = [1, 3, 5, 3;...
                3, 5, 4, 5;...
                5, 4, 2, 4;...
                3, 5, 4, 5];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% CMY8
@@ -195,7 +181,6 @@ filterOrder = [3, 1;...
                1, 3;...
                4, 2;...
                2, 4];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW1
@@ -206,7 +191,6 @@ data = [r, g, b, w];
 filterNames = {'r', 'g', 'b', 'w'};
 filterOrder = [1, 2;...               
                4, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW2
@@ -220,7 +204,6 @@ filterOrder = [4, 3, 4, 2;...
                3, 4, 2, 4;...
                4, 2, 4, 1;...
                2, 4, 1, 4];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW3
@@ -232,7 +215,6 @@ filterOrder = [4, 2, 4, 2;...
                1, 4, 3, 4;...
                4, 2, 4, 2;...
                3, 4, 1, 4];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW4
@@ -242,7 +224,6 @@ data = [r, g, b, w];
 filterNames = {'r', 'g', 'b', 'w'};
 filterOrder = [4, 2, 4, 1, 4, 3;...
                1, 4, 3, 4, 2, 4];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW5
@@ -256,7 +237,6 @@ filterOrder = [1, 4, 3, 4, 2, 4;...
                4, 2, 4, 1, 4, 3;...
                2, 4, 1, 4, 3, 4;...
                4, 1, 4, 3, 4, 2];               
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW6
@@ -269,7 +249,6 @@ filterOrder = [2, 4, 1, 4;...
                2, 4, 1, 4;...
                3, 4, 2, 4;...
                3, 4, 2, 4];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW7
@@ -282,7 +261,6 @@ filterOrder = [2, 4, 1, 4;...
                3, 4, 2, 4;...               
                2, 4, 1, 4;...
                3, 4, 2, 4];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW8
@@ -295,7 +273,6 @@ filterOrder = [4, 1, 3, 4, 2;...
                1, 3, 4, 2, 4;...
                2, 4, 1, 3, 4;...
                3, 4, 2, 4, 1];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW9
@@ -309,7 +286,6 @@ filterOrder = [4, 3, 4, 2;...
                1, 4, 2, 4;...
                4, 2, 4, 3;...
                2, 4, 1, 4];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBW10
@@ -323,7 +299,6 @@ filterOrder = [4, 4, 4, 4, 4, 4;...
                4, 4, 2, 3, 4, 4;...
                4, 4, 4, 4, 4, 4;...
                4, 4, 4, 4, 4, 4];
-% showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RWBW
@@ -334,7 +309,6 @@ data = [r, b, w];
 filterNames = {'r', 'b', 'w'};
 filterOrder = [1, 3;...               
                3, 2];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% multi1
@@ -346,7 +320,6 @@ filterNames = {'r', 'g', 'b', 'c', 'm', 'y'};
 filterOrder = [1, 4;...
                3, 6;...               
                2, 5];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% HDRgray
@@ -360,7 +333,6 @@ data = [w1, w2, w3, w4];
 filterNames = {'w', 'w', 'w', 'k'};
 filterOrder = [4, 1;...
                3, 2];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% HDRcolor
@@ -373,7 +345,6 @@ data = [r, g, b, rdark, gdark, bdark];
 filterNames = {'r', 'g', 'b', 'k', 'k', 'k'};
 filterOrder = [1, 2, 4, 5;...
                5, 6, 2, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBx
@@ -384,7 +355,6 @@ data = [r, g, b, k];
 filterNames = {'r', 'g', 'b', 'k'};
 filterOrder = [1, 2;...
                4, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBN
@@ -394,5 +364,4 @@ data = [r, g, b, n];
 filterNames = {'r', 'g', 'b', 'n'};
 filterOrder = [1, 2;...
                4, 3];
-showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
