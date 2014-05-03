@@ -1,3 +1,13 @@
+%% s_makeCFAs
+%
+% This script creates CFA files from publications for experiments.
+% Use script s_cfaShow to look through the list of created CFAs.
+%
+%
+%
+% Stanford VISTASOFT Team, 2013
+
+
 %% Load Spectra
 wavelength = 400:10:700;
 
@@ -300,6 +310,20 @@ filterOrder = [4, 3, 4, 2;...
                4, 2, 4, 3;...
                2, 4, 1, 4];
 showCFA(filterNames,filterOrder);   title(name)
+save(name,'comment','data','filterNames','filterOrder','wavelength')
+
+%% RGBW10
+name = 'RGBW10';
+comment = ['Arrangement: A. Chakrabarti, WT. Freeman and T. Zickler, "Rethinking Color Cameras", in the Proc. of the IEEE International Conference on Computational Photography 2014'];
+data = [r, g, b, w];
+filterNames = {'r', 'g', 'b', 'w'};
+filterOrder = [4, 4, 4, 4, 4, 4;...
+               4, 4, 4, 4, 4, 4;...
+               4, 4, 1, 2, 4, 4;...
+               4, 4, 2, 3, 4, 4;...
+               4, 4, 4, 4, 4, 4;...
+               4, 4, 4, 4, 4, 4];
+% showCFA(filterNames,filterOrder);   title(name)
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RWBW
