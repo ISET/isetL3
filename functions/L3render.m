@@ -37,9 +37,17 @@ if ieNotDefined('L3'),     error('L3 structure required'); end
 if ieNotDefined('sensor'), error('sensor structure required'); end
 if ieNotDefined('L3Type'), error('L3Type required'); end
 
-%% Render the voltage from the sensor structure 
-
 inputIm = sensorGet(sensor,'volts');
+
+%% Delete any offset
+sensorM = L3Get(L3,'sensor monochrome');
+ao = sensorGet(sensorM,'analogOffset');
+ag = sensorGet(sensorM,'analogGain');
+
+inputIm = inputIm - ao/ag;
+% above is because    volts = (volts + ao)/ag (see sensorCompute)
+
+%% Render the voltage from the sensor structure 
 % vcNewGraphWin; imagesc(volts/max(volts(:)))
 cfaSize = sensorGet(sensor,'cfa size');
 sz      = sensorGet(sensor,'size');

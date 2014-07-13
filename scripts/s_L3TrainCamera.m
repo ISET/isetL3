@@ -11,8 +11,8 @@
 s_initISET
 
 %% Create and initialize L3 structure
-hfov = 4;   % horizontal field of view of scenes is 4 degrees
-L3 = L3Initialize([], hfov);  % use default parameters
+L3 = L3Create;
+L3 = L3Initialize(L3);  % use default parameters
 
 %% Adjust patch size from 9 to 5 pixels for faster computation
 blockSize = 5;               % Size of the solution patch used by L3

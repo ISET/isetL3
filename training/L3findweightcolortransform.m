@@ -27,13 +27,13 @@ function A = L3findweightcolortransform()
 % (c) Stanford VISTA Team 2013
 
 %% Read in data
-wavelength = 400 : 10 : 680; 
+wavelength = [400 : 10 : 680]'; 
 XYZ = vcReadSpectra('XYZQuanta', wavelength); % read XYZ data 
 X = XYZ(:, 1);
 Z = XYZ(:, 3);
 
 W = vcReadSpectra('D65', wavelength); % read D65 illuminant data
-W = Energy2Quanta(W, wavelength'); % from energy to quanta
+W = Energy2Quanta(W, wavelength); % from energy to quanta
 
 %% Compute new basis that depends on D65 illuminant
 

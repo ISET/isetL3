@@ -44,21 +44,18 @@ switch param
     case{'trainingilluminant'};  %Illuminant from first scene used for training
         %This is stored with the camera so incoming scenes can be set to
         %the correct illuminant.
-        L3.trainingilluminant = val;
+        L3.training.illuminant = val;
+    case{'renderingilluminant'}; % The target illuminant L3 tries to match.
+        %Scenes can only be rendered under this illuminant with the corresponding filters. 
+        L3.rendering.illuminant = val;
     case{'oi','opticalimage'};       % For lens information?  Maybe just optics?
         L3.oi = val;
     case{'sensordesign','designsensor'};   
         % ISET Sensor structure.  Adjust using sensorSet.
         L3.sensor.design = val;
         
-    case {'monochromesensor','sensormonochrome','sensorm'}
-        % ISET monochrome sensor structure.  Adjust using sensorSet
-        % We should probably not store this.  We should only store the
-        % sensorD.  Then we will make a monochrome version of it in L3Get
-        % and not have a set for the ideal/monochrome case.
-        L3.sensor.ideal = val;
     case {'idealfilters','idealsensorfilters'}
-        % Structure for color filters used in front of monochrome (ideal) sensor
+        % Structure for color filters used in front of monochrome sensor
         L3.sensor.idealFilters = val;
     case {'idealfiltername'}
         L3.sensor.idealFilters.name = val;

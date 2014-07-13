@@ -53,6 +53,10 @@ L3 = L3Set(L3, 'flat weight bias variance', weights);
 weights = [4, 1, 4]; 
 L3 = L3Set(L3, 'texture weight bias variance', weights);
 
+%% The training and rendering illuminant
+L3 = L3Set(L3, 'training illuminant', 'D65');
+L3 = L3Set(L3, 'rendering illuminant', 'D65');
+
 %% Maximum number of training patches for each patch type
 % Following is a smaller value for quick testing.  This should probably be
 % increased for actual results.  81000 is similar to number of patches in

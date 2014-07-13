@@ -28,6 +28,14 @@ function L3 = L3Train(L3)
 %% Compute sensor volts for a monochrome sensor
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
 
+%% Delete any offset
+sensorM = L3Get(L3,'sensor monochrome');
+ao = sensorGet(sensorM,'analogOffset');
+ag = sensorGet(sensorM,'analogGain');
+for ii = 1 : length(inputIm)
+    inputIm{ii} = inputIm{ii} - ao/ag;
+    % above is because    volts = (volts + ao)/ag (see sensorCompute)
+end
 
 %% Load texture tree variables
 numclusters    = L3Get(L3,'n clusters');
@@ -247,6 +255,10 @@ for rr=1:size(cfaPattern,1)
                 end % end if statement that skips luminance values with not enough patches
             end % end loop over luminance values            
         end   % end while statement for all saturation cases
+        
+        % delete saturation cases with no trained filters
+        L3 = L3deletesaturationcases(L3);
+        
     end  % end loop for patch type col
 end  % end loop for patch type row
 

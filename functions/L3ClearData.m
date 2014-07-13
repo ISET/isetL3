@@ -15,16 +15,6 @@ L3small = L3Set(L3small,'training',L3Get(L3,'training'));
 L3small = L3Set(L3small,'rendering',L3Get(L3,'rendering'));
 L3small = L3Set(L3small,'clusters',L3Get(L3,'clusters'));
 
-% Following probably will break with new scenes because of the
-% change in the illuminant structure.
-
-trainingilluminant = sceneGet(L3Get(L3,'scene',1),'illuminant');
-%This should be the illuminant in energy
-% The updated line that should work with new scenes is below.            
-%             trainingilluminant = sceneGet(L3Get(L3,'scene',1),'illuminant energy');
-L3small = L3Set(L3small,'trainingilluminant',trainingilluminant);            
-
-
 % Clear out the assignment of patchnum and clusters
 for patchnum = 1: prod(size(L3small.clusters))
     if isfield(L3small.clusters{patchnum},'members')

@@ -63,19 +63,18 @@ switch(param)
     case{'trainingilluminant'};  %Illuminant from first scene used for training
         %This is stored with the camera so incoming scenes can be set to
         %the correct illuminant.
-        val = L3.trainingilluminant;
+        val = L3.training.illuminant;
+    case{'renderingilluminant'}; % The target illuminant L3 tries to match. 
+        %Scenes can only be rendered under this illuminant with the corresponding filters. 
+        val = L3.rendering.illuminant;
     case{'oi','opticalimage'};       
         % The optical image is here mainly for lens information. 
         % Not sure what else. 
         val = L3.oi;
     case {'monochromesensor','sensormonochrome','sensorm'}
-        % ISET monochrome sensor structure.  Adjust using sensorSet
-        % We should probably not store this.  We should only store the
-        % sensorD.  Then we will make a monochrome version of it in L3Get
-        % and not have a set for the ideal/monochrome case.
-        % For the moment, we create it and store it.  In the future we will
-        % just transform sensorD into the monochrome version.
-        val = L3.sensor.ideal;
+        % ISET monochrome sensor structure. We only store the sensorD and
+        % make a monochrome version of it.
+        val = sensorMonochrome(L3.sensor.design, 'Monochrome');
     case {'idealfilters','idealsensorfilters'}
         % These are the filters used for the ideal sensor to create the
         % training data set.
@@ -650,6 +649,23 @@ switch(param)
         val = repmat(val, [L3Get(L3,'nideal filters'), 1]);
                     
     otherwise
-        error('Unknown %s\n',param);
-        
+        error('Unknown %s\n',param);    
+end
+
+function sensor = sensorMonochrome(sensor,filterFile)
+%
+%   Create a default monochrome image sensor array structure. This
+%   functions is a nested function extracted from sensorCreate.m. See
+%   snesorCreate.m
+%
+sensor = sensorSet(sensor,'name',sprintf('monochrome-%.0f', vcCountObjects('sensor')));
+
+[filterSpectra,filterNames] = sensorReadColorFilters(sensor,filterFile);
+sensor = sensorSet(sensor,'filterSpectra',filterSpectra);
+sensor = sensorSet(sensor,'filterNames',filterNames);
+
+sensor = sensorSet(sensor,'cfaPattern',1);      % 'bayer','monochromatic','triangle'
+
+end
+
 end

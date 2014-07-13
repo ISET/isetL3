@@ -1,17 +1,18 @@
-function L3 = L3Initialize(L3, hfov)
+function L3 = L3Initialize(L3, trainingscenes, oi, designsensor, idealfilters)
 
-% Initialize L3 structure with default parameters.
+% Initialize L3 structure with specified parameters or default.
 %
-%   L3 = L3Initialize(L3, hfov)
+%   L3 = L3Initialize(L3, trainingscenes, oi, designsensor, idealfilters)
 %
-% Add default scene, optics, ideal sensor and design sensor to the L3
+% Add default scenes, optics, design sensor and ideal filters to the L3
 % structure.
 %
 % INPUT 
-%   L3:     (Optional) L3 structure to initialize
-%   hfov:   (Optional)  Horizontal field of view for scenes, default 10
-%           degrees   (This default can be overwritten here because it is
-%           so difficult to change after initialization.)
+%   L3: (Optional) L3 structure to initialize
+%   trainingscenes: (Optional) training scenes to initialize
+%   oi: (Optional) optics to initialize
+%   designsensor: (Optional) design sensor to initialize
+%   idealfilters: (Optional) ideal filters to initialize
 %
 % OUTPUT
 %   L3: The modified L3 with default parameters
@@ -20,27 +21,42 @@ function L3 = L3Initialize(L3, hfov)
 %   L3 = L3Create; L3 = L3Initialize( L3 );
 %   L3 = L3Initialize;
 % 
-% (c) Stanford VISTA Team 2013
+% (c) Stanford VISTA Team 2014
 
 
 %% Initialize in case the user did not define
-if ieNotDefined('L3') || isempty(L3), L3 = L3Create; end
-if ieNotDefined('hfov'), hfov = 10; end
+if ieNotDefined('L3') || isempty(L3)
+    L3 = L3Create;
+end
 
 %% Training Scenes
-L3 = L3InitTrainingScenes(L3, hfov);
+if ieNotDefined('trainingscenes') || isempty(trainingscenes)
+    L3 = L3InitTrainingScenes(L3);
+else
+    L3 = L3Set(L3,'scene',trainingscenes); % use specified training scenes
+end
 
 %% Optical Image
-L3 = L3InitOi(L3);
-
-%% Monochrome sensor 
-L3 = L3InitMonochromeSensor(L3);
-
-%% Ideal filters
-L3 = L3InitIdealFilters(L3);
+if ieNotDefined('oi') || isempty(oi)
+    L3 = L3InitOi(L3);
+else
+    L3 = L3Set(L3,'oi',oi); % use specified oi
+end
 
 %% Design sensor
-L3 = L3InitDesignSensor(L3);
+if ieNotDefined('designsensor') || isempty(designsensor)
+    L3 = L3InitDesignSensor(L3);
+else
+    L3 = L3Set(L3,'design sensor', designsensor);
+end
+
+
+%% Ideal filters
+if ieNotDefined('idealfilters') || isempty(idealfilters)
+    L3 = L3InitIdealFilters(L3);
+else
+    L3 = L3Set(L3, 'ideal filters', idealFilters);
+end
 
 %% L3 Training Parameters
 L3 = L3InitParams(L3);

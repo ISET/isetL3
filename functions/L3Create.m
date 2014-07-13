@@ -36,7 +36,6 @@ L3.contrastType = [];      % Index of desired contrast case, i.e global, flat an
 % Should we save scene, oi and sensor?
 L3.scene = [];    % Should this be the scene, or just the name of a scene file?
 L3.oi = [];       % For lens information?  Optics?
-L3.sensor.ideal = [];        % Monochrome, no noise.  Don't store data?
 L3.sensor.idealFilters = [];
 L3.sensor.design = [];   % Mosaic, noise, we are designing this one. Don't store data?
 
@@ -50,10 +49,12 @@ L3.training.saturationList = [];
 L3.training.treeDepth  = [];
 L3.training.weightColorTransform = [];
 L3.training.weightBiasVariance = [];
+L3.training.illuminant = [];
 
 % Rendering parameters
 L3.rendering.transition.low = [];
 L3.rendering.transition.high = [];
+L3.rendering.illuminant = [];
 
 % These will become cell arrays of structures of
 % [cfaSize(1),cfaSize(2),length(patchLuminanceLevels)]
