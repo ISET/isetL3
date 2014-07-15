@@ -17,7 +17,7 @@ L3 = L3Initialize(L3, [], oi, sensor, []);
 %% Change luminance list
 sensorD = L3Get(L3, 'design sensor');
 volswing = sensorGet(sensorD, 'voltage swing');
-lumlist = linspace(0.01, 0.99*volswing, 10);
+lumlist = linspace(0.01, 0.99*volswing, 30);
 L3 = L3Set(L3, 'luminance list', lumlist);
 
 %% Perform training
@@ -27,5 +27,5 @@ L3 = L3Train(L3);
 camera = L3CameraCreate(L3);
 
 %% Save data
-save('L3_fb', 'L3');
-save('L3camera_fb', 'camera');
+save('L3_fb_30', 'L3');
+save('L3camera_fb_30', 'camera');
