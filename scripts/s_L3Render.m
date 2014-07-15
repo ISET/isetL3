@@ -39,7 +39,7 @@ scene = sceneCreate('macbethd65');
 camera = cameraSet(camera,'sensor fov',fovScene);
 
 %% Change the scene so its wavelength samples matches the camera
-wave = sensorGet(cameraGet(camera,'sensor'), 'wave');
+wave = cameraGet(camera,'sensor wave');
 scene = sceneSet(scene,'wave',wave');
 
 %% Change illuminant to the rendering illuminant
