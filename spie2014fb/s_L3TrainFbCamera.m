@@ -7,7 +7,12 @@ s_initISET
 L3 = L3Create;
 wave = [400:10:680]';
 [sensor, optics] = fbCreate(wave');
-L3 = L3Initialize(L3, [], optics, sensor, []); 
+
+oi = oiCreate;
+oi = oiSet(oi,'optics',optics);
+oi = oiSet(oi,'name','fb optics');
+
+L3 = L3Initialize(L3, [], oi, sensor, []); 
 
 %% Change luminance list
 sensorD = L3Get(L3, 'design sensor');
