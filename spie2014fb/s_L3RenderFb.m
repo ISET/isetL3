@@ -7,7 +7,8 @@ s_initISET
 load('L3camera_fb_30.mat');
 
 %% Read FB raw images
-fName = fullfile(fbRootPath,'data', 'images', 'sunny', '001_Sunny_f16.0.RAW');
+% fName = fullfile(fbRootPath,'data', 'images', 'sunny', '001_Sunny_f16.0.RAW');
+fName = fullfile(fbRootPath,'data', 'images', 'shadow', '022_Shadow_f4.0.RAW');
 fbSensor = fbRead(fName);
 camera.sensor = fbSensor;
 
@@ -15,7 +16,7 @@ camera.sensor = fbSensor;
 [camera,lrgbResult] = cameraCompute(camera, 'sensor');
 
 % arbitrary scaling
-lrgbResult = lrgbResult / max(lrgbResult(:));
+lrgbResult = 10*lrgbResult / max(lrgbResult(:));
 
 srgbResult = lrgb2srgb(ieClip(lrgbResult,0,1));
 

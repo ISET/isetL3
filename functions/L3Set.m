@@ -124,6 +124,11 @@ switch param
     case {'flatpercent'}
         % Percentage of patches we want to treat as flat
         L3.training.flatPercent = val;
+    case {'minnonsatchannels'}
+        % Minimum number of non-saturated (good) channels in order to train
+        % a filter.  For example if we want XYZ out, it is hopeless to
+        % train filters that can only use 2 good input channels.
+        L3.training.minnonsatchannels = val;
     case {'maxtreedepth','treedepth'}
         % When we cluster the textures, this is how many levels
         L3.training.treeDepth = val;

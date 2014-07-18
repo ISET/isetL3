@@ -15,9 +15,6 @@ function L3 = L3InitParams(L3)
 
 L3 = L3Set(L3,'block size', 9);
 
-sensorM = L3Get(L3, 'monochrome sensor');
-pixel = sensorGet(sensorM, 'pixel');
-voltageswing = pixelGet(pixel, 'voltageswing');
 % This sampling scheme was optimized through extensive experiments for
 % default RGB/W CFA with voltage swing equal to 1.8. Under low light 
 % condition when the SNR changes rapidly, denser samples should be used.
@@ -27,10 +24,18 @@ voltageswing = pixelGet(pixel, 'voltageswing');
 % high light conditions is chosen as 0.45, when W pixels start saturation.
 % The sampling might vary for different CFAs, voltage swing etc and should
 % be properly tuned. The simplest way is linear sampling as:
-% nLuminanceSteps = 10;
-% patchLuminanceSamples = linspace(0.05*voltageswing,0.9*voltageswing,nLuminanceSteps);
-patchLuminanceSamples = [0.001, 0.0016, 0.0026, 0.0041, 0.0065, 0.0104, 0.0166, 0.0266, 0.0424, 0.0678, 0.1082, 0.1729, 0.2762,...
-                           0.4505, 0.6753, 0.9, 1.1248, 1.3495, 1.5743, 0.99*voltageswing];
+
+% Following reduces voltage swing to account for the reduced voltage swing
+% after we subtract off the offset.  For example original data is in
+% interval [ao/ag, voltageswing] but new range is [0, voltageswing-ao/ag]
+voltagemax = L3Get(L3,'voltage max');
+
+nLuminanceSteps = 20;
+patchLuminanceSamples = linspace(0.01*voltagemax,0.99*voltagemax,nLuminanceSteps);
+
+% following was made specifically for RGBW assuming votlageswing=1.8
+% patchLuminanceSamples = [0.001, 0.0016, 0.0026, 0.0041, 0.0065, 0.0104, 0.0166, 0.0266, 0.0424, 0.0678, 0.1082, 0.1729, 0.2762,...
+%                            0.4505, 0.6753, 0.9, 1.1248, 1.3495, 1.5743, 0.99*voltageswing];
 L3 = L3Set(L3,'luminance list', patchLuminanceSamples);
 
 %% Defaults that were previously in L3Create
@@ -39,6 +44,7 @@ L3 = L3Set(L3,'saturation flag', 1);
 L3 = L3Set(L3,'random seed',0);
 L3 = L3Set(L3,'max tree depth',1);
 L3 = L3Set(L3,'flat percent',0.6);
+L3 = L3Set(L3,'min non sat channels',3);  % we want XYZ so need 3 good channels
 
 %% Bias and Variance Weights
 % Find color space conversion matrix

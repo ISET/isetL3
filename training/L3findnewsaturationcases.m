@@ -30,11 +30,13 @@ end
 % Only add if there are more such patches than the following minimum
 % threshold.  Otherwise, just delete them.
 minthreshold = L3Get(L3,'n samples per patch');
+minnonsatchannels = L3Get(L3,'min non sat channels');
 while ~isempty(saturationcases)
     newsaturationcase = saturationcases(:, 1);
     saturationindices = L3findsaturationindices(saturationcases, ...
                                         newsaturationcase);
-    if sum(saturationindices) > minthreshold
+    if sum(saturationindices) > minthreshold & ...
+       sum(~newsaturationcase) < minnonsatchannels
         L3 = L3addSaturationCase(L3, newsaturationcase);
     end                                    
     saturationcases(:, saturationindices) = [];  % delete matching entries        
