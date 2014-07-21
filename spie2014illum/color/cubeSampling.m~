@@ -1,0 +1,2 @@
+function dX = cubeSampling(L,n)
+
