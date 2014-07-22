@@ -20,7 +20,7 @@ listCameras = dir('../data/L3camera*.mat');
 listScenes = [listScenes(1) listScenes(end)];
 
 N = length(listScenes);
-C = length(listCameras); C = 1;
+C = length(listCameras);% C = 1;
 
 mkdir('results')
 
@@ -37,18 +37,14 @@ for nc = 1:C
     disp(listScenes(nt).name)
     load(['../data/' listCameras(nc).name],'camera')
     camera = modifyCamera(camera,3);
-    camera = cameraCreate('default');
     load(['scenes/' listScenes(nt).name],'scene')
     
     scene = sceneAdjustIlluminant(scene,[illum,'.mat']);
     
     %   scene = sceneCreate('reflectance chart');
     %   scene = sceneAdjustLuminance(scene,200);
-%     vcAddObject(scene); sceneWindow;
+    vcAddObject(scene); sceneWindow;
     
-%     camera = cameraCreate('default');
-    %   load ../data/L3camera_CMY1_D65.mat;
-    %   camera = modifyCamera(camera,3);
     sensorResize = 1;
     %   [srgbResult, srgbIdeal, raw, camera] =...
     %   cameraComputesrgb(camera,scene,scene.chartP.luminance,[],[],1,0);
@@ -67,10 +63,10 @@ for nc = 1:C
     % If the chart occupies the entire image, then cp can be the whole image
     %
     sz = imageGet(ip,'size');  % This could be a little routine.
-    cp(1,1) = 2;     cp(1,2) = sz(1);%-30;
-    cp(2,1) = sz(2); cp(2,2) = sz(1);%-30;
-    cp(3,1) = sz(2); cp(3,2) = 1%33;
-    cp(4,1) = 2;     cp(4,2) = 1%33;
+    cp(1,1) = 2;     cp(1,2) = sz(1)-30;
+    cp(2,1) = sz(2); cp(2,2) = sz(1)-30;
+    cp(3,1) = sz(2); cp(3,2) = 33;
+    cp(4,1) = 2;     cp(4,2) = 33;
     
     % Number of rows/cols in the patch array
     XYZ = scene.chartP.XYZ;
@@ -125,7 +121,7 @@ for nc = 1:C
     
     xlabel('True LAB'); ylabel('Estimated LAB');
     legend({'L*','a*','b*'},'Location','SouthEast')
-%     pause(1)
+    pause(1)
     
 %     %% Show the two images
     vcNewGraphWin([],'tall');
@@ -138,16 +134,16 @@ for nc = 1:C
     results(nt).estCielab = estCielab;
     
 %     %% Error histogram
-%     vcNewGraphWin;
-%     dE = deltaEab(XYZ,estXYZ,5*XYZ(end,:));
-%     hist(dE,30);
-%     xlabel('\Delta E')
-%     ylabel('Count');
-%     v = sprintf('%.1f',mean(dE(:)));
-%     title(['Mean \Delta E ',v])
-%     
-%     %% End
-%     pause(1)
+    vcNewGraphWin;
+    dE = deltaEab(XYZ,estXYZ,5*XYZ(end,:));
+    hist(dE,30);
+    xlabel('\Delta E')
+    ylabel('Count');
+    v = sprintf('%.1f',mean(dE(:)));
+    title(['Mean \Delta E ',v])
+    
+    %% End
+    pause(1)
     close all
 
   end
