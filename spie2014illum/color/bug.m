@@ -6,7 +6,6 @@ load sceneBug
 % That is the original camera load call
 % load ../data/L3camera_CMY1_D65.mat;
 % camera = modifyCamera(camera,3);
-camera = cameraCreate('default');
 
 % Without this line, the bug doesn't happen
 vcAddObject(scene); sceneWindow;
