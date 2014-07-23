@@ -4,7 +4,7 @@ clear, clc, close all
 s_initISET
 
 %% Load camera
-load('L3camera_fb_30.mat');
+load('L3camera_fb.mat');
 
 %% Read FB raw images
 fName = fullfile(fbRootPath,'data', 'images', 'sunny', '001_Sunny_f16.0.RAW');
@@ -25,4 +25,4 @@ for colornum = 1:3
 end
 
 figure, imshow(srgbResult90)
-imwrite(srgbResult90, 'srgb_30.png');
+imwrite(srgbResult90, 'srgb.png');
