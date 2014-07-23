@@ -6,11 +6,11 @@
 % Copyright Imageval LLC, 2014
 
 %%
-close all;clear all;clc
+% close all;clear all;clc
 
 mkdir scenes
 
-s_initISET
+% s_initISET
 addpath ../../functions
 
 whiteRGB = [1 1 1];

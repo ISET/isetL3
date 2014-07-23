@@ -16,8 +16,13 @@ addpath ../../functions
 
 listScenes = dir('scenes/*.mat');
 listCameras = dir('../data/L3camera*.mat');
+
+listScenes = [listScenes(1) listScenes(end)];
+
 N = length(listScenes);
-C = length(listCameras);
+C = length(listCameras);% C = 1;
+
+mkdir('results')
 
 for nc = 1:C
   
@@ -25,26 +30,31 @@ for nc = 1:C
   results = repmat(struct('XYZ',[],'estXYZ',[],'cielab',[],'estCielab',[]),N,1);
   
   k = strfind(listCameras(nc).name,'_');
-  illum = listCameras(nc).name(k(end)+1:end
+  illum = listCameras(nc).name(k(end)+1:end-4);
+  
   for nt = 1:N
     
     disp(listScenes(nt).name)
     load(['../data/' listCameras(nc).name],'camera')
+    camera = modifyCamera(camera,3);
     load(['scenes/' listScenes(nt).name],'scene')
+    
+%     scene = sceneAdjustIlluminant(scene,[illum,'.mat']);
     
     %   scene = sceneCreate('reflectance chart');
     %   scene = sceneAdjustLuminance(scene,200);
     vcAddObject(scene); sceneWindow;
     
-%     camera = cameraCreate('default');
-    %   load ../data/L3camera_CMY1_D65.mat;
-    %   camera = modifyCamera(camera,3);
+    [luminance,meanLuminance] = sceneCalculateLuminance(scene);
+    targetLuminance = 100*meanLuminance/luminance(1,end);
+        
     sensorResize = 1;
+    sz = sceneGet(scene,'size')
     %   [srgbResult, srgbIdeal, raw, camera] =...
     %   cameraComputesrgb(camera,scene,scene.chartP.luminance,[],[],1,0);
-    %   [srgbResult, srgbIdeal, raw, camera] =...
-    %   cameraComputesrgb(camera,scene,100,[],[],1,0);
-    camera = cameraCompute(camera,scene,[],sensorResize);
+      [srgbResult, srgbIdeal, raw, camera] =...
+      cameraComputesrgb(camera,scene,targetLuminance,sz,[],1,0);
+%     camera = cameraCompute(camera,scene,[],sensorResize);
     cameraWindow(camera,'ip');
     
     ip = cameraGet(camera,'ip');
@@ -57,10 +67,10 @@ for nc = 1:C
     % If the chart occupies the entire image, then cp can be the whole image
     %
     sz = imageGet(ip,'size');  % This could be a little routine.
-    cp(1,1) = 2;     cp(1,2) = sz(1)-30;
-    cp(2,1) = sz(2); cp(2,2) = sz(1)-30;
-    cp(3,1) = sz(2); cp(3,2) = 33;
-    cp(4,1) = 2;     cp(4,2) = 33;
+    cp(1,1) = 1;     cp(1,2) = sz(1);
+    cp(2,1) = sz(2); cp(2,2) = sz(1);
+    cp(3,1) = sz(2); cp(3,2) = 1;
+    cp(4,1) = 1;     cp(4,2) = 1;
     
     % Number of rows/cols in the patch array
     XYZ = scene.chartP.XYZ;
@@ -115,12 +125,12 @@ for nc = 1:C
     
     xlabel('True LAB'); ylabel('Estimated LAB');
     legend({'L*','a*','b*'},'Location','SouthEast')
-%     pause(1)
+    pause(1)
     
 %     %% Show the two images
-%     vcNewGraphWin([],'tall');
-%     subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(XYZ,r,c)));
-%     subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
+    vcNewGraphWin([],'tall');
+    subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(XYZ,r,c)));
+    subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
     
     results(nt).XYZ = XYZ;
     results(nt).estXYZ = estXYZ;
@@ -128,25 +138,20 @@ for nc = 1:C
     results(nt).estCielab = estCielab;
     
 %     %% Error histogram
-%     vcNewGraphWin;
-%     dE = deltaEab(XYZ,estXYZ,5*XYZ(end,:));
-%     hist(dE,30);
-%     xlabel('\Delta E')
-%     ylabel('Count');
-%     v = sprintf('%.1f',mean(dE(:)));
-%     title(['Mean \Delta E ',v])
-%     
-%     %% End
-%     pause(1)
-%     close all
+    vcNewGraphWin;
+    dE = deltaEab(XYZ,estXYZ,5*XYZ(end,:));
+    hist(dE,30);
+    xlabel('\Delta E')
+    ylabel('Count');
+    v = sprintf('%.1f',mean(dE(:)));
+    title(['Mean \Delta E ',v])
     
-    meanDE(nt) = mean(dE(:));
-    medDE(nt) = median(dE(:));
-    p75DE(nt) = prctile(dE(:),75);
-    p90DE(nt) = prctile(dE(:),90);
-    maxDE(nt) = max(dE(:));
-    
-    
+    %% End
+    pause(1)
+    close all
+
   end
+
+  save(['results/' listCameras(nc).name(1:end-4) '_results.mat'], 'results')
   
 end
