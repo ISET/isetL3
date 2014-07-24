@@ -15,7 +15,10 @@
    id="svg5420"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="training.svg">
+   sodipodi:docname="training.svg"
+   inkscape:export-filename="/home/francois/Stanford/L3/spie2014illum/figure2/training.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -157,7 +160,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
