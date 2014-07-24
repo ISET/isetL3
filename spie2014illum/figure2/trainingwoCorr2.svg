@@ -10,12 +10,15 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="885.53357"
-   height="809.18066"
+   width="884.55469"
+   height="611.18066"
    id="svg7380"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="trainingwoCorr2.svg">
+   sodipodi:docname="trainingwoCorr2.svg"
+   inkscape:export-filename="/home/francois/Stanford/L3/spie2014illum/figure2/trainingwoCorr2.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
   <defs
      id="defs7382">
     <marker
@@ -209,8 +212,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="460.55177"
-     inkscape:cy="500.23614"
+     inkscape:cx="459.5729"
+     inkscape:cy="302.23614"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -230,8 +233,8 @@
        visible="true"
        enabled="true"
        snapvisiblegridlinesonly="true"
-       originx="0.97886637px"
-       originy="411.98926px" />
+       originx="1.6296875e-07px"
+       originy="213.98926px" />
   </sodipodi:namedview>
   <metadata
      id="metadata7385">
@@ -249,7 +252,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(42.091354,-333.76648)">
+     transform="translate(41.112488,-333.76648)">
     <image
        y="530.25574"
        x="-41.112488"
