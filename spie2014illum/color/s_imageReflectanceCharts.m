@@ -6,9 +6,8 @@
 % Copyright Imageval LLC, 2014
 
 %%
-close all;clear all;clc
+% close all;clear all;clc
 s_initISET
-addpath ../../functions
 
 %% Make a reflectance chart and show it
 
@@ -17,7 +16,7 @@ addpath ../../functions
 listScenes = dir('scenes/*.mat');
 listCameras = dir('../data/L3camera*.mat');
 
-listScenes = [listScenes(1) listScenes(end)];
+% listScenes = [listScenes(1) listScenes(end)];
 
 N = length(listScenes);
 C = length(listCameras);
@@ -53,9 +52,9 @@ for nc = 1:C
     %   [srgbResult, srgbIdeal, raw, camera] =...
     %   cameraComputesrgb(camera,scene,scene.chartP.luminance,[],[],1,0);
       [srgbResult, srgbIdeal, raw, camera] =...
-      cameraComputesrgb(camera,scene,targetLuminance,sz,[],1,0);
+      cameraComputesrgb(camera,scene,targetLuminance,sz,[],1,2);
 %     camera = cameraCompute(camera,scene,[],sensorResize);
-%     cameraWindow(camera,'ip');
+    cameraWindow(camera,'ip');
     
     ip = cameraGet(camera,'ip');
     
@@ -90,8 +89,8 @@ for nc = 1:C
     delta = round(min(pSize)/2);   % Central portion of the patch
     mRGB  = chartPatchData(ip,mLocs,delta);
     
-%     rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
-%     chartDrawRects(ip,mLocs,delta,'off');
+    rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
+    chartDrawRects(ip,mLocs,delta,'off');
     
     %% Color error analyses
     
