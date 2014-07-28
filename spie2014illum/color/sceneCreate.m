@@ -239,6 +239,26 @@ switch sceneName
         scene = sceneReflectanceChartCustom(pSize,wave,grayFlag,LABsamples);
 
         
+  case {'reflectancechartprefilled'}
+        % sceneCreate('reflectance chart Customs',LABcenter,pSize,nSamples,wave,grayFlag); 
+        % There is always a gray strip at the right.
+
+        % Surface samples from the files
+        pSize = 24;     % Patch size in pixels
+        wave = [];      % Wavelength samples
+        grayFlag = 1;   % Add a gray strip column on right
+        
+        if isempty(varargin)
+        else
+            Refsamples = varargin{1};
+            if length(varargin) > 1, pSize = varargin{2}; end
+            if length(varargin) > 2, wave     = varargin{3}; end
+            if length(varargin) > 3, grayFlag = varargin{4}; end
+        end
+        
+        scene = sceneReflectanceChartPrefilled(pSize,wave,grayFlag,Refsamples);
+
+        
     case {'lstar'}
         scene = sceneSet(scene,'name','L-star');
         bWidth = 20; nBars = 10; deltaE = 10;

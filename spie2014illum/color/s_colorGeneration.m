@@ -36,6 +36,7 @@ S = ieReadSpectra('XYZ',wave);
 whiteXYZ = 683*dWave*(S'*ee);
 
 LABfeasible = [];
+Reffeasible = [];
 
 for l = 0:100
   
