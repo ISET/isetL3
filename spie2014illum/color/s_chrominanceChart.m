@@ -45,6 +45,7 @@ for nc = 1:C
       %     disp(listScenes(nt).name)
       load(['../data/' listCameras(nc).name],'camera')
       camera = modifyCamera(camera,3);
+      camera.sensor.noiseFlag = 0;
       scene = sceneCreate('reflectance chart prefilled', Reffeasible(I,:)');
       %     load(['scenes/' listScenes(nt).name],'scene')
       
@@ -54,14 +55,14 @@ for nc = 1:C
       %     vcAddObject(scene); sceneWindow;
       
       [luminance,meanLuminance] = sceneCalculateLuminance(scene);
-      targetLuminance = 100*meanLuminance/luminance(1,end);
+      targetLuminance = 1*meanLuminance/luminance(1,end);
       
       sensorResize = 1;
-      sz = sceneGet(scene,'size')
+      sz = sceneGet(scene,'size');
       %   [srgbResult, srgbIdeal, raw, camera] =...
       %   cameraComputesrgb(camera,scene,scene.chartP.luminance,[],[],1,0);
-      [srgbResult, srgbIdeal, raw, camera] =...
-        cameraComputesrgbNoCrop(camera,scene,targetLuminance,sz,[],1,0);
+      [srgbResult, srgbIdeal, raw, camera, xyzIdeal, lrgbResult] =...
+        cameraComputesrgbNoCrop(camera,scene,targetLuminance,sz,[],1,2);
       %     camera = cameraCompute(camera,scene,[],sensorResize);
 %       cameraWindow(camera,'ip');
       
@@ -75,10 +76,10 @@ for nc = 1:C
       % If the chart occupies the entire image, then cp can be the whole image
       %
       sz = imageGet(ip,'size');  % This could be a little routine.
-      cp(1,1) = 2;     cp(1,2) = sz(1);
-      cp(2,1) = sz(2); cp(2,2) = sz(1);
-      cp(3,1) = sz(2); cp(3,2) = 2;
-      cp(4,1) = 2;     cp(4,2) = 2;
+      cp(1,1) = 25;     cp(1,2) = sz(1)-24;
+      cp(2,1) = sz(2)-24; cp(2,2) = sz(1)-24;
+      cp(3,1) = sz(2)-24; cp(3,2) = 25;
+      cp(4,1) = 25;     cp(4,2) = 25;
       
       % Number of rows/cols in the patch array
       XYZ = scene.chartP.XYZ;
@@ -96,23 +97,42 @@ for nc = 1:C
       
       % These are down the first column, starting at the upper left.
       delta = round(min(pSize)/2);   % Central portion of the patch
+      
       mRGB  = chartPatchData(ip,mLocs,delta);
       
-%       rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
-%       chartDrawRects(ip,mLocs,delta,'off');
+      xyzIdeal = RGB2XWFormat(xyzIdeal);
+      mXYZ = zeros(size(mRGB));
+      for ii = 1:size(mLocs,2)
+        [rr,cc] = meshgrid(mLocs(1,ii)+(-round(delta/2)+(0:delta)),...
+          mLocs(2,ii)+(-round(delta/2)+(0:delta)));
+        jj = sub2ind(sz(1:2),rr(:),cc(:));
+        mXYZ(ii,:) = mean(xyzIdeal(jj,:));
+      end
+      XYZ = mXYZ;
+      
+      rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
+      chartDrawRects(ip,mLocs,delta,'off');
       
       %% Color error analyses
       
       % XYZ = mRGB*L
-      L = mRGB\XYZ;
-      estXYZ = mRGB*L;
+%       L = mRGB\XYZ;
+%       estXYZ = mRGB*L;
+      
+      matrix = colorTransformMatrix('lrgb2xyz');
+      mRGB = XW2RGBFormat(mRGB,r,c);
+      estXYZ = imageLinearTransform(mRGB, matrix);
+      estXYZ = RGB2XWFormat(estXYZ);
+      
+      estXYZ = estXYZ * max(XYZ(:)) / max(estXYZ(:));
+
       
       %     vcNewGraphWin([],'tall');
-%       figure
-%       subplot(2,1,1)
-%       plot(XYZ(:),estXYZ(:),'o')
-%       xlabel('True XYZ'); ylabel('Estimated XYZ');
-%       grid on
+      figure
+      subplot(2,1,1)
+      plot(XYZ(:),estXYZ(:),'o')
+      xlabel('True XYZ'); ylabel('Estimated XYZ');
+      grid on
       
       % LAB comparisons
       tmp = XW2RGBFormat(XYZ,r,c);
@@ -125,22 +145,22 @@ for nc = 1:C
       estCielab = xyz2lab(tmp,whiteXYZ);
       estCielab = RGB2XWFormat(estCielab(:,1:end,:));
       
-%       subplot(2,1,2)
-%       plot(cielab(:,1), estCielab(:,1),'ko', ...
-%         cielab(:,2), estCielab(:,2),'rs',...
-%         cielab(:,3),estCielab(:,3),'bx');
-%       grid on;
-%       axis equal
+      subplot(2,1,2)
+      plot(cielab(:,1), estCielab(:,1),'ko', ...
+        cielab(:,2), estCielab(:,2),'rs',...
+        cielab(:,3),estCielab(:,3),'bx');
+      grid on;
+      axis equal
       
       xlabel('True LAB'); ylabel('Estimated LAB');
       legend({'L*','a*','b*'},'Location','SouthEast')
-%       pause(1)
+      pause(1)
       
       %     %% Show the two images
-      %     vcNewGraphWin([],'tall');
+          vcNewGraphWin([],'tall');
 %       figure
-%       subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(XYZ,r,c)));
-%       subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
+      subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(XYZ,r,c)));
+      subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
       
       results(nt).XYZ(:,:,nn) = XYZ;
       results(nt).estXYZ(:,:,nn) = estXYZ;
@@ -148,18 +168,18 @@ for nc = 1:C
       results(nt).estCielab(:,:,nn) = estCielab;
       
       %% Error histogram
-%       figure
-      %     vcNewGraphWin;
-%       dE = deltaEab(XYZ(1:100,:),estXYZ(1:100,:),XYZ(101,:));
-%       hist(dE,30);
-%       xlabel('\Delta E')
-%       ylabel('Count');
-%       v = sprintf('%.1f',mean(dE(:)));
-%       title(['Mean \Delta E ',v])
+      vcNewGraphWin;
+      dE = deltaEab(XYZ(1:100,:),estXYZ(1:100,:),XYZ(101,:));
+      hist(dE,30);
+      xlabel('\Delta E')
+      ylabel('Count');
+      v = sprintf('%.1f',mean(dE(:)));
+      title(['Mean \Delta E ',v])
       
       %% End
 %       pause(1)
-%       close all
+      return
+      close all
 
     end
   end

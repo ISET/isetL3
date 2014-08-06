@@ -85,17 +85,20 @@ illuminantPhotons = diag(e2pFactors)*ones(nWave,1);
 % Data from first file are in the left columns, second file next set of
 % cols, and so forth. There may be a gray strip at the end.
 % Scale reflectances by incorporating energy to photon scale factr
-radiance = diag(e2pFactors)*reflectance; 
+radiance = diag(e2pFactors)*reflectance;
+sData = zeros(1,1,nWave);
+sData(1,1,:) = 0.2*illuminantPhotons;
+sData = sData(ones(rcSize(1)+2,1),ones(rcSize(2)+2,1),:);
 
 for rr=1:rcSize(1)
     for cc=1:rcSize(2)
         idx = sub2ind(rcSize,rr,cc);
         if idx <= nSamples
-           sData(rr,cc,:) =  radiance(:,idx);
+           sData(rr+1,cc+1,:) =  radiance(:,idx);
         elseif cc == rcSize(2)-grayFlag
-           sData(rr,cc,:) = 0.2*illuminantPhotons;
+           sData(rr+1,cc+1,:) = 0.2*illuminantPhotons;
         else
-           sData(rr,cc,:) = diag(e2pFactors)*reflectance(:,idx);
+           sData(rr+1,cc+1,:) = diag(e2pFactors)*reflectance(:,idx);
         end
     end
 end
@@ -103,7 +106,7 @@ end
 % Store the photon data as XYZ, too. We will need these for evaluation of
 % color algorithms later (sensor and illuminant correction).  These are
 % stored in RGB format here (row,col,wave).
-XYZ = ieXYZFromPhotons(sData,wave);
+XYZ = ieXYZFromPhotons(sData(2:end-1,2:end-1,:),wave);
 
 % Build up the size of the image regions - still reflectances
 sData = imageIncreaseImageRGBSize(sData,pSize);

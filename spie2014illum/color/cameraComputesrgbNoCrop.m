@@ -1,6 +1,6 @@
-function [srgbResult, srgbIdeal, raw, camera] = ...
-    cameraComputesrgb(camera, sceneName, meanLuminance, sz, scenefov, ...
-    scaleoutput,plotFlag)
+function [srgbResult, srgbIdeal, raw, camera, xyzIdeal, lrgbResult] = ...
+    cameraComputesrgbNoCrop(camera, sceneName, meanLuminance, sz, scenefov, ...
+    scaleoutput,plotFlag,illum)
 
 % [srgbResult, srgbIdeal] = 
 %     cameraComputesrgb(camera, sceneName, meanLuminance, sz, scenefov, ...
@@ -100,18 +100,22 @@ scene = sceneSet(scene,'fov',scenefov);
 
 
 % Adjust mean luminance
+scene = sceneAdjustIlluminant(scene,'D65.mat');
 scene = sceneAdjustLuminance(scene,meanLuminance);
+scene = sceneAdjustIlluminant(scene,[illum '.mat']);
 
 if ~exist('plotFlag','var') || isempty(plotFlag), plotFlag = 2; end
 
-%% Calculate ideal XYZ image
-[camera,xyzIdeal] = cameraCompute(camera,scene,'idealxyz');
-xyzIdeal  = xyzIdeal / max(xyzIdeal(:)) * scaleoutput;
-[srgbIdeal, lrgbIdeal] = xyz2srgb(xyzIdeal);
 
 %% Calculate camera result
-[camera, lrgbResult] = cameraCompute(camera,'oi',lrgbIdeal);   % OI is already calculated
-srgbResult = lrgb2srgb(ieClip(lrgbResult,0,1));
+[camera, lrgbResult] = cameraCompute(camera,scene,[],false);%,lrgbIdeal);   % OI is already calculated
+
+scene = sceneAdjustIlluminant(scene,'D65.mat');
+%% Calculate ideal XYZ image
+[camera,xyzIdeal] = cameraCompute(camera,scene,'idealxyz');
+xyzIdeal  = xyzIdeal;% / max(xyzIdeal(:)) * scaleoutput;
+[srgbIdeal, lrgbIdeal] = xyz2srgb(xyzIdeal/max(xyzIdeal(:)));
+srgbResult = lrgb2srgb(ieClip(lrgbResult./max(xyzIdeal(:)),0,1));
 
 %% Crop border of image to remove any errors around the edge 
 %  (this is similar to L3imcrop but with a fixed width)

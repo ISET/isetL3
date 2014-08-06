@@ -76,7 +76,7 @@ else  % If scene structure is passed in, use that.
 end
 
 % Change illuminant to D65
-% scene = sceneAdjustIlluminant(scene,'D65.mat');
+scene = sceneAdjustIlluminant(scene,'D65.mat');
 
 if nargin < 4 || isempty(sz)
     sz = cameraGet(camera,'sensor size');
