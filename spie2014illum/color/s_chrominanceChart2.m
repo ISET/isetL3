@@ -16,13 +16,13 @@ C = length(listCameras);
 load LABfeasible100x100
 
 N = 100;
-Lum = [.1 .3 1 3 10 30 100 300 1000 3000];
+Lum = [.1 .2 .5 1 2 5 10 20 50 100 200 500 1000 2000 5000];
 Nlum = length(Lum);
 Nsam = 110;
 
 mkdir('results4')
 
-for nc = 2:C
+for nc = 1:C
   
   disp(listCameras(nc).name)
   results = repmat(struct('XYZ',[],'inXYZ',[],'outXYZ',[],...
@@ -93,18 +93,45 @@ for nc = 2:C
       xyzResult = RGB2XWFormat(camera.vci.L3.processing.xyz);
       lumIdx = RGB2XWFormat(camera.vci.L3.processing.lumIdx);
       satIdx = RGB2XWFormat(camera.vci.L3.processing.satIdx);
-      clusterIdx = RGB2XWFormat(camera.vci.L3.processing);
+      cluIdx = RGB2XWFormat(camera.vci.L3.processing.clusterIdx);
+      
+      inXYZ = zeros(size(XYZ));
+      outXYZ = zeros(size(XYZ));
+      outLum = zeros(size(XYZ,1),1);
+      outSat = zeros(size(XYZ,1),1);
+      outClu = zeros(size(XYZ,1),1);
+      
+      for ii = 1:size(mLocs,2)
+        theseLocs = chartROI(mLocs(:,ii),delta);
+        indLoc = sub2ind(sz,theseLocs(:,1),theseLocs(:,2));
+        lumLoc = lumIdx(indLoc,:);
+        satLoc = satIdx(indLoc,:);
+        cluLoc = cluIdx(indLoc,:);
+        
+        inXYZ(ii,:) = mean(xyzIdeal(indLoc,:));
+        outXYZ(ii,:) = mean(xyzResult(indLoc,:));
+        
+        if all(lumLoc == lumLoc(1)) && all(satLoc == satLoc(1)) && all(cluLoc == cluLoc(1))
+          outLum(ii) = lumLoc(1);
+          outSat(ii) = satLoc(1);
+          outClu(ii) = cluLoc(1);
+        else
+          outLum(ii) = -1;
+          outSat(ii) = -1;
+          outClu(ii) = -1;
+        end
+      end
       
       results(nt,nn).XYZ = XYZ;
-      results(nt,nn).inXYZ = xyzIdeal;
-      results(nt,nn).outXYZ = xyzResult;
-      results(nt,nn).lum = lumIdx;
-      results(nt,nn).sat = satIdx;
-      results(nt,nn).cluster = clusterIdx;
-
+      results(nt,nn).inXYZ = inXYZ;
+      results(nt,nn).outXYZ = outXYZ;
+      results(nt,nn).lum = outLum;
+      results(nt,nn).sat = outSat;
+      results(nt,nn).cluster = outClu;
+      
     end
   end
-
+  
   save(['results4/' listCameras(nc).name(1:end-4) '_results.mat'], 'results')
   
 end
