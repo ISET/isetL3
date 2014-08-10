@@ -37,14 +37,15 @@ scene = sceneCreate('macbethd65');
 
 %% Adjust FOV of camera to match scene, no extra pixels needed. 
 camera = cameraSet(camera,'sensor fov',fovScene);
+L3 = cameraGet(camera, 'l3');
 
 %% Change the scene so its wavelength samples matches the camera
 wave = cameraGet(camera,'sensor wave');
 scene = sceneSet(scene,'wave',wave');
 
 %% Change illuminant to the rendering illuminant
-illum = L3Get(cameraGet(camera, 'l3'), 'rendering illuminant');
-scene = sceneAdjustIlluminant(scene, [illum '.mat']);
+illum = L3Get(L3, 'training illuminant');
+scene = sceneAdjustIlluminant(scene, illum);
 
 %% Find white point
 whitept = sceneGet(scene,'illuminant xyz');

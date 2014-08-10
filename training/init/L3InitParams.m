@@ -44,24 +44,34 @@ L3 = L3Set(L3,'saturation flag', 1);
 L3 = L3Set(L3,'random seed',0);
 L3 = L3Set(L3,'max tree depth',1);
 L3 = L3Set(L3,'flat percent',0.6);
-L3 = L3Set(L3,'min non sat channels',3);  % we want XYZ so need 3 good channels
+L3 = L3Set(L3,'min non sat channels', 0);  
+% we can control how many non-saturation channels we want. To estimate XYZ
+% we need 3 good channels. It's initialized to be turned off.
 
 %% Bias and Variance Weights
 % Find color space conversion matrix
 A = L3findweightcolortransform(); 
 L3 = L3Set(L3, 'weight color transform', A);
 
-% Set optimal bias and variance tradeoff weights
-weights = [4, 4, 4];  
-L3 = L3Set(L3, 'global weight bias variance', weights);
-weights = [4, 16, 4]; 
+% Set bias and variance tradeoff weights. It's initialized to be turned off.
+weights = [1, 1, 1];  
+L3 = L3Set(L3, 'global weight bias variance', weights); 
 L3 = L3Set(L3, 'flat weight bias variance', weights);
-weights = [4, 1, 4]; 
 L3 = L3Set(L3, 'texture weight bias variance', weights);
 
+% Following is the optimal bias and variance tradeoff weights specifically 
+% designed for RGB/W CFA.
+
+% weights = [4, 4, 4];  
+% L3 = L3Set(L3, 'global weight bias variance', weights);
+% weights = [4, 16, 4]; 
+% L3 = L3Set(L3, 'flat weight bias variance', weights);
+% weights = [4, 1, 4]; 
+% L3 = L3Set(L3, 'texture weight bias variance', weights);
+
 %% The training and rendering illuminant
-L3 = L3Set(L3, 'training illuminant', 'D65');
-L3 = L3Set(L3, 'rendering illuminant', 'D65');
+L3 = L3Set(L3, 'training illuminant', 'D65.mat');
+L3 = L3Set(L3, 'rendering illuminant', 'D65.mat');
 
 %% Maximum number of training patches for each patch type
 % Following is a smaller value for quick testing.  This should probably be
