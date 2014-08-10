@@ -36,7 +36,7 @@ while ~isempty(saturationcases)
     saturationindices = L3findsaturationindices(saturationcases, ...
                                         newsaturationcase);
     if sum(saturationindices) > minthreshold & ...
-       sum(~newsaturationcase) < minnonsatchannels
+       sum(~newsaturationcase) >= minnonsatchannels % non-saturated channels should be more than the pre-defined threshold
         L3 = L3addSaturationCase(L3, newsaturationcase);
     end                                    
     saturationcases(:, saturationindices) = [];  % delete matching entries        
