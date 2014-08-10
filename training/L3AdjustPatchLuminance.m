@@ -50,11 +50,10 @@ elseif lt == length(lumList) % high end special case
     minLum = (lumList(lt - 1) + desiredluminance) / 2;
     maxLum = 2 * desiredluminance - minLum;
             
-    sensorD = L3Get(L3,'sensordesign');
-    pixel = sensorGet(sensorD,'pixel');
-    voltageSwing = pixelGet(pixel,'voltage swing');
-    if maxLum > voltageSwing
-        maxLum = voltageSwing;
+    voltagemax = L3Get(L3,'voltage max');
+    
+    if maxLum > voltagemax
+        maxLum = voltagemax;
     end
 else
     minLum = (lumList(lt - 1) + desiredluminance) / 2;

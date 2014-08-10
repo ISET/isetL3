@@ -35,9 +35,12 @@ noisymeasurements = sensorGet(sensor,'volts');
 % vcNewGraphWin; hist(noisymeasurements(:),100)
 
 %%  Saturation calculation
-pixel    = sensorGet(sensor,'pixel');
-saturate = pixelGet(pixel,'voltageSwing');
-noisymeasurements(noisymeasurements>saturate) = saturate;
+pixel = sensorGet(sensor,'pixel');
+voltageSwing = pixelGet(pixel,'voltage swing');  % pixel's actual voltage swing
+ao = sensorGet(sensor,'analogOffset');
+ag = sensorGet(sensor,'analogGain');
+voltagemax = voltageSwing - ao/ag;       % maximum voltage for L3 train & render
+noisymeasurements(noisymeasurements>voltagemax) = voltagemax;
 noisymeasurements(noisymeasurements<0) = 0;
 
 

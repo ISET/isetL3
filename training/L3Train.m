@@ -44,7 +44,10 @@ lumList    = L3Get(L3,'luminance list');
 %% Main loop
 cfaPattern = sensorGet(L3Get(L3,'sensor design'),'cfa pattern');
 for rr=1:size(cfaPattern,1)
-    for cc=1:size(cfaPattern,2)        
+    for cc=1:size(cfaPattern,2)
+        disp('**********Patch Type**********');
+        disp([rr,cc]);
+        
         L3 = L3Set(L3,'patch type',[rr,cc]);   % Refers to CFA pattern position
 
         % The blockpattern tells you what color is measured at each pixel
@@ -66,7 +69,11 @@ for rr=1:size(cfaPattern,1)
 
             % move on to next saturation type
             saturationtype = 1 + L3Get(L3, 'saturation type');
-            L3 = L3Set(L3, 'saturation type', saturationtype);            
+            L3 = L3Set(L3, 'saturation type', saturationtype);
+            
+            saturationcase = L3Get(L3,'saturation list', saturationtype);
+            disp('****Saturation Type****');
+            disp(saturationcase);
             
             % Let's try to move this outside of the saturation loop.  That
             % way we only will have to load once per patch type.
@@ -79,6 +86,7 @@ for rr=1:size(cfaPattern,1)
             for ll=1:length(lumList)
                 %Set current patch luminance index for training
                 L3 = L3Set(L3,'luminance type',ll);
+                disp(ll);
 
                 % Scale the light so that each patch has desired luminance
                 L3 = L3AdjustPatchLuminance(L3);

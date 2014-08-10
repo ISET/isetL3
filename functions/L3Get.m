@@ -220,15 +220,28 @@ switch(param)
         blockPattern = L3Get(L3,'block pattern');
         val = L3adjustpatchmean(spNoisy,-means,blockPattern);
         val = mean(abs(val));
-    case {'sensorpatchsaturation','sensorpatchsaturationcase'}
-        % matrix giving the saturation case for each patch
+        
+    case {'voltagemax'}
+        % maximum voltage after deleting analog gain/offset
+        % Actual voltage swing of pixel is higher.  But after we delete the
+        % offset, the maximum voltage is reduced to this value.
+        %
+        % For example original data is in interval [ao/ag, voltageswing]
+        % but new range is [0, voltageswing-ao/ag]
         sensorD = L3Get(L3,'sensordesign');
         pixel = sensorGet(sensorD,'pixel');
-        voltageSwing = pixelGet(pixel,'voltage swing');
+        voltageSwing = pixelGet(pixel,'voltage swing');  % pixel's actual voltage swing
+        ao = sensorGet(sensorD,'analogOffset');
+        ag = sensorGet(sensorD,'analogGain');
+        val = voltageSwing - ao/ag;       % maximum voltage for L3 train & render
+        
+    case {'sensorpatchsaturation','sensorpatchsaturationcase'}
+        % matrix giving the saturation case for each patch
+        voltagemax = L3Get(L3,'voltage max');
         blockPattern = L3Get(L3,'block pattern');
         nfilters = L3Get(L3, 'n filters');        
         patches = L3Get(L3,'sensor patches no 0'); % saturated colors are not 0ed
-        saturated = (patches >= voltageSwing-.001);
+        saturated = (patches >= voltagemax-.001);
         val = zeros(nfilters,size(patches,2));
         for filternum = 1:nfilters
             patchindices = (blockPattern(:) == filternum);
@@ -483,6 +496,12 @@ switch(param)
         val = L3.training.treeDepth;
     case {'flatpercent'}
         val = L3.training.flatPercent;
+    case {'minnonsatchannels'}
+        % L3Get(L3,'min non sat channels');
+        % Minimum number of non-saturated (good) channels in order to train
+        % a filter.  For example if we want XYZ out, it is hopeless to
+        % train filters that can only use 2 good input channels.
+        val = L3.training.minnonsatchannels;
     case{'luminancelist'};  % We create filters for each luminance level
         % L3Get(L3,'luminance list',whichLum);
         % This can be a vector, and without an argument the whole vector is
