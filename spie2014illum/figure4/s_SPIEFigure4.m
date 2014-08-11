@@ -15,12 +15,12 @@ for i = 1:4
     L3camera = modifyCamera(camera,i);
     l = L(nl);
       [srgbResult, srgbIdeal, raw, cameraTmp] = cameraComputesrgb_illum(L3camera,scene,l,sz,[],[],2,illum);
-      figure; axis off, axis equal, export_fig(sprintf('result_op%d_l%d.mat',i,l),'-png','-transparent');
-      figure; axis off, axis equal, export_fig(sprintf('ideal_op%d_l%d.mat',i,l),'-png','-transparent'); close all
+      figure; image(srgbResult); axis off, axis equal, export_fig(sprintf('result_op%d_l%d.mat',i,l),'-png','-transparent');
+      figure; image(srgbIdeal); axis off, axis equal, export_fig(sprintf('ideal_op%d_l%d.mat',i,l),'-png','-transparent'); close all
     if i == 1
       [srgbResult, srgbIdeal, raw, cameraTmp] = cameraComputesrgb_illum(L3camera,scene,l,sz,[],[],2,'D65');
-      figure; axis off, axis equal, export_fig(sprintf('resultD65_op%d_l%d.mat',i,l),'-png','-transparent');
-      figure; axis off, axis equal, export_fig(sprintf('idealD65_op%d_l%d.mat',i,l),'-png','-transparent'); close all   
+      figure; image(srgbResult); axis off, axis equal, export_fig(sprintf('resultD65_op%d_l%d.mat',i,l),'-png','-transparent');
+      figure; image(srgbIdeal); axis off, axis equal, export_fig(sprintf('idealD65_op%d_l%d.mat',i,l),'-png','-transparent'); close all   
     end
       
   end
