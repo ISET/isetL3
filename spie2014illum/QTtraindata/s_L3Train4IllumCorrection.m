@@ -51,6 +51,12 @@ for illumNum = 1 : length(ils)
         % weights = [4, 1, 4]; 
         % L3 = L3Set(L3, 'texture weight bias variance', weights);
         
+        %% Change luminance list
+        patchLuminanceSamples = [0.001, 0.0016, 0.0026, 0.0041, 0.0065, 0.0104, 0.0166, 0.0266, 0.0424, 0.0678, 0.1082, 0.1729, 0.2762,...
+                           0.4505, 0.6753, 0.9, 1.1248, 1.3495, 1.5743, 0.99*1.8];
+        L3 = L3Set(L3,'luminance list', patchLuminanceSamples);
+        
+        
         %% Set training and rendering illuminant to be identical
         L3 = L3Set(L3, 'Training Illuminant', [ils{illumNum}, '.mat']);
         L3 = L3Set(L3, 'Rendering Illuminant', [ils{illumNum}, '.mat']);

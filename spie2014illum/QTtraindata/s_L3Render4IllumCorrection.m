@@ -26,7 +26,8 @@ s_initISET
 illum = 'Tungsten'; % specify light
 cfa = 'Bayer'; % specify CFA
 cameraName = ['L3camera_' cfa '_' illum '.mat'];
-load(cameraName); 
+fName = fullfile(L3rootpath, 'spie2014illum', 'QTtraindata', 'data', cameraName);
+load(fName); 
 
 %% Load scene
 scene = sceneFromFile('AsianWoman_1.mat', 'multispectral');
