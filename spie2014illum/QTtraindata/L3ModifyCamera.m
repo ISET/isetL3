@@ -1,4 +1,4 @@
-function camera = L3ModifyCamera(camera, opt)
+function camera = L3ModifyCameraFG(camera, cameraD65, opt)
 %% To compute the illumination correction matrices, the filters and matrics
 % are stored in a modified way in the training process. In oder to use the
 % old rendering process conveniently, we need to modify the filters. It's
@@ -8,8 +8,6 @@ function camera = L3ModifyCamera(camera, opt)
 %       1: Some light to Some light
 %       2: Some light to D65
 %       3: Global correction
-%       4: Local correction
-%
 %
 %
 % (c) Stanford Vista Team 2014
@@ -18,6 +16,8 @@ switch nargin
     case 0
         error('Camera needed.')
     case 1
+        error('CameraD65 needed.')
+    case 2
         error('Option needed.')
 end
 

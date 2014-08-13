@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="806.80505"
+   height="231.00977"
+   id="svg7622"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="Figa.svg">
+  <defs
+     id="defs7624" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="469.14449"
+     inkscape:cy="-1.0922307"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1535"
+     inkscape:window-height="876"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid7791"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="35.365616px"
+       originy="-795.44623px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7627">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(35.365616,-25.906181)">
+    <g
+       id="g8831"
+       transform="translate(27.75174,0)">
+      <image
+         width="260"
+         height="194.55377"
+         xlink:href="file:///home/francois/Stanford/L3/spie2014illum/figureAbs2/srgbR_RGBW1_Tungsten_opt1.png"
+         id="image8754"
+         x="210.28516"
+         y="62.362183" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text8271-9"
+         y="42.362183"
+         x="339.92215"
+         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Math;-inkscape-font-specification:Latin Modern Math"
+         xml:space="preserve"><tspan
+           style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Latin Modern Math;-inkscape-font-specification:Latin Modern Math"
+           y="42.362183"
+           x="343.57449"
+           id="tspan8273-7"
+           sodipodi:role="line">L3 pipeline (Tun.-&gt;Tun.) </tspan></text>
+    </g>
+    <g
+       id="g8826"
+       transform="translate(-1.5258789e-5,0)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text8271"
+         y="42.362183"
+         x="641.07648"
+         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Math;-inkscape-font-specification:Latin Modern Math"
+         xml:space="preserve"><tspan
+           style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Latin Modern Math;-inkscape-font-specification:Latin Modern Math"
+           y="42.362183"
+           x="644.72882"
+           id="tspan8273"
+           sodipodi:role="line">L3 pipeline (D65-&gt;D65) </tspan></text>
+      <image
+         width="260"
+         height="194.55379"
+         xlink:href="file:///home/francois/Stanford/L3/spie2014illum/figureAbs2/srgbR_RGBW1_Tungsten_opt4.png"
+         id="image8823"
+         x="511.43945"
+         y="62.362167" />
+    </g>
+    <g
+       id="g8902"
+       transform="translate(36,0)">
+      <image
+         width="260"
+         height="194.55377"
+         xlink:href="file:///home/francois/Stanford/L3/spie2014illum/figureAbs2/srgbI_RGBW1_Tungsten_opt1.png"
+         id="image8895"
+         x="-71.365616"
+         y="62.362183" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text8898"
+         y="42.558525"
+         x="58.663685"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:cmr10;-inkscape-font-specification:cmr10"
+         xml:space="preserve"><tspan
+           y="42.558525"
+           x="58.663685"
+           id="tspan8900"
+           sodipodi:role="line">Ideal picture</tspan></text>
+    </g>
+  </g>
+</svg>

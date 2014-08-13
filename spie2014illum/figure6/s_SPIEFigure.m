@@ -10,6 +10,8 @@ s_initISET
 
 lights = {'Tungsten','Fluorescent'};
 cfas = {'Bayer','RGBW1','CMY1'};
+lights = {'Tungsten'};
+cfas = {'Bayer'};
 
 for nl = 1:length(lights)
   for nc = 1:length(cfas)
@@ -36,7 +38,7 @@ for nl = 1:length(lights)
     filtersD65 = reshape(cell2mat(filtersD65),[],1);
     filtersAlt = reshape(cell2mat(filtersAlt),[],1);
     
-    for i = 1:3
+    for i = 1
       figure
   
       switch i

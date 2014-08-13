@@ -106,15 +106,13 @@ scene = sceneAdjustIlluminant(scene,[illum '.mat']);
 
 if ~exist('plotFlag','var') || isempty(plotFlag), plotFlag = 2; end
 
-
-%% Calculate camera result
-[camera, lrgbResult] = cameraCompute(camera,scene,[],false);%,lrgbIdeal);   % OI is already calculated
-
-scene = sceneAdjustIlluminant(scene,'D65.mat');
 %% Calculate ideal XYZ image
 [camera,xyzIdeal] = cameraCompute(camera,scene,'idealxyz');
 xyzIdeal  = xyzIdeal;% / max(xyzIdeal(:)) * scaleoutput;
 [srgbIdeal, lrgbIdeal] = xyz2srgb(xyzIdeal/max(xyzIdeal(:)));
+
+%% Calculate camera result
+[camera, lrgbResult] = cameraCompute(camera,scene,[],false);%,lrgbIdeal);   % OI is already calculated
 srgbResult = lrgb2srgb(ieClip(lrgbResult./max(xyzIdeal(:)),0,1));
 
 %% Crop border of image to remove any errors around the edge 
