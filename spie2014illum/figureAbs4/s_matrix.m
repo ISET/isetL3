@@ -25,8 +25,12 @@ Ncharts = length(I)/100;
 
 for ns = 1:Ncharts
   scene = sceneCreate('reflectance chart prefilled',RefSRGBfeasible((ns-1)*100+1:ns*100,:)');
-%   vcAddObject(scene);
-%   sceneWindow
+  %   vcAddObject(scene);
+  %   sceneWindow
+  
+  [luminance,meanLuminance] = sceneCalculateLuminance(scene);
+  targetLuminance = 200*meanLuminance/luminance(1,end);
+  
   for nl = 1:length(lights)
     for nc = 1:length(cfas)
       
@@ -41,7 +45,7 @@ for ns = 1:Ncharts
       cameraAlt = L3ModifyCameraFG(camera,cameraD65,4);
       
       [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
-        cameraComputesrgbNoCrop(cameraAlt, scene, 60, sz, [], ...
+        cameraComputesrgbNoCrop(cameraAlt, scene, targetLuminance, sz, [], ...
         1,0,lights{nl});
       
       if strcmp(lights{nl},'D65')
@@ -80,9 +84,9 @@ for ns = 1:Ncharts
       % end
       
       matrix = colorTransformMatrix('lrgb2xyz');
-      xyzResult = imageLinearTransform(lrgbResult, matrix);  
-
-%       xyzResult = srgb2xyz(srgbResult);
+      xyzResult = imageLinearTransform(lrgbResult, matrix);
+      
+      %       xyzResult = srgb2xyz(srgbResult);
       
       % These are down the first column, starting at the upper left.
       delta = round(min(pSize)/2);   % Central portion of the patch
@@ -109,40 +113,40 @@ for ns = 1:Ncharts
       % L = mRGB\XYZ;
       % estXYZ = mRGB*L;
       
-%       vcNewGraphWin([],'tall');
-%       subplot(2,1,1)
-%       plot(tgtXYZ(:),estXYZ(:),'o')
-%       xlabel('True XYZ'); ylabel('Estimated XYZ');
-%       grid on
-%       
-%       % LAB comparisons
-%       tmp = XW2RGBFormat(tgtXYZ,r,c);
-%       whiteXYZ = tgtXYZ(101,:);
-%       cielab = xyz2lab(tmp,whiteXYZ);
-%       cielab = RGB2XWFormat(cielab);
-%       
-%       tmp = XW2RGBFormat(estXYZ,r,c);
-%       whiteXYZ = estXYZ(101,:);
-%       estCielab = xyz2lab(tmp,whiteXYZ);
-%       estCielab = RGB2XWFormat(estCielab);
-%       
-%       subplot(2,1,2)
-%       plot(cielab(:,1), estCielab(:,1),'ko', ...
-%         cielab(:,2), estCielab(:,2),'rs',...
-%         cielab(:,3),estCielab(:,3),'bx');
-%       grid on;
-%       axis equal
-%       
-%       xlabel('True LAB'); ylabel('Estimated LAB');
-%       legend({'L*','a*','b*'},'Location','SouthEast')
-%       
-%       
-%       %% Show the two images
-%       vcNewGraphWin([],'tall');
-%       subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ,r,c)));
-%       subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
-%       
-%       fprintf('%s %s\n',lights{nl},cfas{nc});
+      %       vcNewGraphWin([],'tall');
+      %       subplot(2,1,1)
+      %       plot(tgtXYZ(:),estXYZ(:),'o')
+      %       xlabel('True XYZ'); ylabel('Estimated XYZ');
+      %       grid on
+      %
+      %       % LAB comparisons
+      %       tmp = XW2RGBFormat(tgtXYZ,r,c);
+      %       whiteXYZ = tgtXYZ(101,:);
+      %       cielab = xyz2lab(tmp,whiteXYZ);
+      %       cielab = RGB2XWFormat(cielab);
+      %
+      %       tmp = XW2RGBFormat(estXYZ,r,c);
+      %       whiteXYZ = estXYZ(101,:);
+      %       estCielab = xyz2lab(tmp,whiteXYZ);
+      %       estCielab = RGB2XWFormat(estCielab);
+      %
+      %       subplot(2,1,2)
+      %       plot(cielab(:,1), estCielab(:,1),'ko', ...
+      %         cielab(:,2), estCielab(:,2),'rs',...
+      %         cielab(:,3),estCielab(:,3),'bx');
+      %       grid on;
+      %       axis equal
+      %
+      %       xlabel('True LAB'); ylabel('Estimated LAB');
+      %       legend({'L*','a*','b*'},'Location','SouthEast')
+      %
+      %
+      %       %% Show the two images
+      %       vcNewGraphWin([],'tall');
+      %       subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ,r,c)));
+      %       subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
+      %
+      %       fprintf('%s %s\n',lights{nl},cfas{nc});
       
       results(nl,nc).light = lights{nl};
       results(nl,nc).cfa = cfas{nc};
@@ -155,4 +159,4 @@ for ns = 1:Ncharts
   end
 end
 
-save results results
+save results2 results
