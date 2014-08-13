@@ -16,7 +16,7 @@
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="Figb.svg"
-   inkscape:export-filename="/home/francois/Stanford/L3/spie2014illum/figureAbs2/Figa.png"
+   inkscape:export-filename="/home/francois/Stanford/L3/spie2014illum/figureAbs2/Figb.png"
    inkscape:export-xdpi="200"
    inkscape:export-ydpi="200">
   <defs
@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4030651"
-     inkscape:cx="742.11169"
-     inkscape:cy="98.75746"
+     inkscape:cx="342.98551"
+     inkscape:cy="155.77549"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -61,7 +61,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
