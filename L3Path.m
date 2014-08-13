@@ -31,7 +31,7 @@ fprintf('L3 root directory: %s\n',L3Dir)
 addpath(L3Dir);
 
 % Generates a list of the directories below the ISET tree.
-p = genpath(L3RootPath);
+p = genpath(L3rootpath);
 
 % Adds all of the directories to the user's path.
 addpath(p);
