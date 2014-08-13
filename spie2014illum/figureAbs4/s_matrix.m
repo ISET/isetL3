@@ -1,9 +1,9 @@
-folder = pwd;
-cd ~/Stanford/iset
-isetPath(pwd)
-cd ~/Stanford/L3
-L3Path(pwd)
-cd(folder);
+%folder = pwd;
+%cd ~/Stanford/iset
+%isetPath(pwd)
+%cd ~/Stanford/L3
+%L3Path(pwd)
+%cd(folder);
 
 clear all, clc, close all
 s_initISET
@@ -155,4 +155,4 @@ for ns = 1:Ncharts
   end
 end
 
-% save results results
+save results results
