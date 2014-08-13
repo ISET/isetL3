@@ -16,8 +16,8 @@ opts = [2 3 5];
 
 resultsDE = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),length(opts)]);
 
-for nl = 1:length(lights)
-  for nc = 1:length(cfas)
+for nc = 1:length(cfas)
+  for nl = 1:length(lights)
     for nopt = 1:3
       opt = opts(nopt);
       
@@ -29,9 +29,9 @@ for nl = 1:length(lights)
       load(['../QTtraindata/data/L3camera_',cfas{nc},'_',lights{nl},'.mat'])
       load results
       camera.vci.L3.globaltrMFG = results(nl,nc).tgtXYZ'/results(nl,nc).estXYZ';
-
       
-      cameraAlt = L3ModifyCameraFG(camera,cameraD65,opt);
+      
+      cameraAlt = L3ModifyCameraFG(camera,cameraD65,1);
       
       [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
         cameraComputesrgbNoCrop(cameraAlt, scene, 70, sz, [], ...
@@ -85,8 +85,8 @@ for nl = 1:length(lights)
         estXYZ(ii,:) = squeeze(mean(mean(xyzResult(mLocs(1,ii)+(-delta:delta),mLocs(2,ii)+(-delta:delta),:),1),2));
       end
       
-%       rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
-%       chartDrawRects(ip,mLocs,delta,'off');
+      %       rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
+      %       chartDrawRects(ip,mLocs,delta,'off');
       
       %% Color error analyses
       
@@ -137,7 +137,7 @@ for nl = 1:length(lights)
       title(['Mean \Delta E ',v])
       
       fprintf('%s %s %d %.1f\n',lights{nl},cfas{nc},opt,mean(dE));
-
+      
       resultsDE(nl,nc,nopt).light = lights{nl};
       resultsDE(nl,nc,nopt).cfa = cfas{nc};
       resultsDE(nl,nc,nopt).opt = opt;
@@ -146,57 +146,57 @@ for nl = 1:length(lights)
       resultsDE(nl,nc,nopt).estXYZ = estXYZ;
       resultsDE(nl,nc,nopt).dE = dE;
       
-%       pause
-%       
-%       tgtXYZ = XYZ * mean(estXYZ(101,:)) / mean(XYZ(101,:));
-%       
-%       % XYZ = mRGB*L
-%       L = estXYZ\tgtXYZ;
-%       estXYZ = estXYZ*L;
-%             
-%       vcNewGraphWin([],'tall');
-%       subplot(2,1,1)
-%       plot(tgtXYZ(:),estXYZ(:),'o')
-%       xlabel('True XYZ'); ylabel('Estimated XYZ');
-%       grid on
-%       
-%       % LAB comparisons
-%       tmp = XW2RGBFormat(tgtXYZ,r,c);
-%       whiteXYZ = tgtXYZ(101,:);
-%       cielab = xyz2lab(tmp,whiteXYZ);
-%       cielab = RGB2XWFormat(cielab);
-%       
-%       tmp = XW2RGBFormat(estXYZ,r,c);
-%       whiteXYZ = estXYZ(101,:);
-%       estCielab = xyz2lab(tmp,whiteXYZ);
-%       estCielab = RGB2XWFormat(estCielab);
-%       
-%       subplot(2,1,2)
-%       plot(cielab(:,1), estCielab(:,1),'ko', ...
-%         cielab(:,2), estCielab(:,2),'rs',...
-%         cielab(:,3),estCielab(:,3),'bx');
-%       grid on;
-%       axis equal
-%       
-%       xlabel('True LAB'); ylabel('Estimated LAB');
-%       legend({'L*','a*','b*'},'Location','SouthEast')
-%       
-%       
-%       %% Show the two images
-%       vcNewGraphWin([],'tall');
-%       subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ,r,c)));
-%       subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
-%       
-%       %% Error histogram
-%       vcNewGraphWin;
-%       dE = deltaEab(tgtXYZ,estXYZ,tgtXYZ(101,:));
-%       hist(dE,30);
-%       xlabel('\Delta E')
-%       ylabel('Count');
-%       v = sprintf('%.1f',mean(dE(:)));
-%       title(['Mean \Delta E ',v])
-% 
-%       pause
+      %       pause
+      %
+      %       tgtXYZ = XYZ * mean(estXYZ(101,:)) / mean(XYZ(101,:));
+      %
+      %       % XYZ = mRGB*L
+      %       L = estXYZ\tgtXYZ;
+      %       estXYZ = estXYZ*L;
+      %
+      %       vcNewGraphWin([],'tall');
+      %       subplot(2,1,1)
+      %       plot(tgtXYZ(:),estXYZ(:),'o')
+      %       xlabel('True XYZ'); ylabel('Estimated XYZ');
+      %       grid on
+      %
+      %       % LAB comparisons
+      %       tmp = XW2RGBFormat(tgtXYZ,r,c);
+      %       whiteXYZ = tgtXYZ(101,:);
+      %       cielab = xyz2lab(tmp,whiteXYZ);
+      %       cielab = RGB2XWFormat(cielab);
+      %
+      %       tmp = XW2RGBFormat(estXYZ,r,c);
+      %       whiteXYZ = estXYZ(101,:);
+      %       estCielab = xyz2lab(tmp,whiteXYZ);
+      %       estCielab = RGB2XWFormat(estCielab);
+      %
+      %       subplot(2,1,2)
+      %       plot(cielab(:,1), estCielab(:,1),'ko', ...
+      %         cielab(:,2), estCielab(:,2),'rs',...
+      %         cielab(:,3),estCielab(:,3),'bx');
+      %       grid on;
+      %       axis equal
+      %
+      %       xlabel('True LAB'); ylabel('Estimated LAB');
+      %       legend({'L*','a*','b*'},'Location','SouthEast')
+      %
+      %
+      %       %% Show the two images
+      %       vcNewGraphWin([],'tall');
+      %       subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ,r,c)));
+      %       subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
+      %
+      %       %% Error histogram
+      %       vcNewGraphWin;
+      %       dE = deltaEab(tgtXYZ,estXYZ,tgtXYZ(101,:));
+      %       hist(dE,30);
+      %       xlabel('\Delta E')
+      %       ylabel('Count');
+      %       v = sprintf('%.1f',mean(dE(:)));
+      %       title(['Mean \Delta E ',v])
+      %
+      %       pause
       %% End
     end
   end

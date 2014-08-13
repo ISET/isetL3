@@ -23,16 +23,17 @@ SRGBfeasible = SRGBfeasible(I,:);
 RefSRGBfeasible = RefSRGBfeasible(I,:);
 Ncharts = length(I)/100;
 
-for ns = 1:Ncharts
-  scene = sceneCreate('reflectance chart prefilled',RefSRGBfeasible((ns-1)*100+1:ns*100,:)');
+for ns = 1:5
+%   scene = sceneCreate('reflectance chart prefilled',RefSRGBfeasible((ns-1)*100+1:ns*100,:)');
+  scene = sceneCreate('reflectance chart');
   %   vcAddObject(scene);
   %   sceneWindow
   
   [luminance,meanLuminance] = sceneCalculateLuminance(scene);
-  targetLuminance = 200*meanLuminance/max(luminance(:));
+  targetLuminance = 100*meanLuminance/max(luminance(:));
   
-  for nl = 1:length(lights)
-    for nc = 1:length(cfas)
+  for nc = 1:length(cfas)
+    for nl = 1:length(lights)
       
       
       close all
@@ -42,7 +43,7 @@ for ns = 1:Ncharts
       cameraD65 = camera;
       load(['../QTtraindata/data/L3camera_',cfas{nc},'_',lights{nl},'.mat'])
       
-      cameraAlt = L3ModifyCameraFG(camera,cameraD65,4);
+      cameraAlt = L3ModifyCameraFG(camera,cameraD65,1);
       
       [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
         cameraComputesrgbNoCrop(cameraAlt, scene, targetLuminance, sz, [], ...
@@ -53,8 +54,8 @@ for ns = 1:Ncharts
         xyzIdealD65 = xyzIdeal;
       end
       
-      imagesc(srgbIdeal); axis off; axis equal; axis tight;
-      imagesc(srgbResult); axis off; axis equal; axis tight;
+      subplot(2,1,1);imagesc(srgbIdeal); axis off; axis equal; axis tight;
+      subplot(2,1,2);imagesc(srgbResult); axis off; axis equal; axis tight;
       
       %% Collect up the chart ip data and the original XYZ
       
@@ -159,5 +160,5 @@ for ns = 1:Ncharts
   end
 end
 
-results2 = results;
-save results2 results2
+results3 = results;
+save results3 results3
