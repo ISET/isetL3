@@ -29,7 +29,7 @@ for ns = 1:Ncharts
   %   sceneWindow
   
   [luminance,meanLuminance] = sceneCalculateLuminance(scene);
-  targetLuminance = 200*meanLuminance/luminance(1,end);
+  targetLuminance = 200*meanLuminance/max(luminance(:));
   
   for nl = 1:length(lights)
     for nc = 1:length(cfas)
@@ -159,4 +159,5 @@ for ns = 1:Ncharts
   end
 end
 
-save results2 results
+results2 = results;
+save results2 results2

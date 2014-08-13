@@ -26,7 +26,7 @@ filters = L3Get(L3, 'filters');
 L3D65 = cameraGet(cameraD65, 'L3');
 filtersD65 = L3Get(L3D65, 'filters');
 
-if opt == 3 || opt == 4
+if opt >= 3
   
   [ptrow, ptcol, ltsz, stsz] = size(filtersD65);
   
@@ -56,6 +56,21 @@ if opt == 3 || opt == 4
                 thisFilters.global = L3.globaltrM * thisFilters.global;
                 thisFilters.flat = L3.globaltrM * thisFilters.flat;
                 thisFilters.texture{1} = L3.globaltrM * thisFilters.texture{1};
+              case 5
+                % Use the first three rows and modified using
+                % the global correction matrix
+                thisFilters.global(4:6, :) = [];
+                thisFilters.flat(4:6, :) = [];
+                thisFilters.texture{1}(4:6, :) = [];
+                try
+                  thisFilters.global = L3.globaltrMFG * thisFilters.global;
+                  thisFilters.flat = L3.globaltrMFG * thisFilters.flat;
+                  thisFilters.texture{1} = L3.globaltrMFG * thisFilters.texture{1};
+                catch err
+                  thisFilters.global = L3.globaltrM * thisFilters.global;
+                  thisFilters.flat = L3.globaltrM * thisFilters.flat;
+                  thisFilters.texture{1} = L3.globaltrM * thisFilters.texture{1};
+                end
               otherwise
                 error('No such option');
             end
