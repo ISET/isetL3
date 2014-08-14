@@ -13,12 +13,12 @@ clear, clc, close all
 s_initISET
 
 %% Load camera with L3 stored
-load('L3camera_fb_D652D65.mat');
+load('L3camera_fb_Tungsten2D65_expIdx4.mat');
 L3 = cameraGet(camera, 'l3');
 
 %% Load scene
 dataRootPath = '/biac4/wandell/data/qytian/L3Project/scene';
-sceneName = 'FosterBuilding-photons'; 
+sceneName = 'VegetablesCalibNIR'; 
 % eg scenes: AsianWoman_1, VegetablesCalibNIR, FosterBuilding-photons
 fName = fullfile(dataRootPath, [sceneName '.mat']);
 scene = sceneFromFile(fName,'multispectral');
@@ -41,7 +41,7 @@ fov = cameraGet(camera, 'sensor hfov');
 scene = sceneSet(scene,'hfov',fov);
 
 % Set mean luminance
-meanLuminance = 400;
+meanLuminance = 60;
 scene = sceneAdjustLuminance(scene, meanLuminance);
 
 %% Simulation
@@ -77,6 +77,6 @@ figure, imshow(srgbL3), title('L3')
 figure, imshow(srgbBasic), title('ISET Basic')
 
 %% Save results
-imwrite(srgbIdeal, [sceneName '_srgb_simulation_Ideal_lum_', num2str(meanLuminance), '.png']);
-imwrite(srgbL3, [sceneName '_srgb_simulation_L3_lum_', num2str(meanLuminance), '.png']);
-imwrite(srgbBasic, [sceneName '_srgb_simulation_Basic_lum_', num2str(meanLuminance), '.png']);
+imwrite(srgbIdeal, [sceneName '_srgb_simulation_Ideal_lum_', num2str(meanLuminance), '_expIdx4.png']);
+imwrite(srgbL3, [sceneName '_srgb_simulation_L3_lum_', num2str(meanLuminance), '_expIdx4.png']);
+imwrite(srgbBasic, [sceneName '_srgb_simulation_Basic_lum_', num2str(meanLuminance), '_expIdx4.png']);

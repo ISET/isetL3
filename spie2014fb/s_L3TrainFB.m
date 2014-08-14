@@ -14,7 +14,8 @@ s_initISET
 %% Create and initialize L3 structure
 L3 = L3Create;
 wavelength = [400:10:680]';
-[sensor, optics] = fbCreate(wavelength');
+expIdx = 4; 
+[sensor, optics] = fbCreate(wavelength', expIdx);
 
 oi = oiCreate;
 oi = oiSet(oi,'optics',optics);
@@ -35,6 +36,7 @@ fName = fullfile(dataRootPath,'Joyce_2.8_Tungsten_exp_4.mat');
 load(fName);
 trainingillum = interp1(wave, SPD, wavelength, 'linear');
 L3 = L3Set(L3, 'training illuminant', trainingillum);
+L3 = L3Set(L3, 'rendering illuminant', trainingillum);
 
 %% Perform training
 L3 = L3Train(L3);
@@ -43,5 +45,5 @@ L3 = L3Train(L3);
 camera = L3CameraCreate(L3);
 
 %% Save data
-save('L3_fb_D652D65', 'L3');
-save('L3camera_fb_Tungsten2D65', 'camera');
+save('L3_fb_Tungsten2Tungsten_expIdx4', 'L3');
+save('L3camera_fb_Tungsten2Tungsten_expIdx4', 'camera');
