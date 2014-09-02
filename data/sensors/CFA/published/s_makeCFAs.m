@@ -357,6 +357,18 @@ filterOrder = [1, 2;...
                4, 3];
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
+%% RxBxGx
+name = 'RxGxBx';
+comment = 'Bayer pattern with k padding for super-resolution experiment';
+k = zeros(size(r));
+data = [r, g, b, k];
+filterNames = {'r', 'g', 'b', 'k'};
+filterOrder = [1, 4, 2, 4;...
+               4, 4, 4, 4;...
+               2, 4, 3, 4;...
+               4, 4, 4, 4];
+save(name,'comment','data','filterNames','filterOrder','wavelength')
+
 %% RGBN
 name = 'RGBN';
 comment = 'Bayer pattern with one G replaced with narrow band';
