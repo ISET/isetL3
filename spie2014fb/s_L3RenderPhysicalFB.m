@@ -13,14 +13,15 @@ clear, clc, close all
 s_initISET
 
 %% Load camera
-load('L3camera_fb_Tungsten2Tungsten_expIdx4.mat');
+load('L3camera_fb_D652D65_expIdx4_OC=0.mat');
 L3 = cameraGet(camera, 'l3');
 
 %% Load fb raw images
 dataRootPath = '/biac4/wandell/users/hblasins/5BD_Faces';
-expIdx = 4; 
-sceneName = ['Steve_2.8_Tungsten_exp_' num2str(expIdx)];
+expIdx = 1; 
+sceneName = ['QT_2.8_Daylight_exp_' num2str(expIdx)];
 fName = fullfile(dataRootPath, [sceneName '.mat']);
+% fName = 'Daylight_exp_3.mat';
 load(fName);
 
 %% Set sensor image
@@ -53,8 +54,8 @@ figure, imshow(srgbL3), title('L3')
 figure, imshow(srgbBasic), title('ISET Basic')
 
 %% Save results
-imwrite(srgbL3, [sceneName '_srgb_physical_L3_lum_', num2str(meanLuminance), '_expIdx4_t2t.png']);
-imwrite(srgbBasic, [sceneName '_srgb_physical_Basic_lum_', num2str(meanLuminance), '_expIdx4_t2t.png']);
+imwrite(srgbL3, [sceneName '_srgb_physical_L3_lum_', num2str(meanLuminance), '_DAYLIGHT_OC=0.png']);
+imwrite(srgbBasic, [sceneName '_srgb_physical_Basic_lum_', num2str(meanLuminance), '_DAYLIGHT_OC=0.png']);
 
 
 

@@ -31,12 +31,25 @@ L3.training.luminanceList = [linspace(0.01*voltagemax, 0.1*voltagemax, 40), ...
                              linspace(0.51*voltagemax, 99*voltagemax, 10)];
 
 %% Across illuminat training using the measured illuminant spectra
-dataRootPath = '/biac4/wandell/users/hblasins/5BD_Faces';
-fName = fullfile(dataRootPath,'Joyce_2.8_Tungsten_exp_4.mat');
-load(fName);
-trainingillum = interp1(wave, SPD, wavelength, 'linear');
-L3 = L3Set(L3, 'training illuminant', trainingillum);
-L3 = L3Set(L3, 'rendering illuminant', trainingillum);
+% dataRootPath = '/biac4/wandell/users/hblasins/5BD_Faces';
+% fName = fullfile(dataRootPath,'Joyce_2.8_Tungsten_exp_4.mat');
+% load(fName);
+% trainingillum = interp1(wave, SPD, wavelength, 'linear');
+% L3 = L3Set(L3, 'training illuminant', trainingillum);
+% L3 = L3Set(L3, 'rendering illuminant', trainingillum);
+
+%% Turn off orange and cyan
+% sensorD = L3Get(L3, 'design sensor');
+% filters = sensorGet(sensorD, 'filter spectra');
+% filters(:, 4 : 5) = 0;
+% sensorD = sensorSet(sensorD, 'filter spectra', filters);
+% L3 = L3Set(L3, 'design sensor', sensorD);
+
+%% More Luminance Samples
+nLuminanceSteps = 1000;
+voltagemax = L3Get(L3,'voltage max');
+patchLuminanceSamples = linspace(0.001*voltagemax,0.99*voltagemax,nLuminanceSteps);
+L3 = L3Set(L3,'luminance list', patchLuminanceSamples);
 
 %% Perform training
 L3 = L3Train(L3);
@@ -45,5 +58,5 @@ L3 = L3Train(L3);
 camera = L3CameraCreate(L3);
 
 %% Save data
-save('L3_fb_Tungsten2Tungsten_expIdx4', 'L3');
-save('L3camera_fb_Tungsten2Tungsten_expIdx4', 'camera');
+save(['L3_fb_D652D65_expIdx' num2str(expIdx) '_dense1000'], 'L3');
+save(['L3camera_fb_D652D65_expIdx' num2str(expIdx) '_dense1000'], 'camera');
