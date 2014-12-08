@@ -219,6 +219,23 @@ switch sceneName
         end
         scene = sceneReflectanceChart(sFiles,sSamples,pSize,wave,grayFlag,sampling);
 
+  case {'nature100'}
+        % sceneCreate('nature100',pSize,grayFlag); 
+        % There is always a gray strip at the right.
+
+        % Defaults
+        pSize = 24;     % Patch size in pixels
+        grayFlag = 1;   % Add a gray strip column on right
+        
+        [reflectances, wave] = computeNature100samples();
+
+        if isempty(varargin)
+        else
+            pSize = varargin{1};
+            if length(varargin) > 1, grayFlag = varargin{2}; end            
+        end
+        scene = sceneReflectanceChart(reflectances',[],pSize,wave,grayFlag,'r');
+
   case {'reflectancechartcustom'}
         % sceneCreate('reflectance chart Customs',LABcenter,pSize,nSamples,wave,grayFlag); 
         % There is always a gray strip at the right.
