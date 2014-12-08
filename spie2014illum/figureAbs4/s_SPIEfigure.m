@@ -1,24 +1,24 @@
 folder = pwd;
-cd ~/Stanford/iset
+cd ~/scien/iset
 isetPath(pwd)
-cd ~/Stanford/L3
+cd ~/scien/L3
 L3Path(pwd)
 cd(folder);
 
 clear all, clc, close all
 s_initISET
 
-scene = sceneCreate('reflectance chart');
+scene = sceneCreate('nature100');
 
 lights = {'D65','Tungsten','Fluorescent'};
 cfas = {'RGBW1','Bayer'};
-opts = [2 3 5];
+opts = [2 3];% 5];
 
 resultsDE = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),length(opts)]);
 
 for nc = 1:length(cfas)
   for nl = 1:length(lights)
-    for nopt = 1:3
+    for nopt = 1:length(opts)
       opt = opts(nopt);
       
       close all
@@ -31,7 +31,7 @@ for nc = 1:length(cfas)
       camera.vci.L3.globaltrMFG = results(nl,nc).tgtXYZ'/results(nl,nc).estXYZ';
       
       
-      cameraAlt = L3ModifyCameraFG(camera,cameraD65,1);
+      cameraAlt = L3ModifyCameraFG(camera,cameraD65,opt);
       
       [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
         cameraComputesrgbNoCrop(cameraAlt, scene, 70, sz, [], ...
@@ -76,7 +76,7 @@ for nc = 1:length(cfas)
       xyzResult = imageLinearTransform(lrgbResult, matrix);
       
       % These are down the first column, starting at the upper left.
-      delta = round(min(pSize)/2);   % Central portion of the patch
+      delta = round(min(pSize)/4);   % Central portion of the patch
       % mRGB  = chartPatchData(ip,mLocs,delta);
       tgtXYZ = zeros(size(mLocs,2),3);
       estXYZ = zeros(size(mLocs,2),3);
@@ -85,14 +85,18 @@ for nc = 1:length(cfas)
         estXYZ(ii,:) = squeeze(mean(mean(xyzResult(mLocs(1,ii)+(-delta:delta),mLocs(2,ii)+(-delta:delta),:),1),2));
       end
       
-      %       rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
-      %       chartDrawRects(ip,mLocs,delta,'off');
+%             rectHandles = chartDrawRects(ip,mLocs,delta,'on'); pause(1);
+%             chartDrawRects(ip,mLocs,delta,'off');
       
       %% Color error analyses
       
-      % XYZ = mRGB*L
-      % L = mRGB\XYZ;
-      % estXYZ = mRGB*L;
+%       XYZ = mRGB*L;
+%       L = mRGB\XYZ;
+%       estXYZ = mRGB*L;
+%       for i = 1:3
+%           tgtXYZ(:,i) = tgtXYZ(:,i) / tgtXYZ(101,i);
+%           estXYZ(:,i) = estXYZ(:,i) / estXYZ(101,i);
+%       end
       
       vcNewGraphWin([],'tall');
       subplot(2,1,1)
@@ -124,8 +128,8 @@ for nc = 1:length(cfas)
       
       %% Show the two images
       vcNewGraphWin([],'tall');
-      subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ,r,c)));
-      subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
+      subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:)),r,c)));
+      subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
       
       %% Error histogram
       vcNewGraphWin;
@@ -146,6 +150,7 @@ for nc = 1:length(cfas)
       resultsDE(nl,nc,nopt).estXYZ = estXYZ;
       resultsDE(nl,nc,nopt).dE = dE;
       
+     return
       %       pause
       %
       %       tgtXYZ = XYZ * mean(estXYZ(101,:)) / mean(XYZ(101,:));
@@ -198,6 +203,7 @@ for nc = 1:length(cfas)
       %
       %       pause
       %% End
+      pause(0.01)
     end
   end
 end
