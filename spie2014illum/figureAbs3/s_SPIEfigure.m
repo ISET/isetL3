@@ -8,10 +8,13 @@ cd(folder);
 clear all, clc, close all
 s_initISET
 
-scene = sceneCreate('reflectance chart');
+scene = sceneCreate('nature100');
 
 lights = {'D65','Tungsten','Fluorescent'};
 cfas = {'RGBW1','Bayer'};
+
+lights = {'D65','Tungsten'};
+cfas = {'Bayer'};
 
 results = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),2]);
 
@@ -69,7 +72,7 @@ for nl = 1:length(lights)
       xyzResult = srgb2xyz(srgbResult);        
       
       % These are down the first column, starting at the upper left.
-      delta = round(min(pSize)/2);   % Central portion of the patch
+      delta = round(min(pSize)/4);   % Central portion of the patch
       % mRGB  = chartPatchData(ip,mLocs,delta);
       tgtXYZ = zeros(size(mLocs,2),3);
       estXYZ = zeros(size(mLocs,2),3);
@@ -117,8 +120,10 @@ for nl = 1:length(lights)
       
       %% Show the two images
       vcNewGraphWin([],'tall');
-      subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ,r,c)));
-      subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ,r,c)));
+      subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:)),r,c)));
+      axis off; axis equal; axis tight;
+      subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
+      axis off; axis equal; axis tight;
       
       %% Error histogram
       vcNewGraphWin;
@@ -139,6 +144,8 @@ for nl = 1:length(lights)
       results(nl,nc,opt-1).estXYZ = estXYZ;
       results(nl,nc,opt-1).dE = dE;
       
+      [tgtXYZ(101,:)./estXYZ(101,:)]
+%       pause
 %       pause
 %       
 %       tgtXYZ = XYZ * mean(estXYZ(101,:)) / mean(XYZ(101,:));
