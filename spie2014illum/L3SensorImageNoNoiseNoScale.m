@@ -34,7 +34,7 @@ for ii=1:nScenes
     thisScene = L3Get(L3,'scene',ii);
 
     %% Compute input images    
-    thisScene = sceneAdjustIlluminant(thisScene, trainingillum, false);
+    thisScene = sceneAdjustIlluminant(thisScene, trainingillum);
     
     oi = oiCompute(oi,thisScene);
 
@@ -45,7 +45,7 @@ for ii=1:nScenes
     %% Compute ideal images
     % recompute oi if illuminant has changed
     if ~strcmpi(trainingillum,renderingillum)
-        thisScene = sceneAdjustIlluminant(thisScene, renderingillum, false);
+        thisScene = sceneAdjustIlluminant(thisScene, renderingillum);
         oi = oiCompute(oi,thisScene);
     end
 
