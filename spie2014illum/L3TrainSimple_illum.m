@@ -27,7 +27,7 @@ function L3 = L3TrainSimple_illum(L3)
 
 %% Compute sensor volts for a monochrome sensor
 [desiredIm, inputIm] = L3SensorImageNoNoiseNoScale(L3);
-[desiredIm, inputIm] = L3SampleSensorImage(desiredIm, inputIm, L3, 100);
+% [desiredIm, inputIm] = L3SampleSensorImage(desiredIm, inputIm, L3, 100);
 
 %% Delete any offset
 sensorM = L3Get(L3,'sensor monochrome');
@@ -148,9 +148,8 @@ for rr=1:size(cfaPattern,1)
                     end
                     
                     L3 = L3Set(L3, 'contrast type', 1);
-                    [globalpipelinefilter, globaltrM] = L3findfilters_illum(L3,noiseFlag);
+                    globalpipelinefilter = L3findfilters(L3,noiseFlag);
                     L3 = L3Set(L3,'global filter',globalpipelinefilter);
-                    L3 = L3Set_illum(L3,'global trm',globaltrM);
 
                     % Visualization
                     % L3showfilters('global',globalpipelinefilter,blockSize);
@@ -191,11 +190,10 @@ for rr=1:size(cfaPattern,1)
                     %enforce symmetry for flat filters
                     symmetryflag = 1; 
                     L3 = L3Set(L3, 'contrast type', 2);
-                    [flatfilters, flattrM] = L3findfilters_illum(L3,noiseFlag,flatindices,symmetryflag);
+                    flatfilters = L3findfilters(L3,noiseFlag,flatindices,symmetryflag);
 
                     % This is set for a particular cfaPosition (could be the current default)
                     L3 = L3Set(L3,'flat filters',flatfilters);
-                    L3 = L3Set_illum(L3,'flat trm',flattrM);
 
                     % Visualize
                     % L3showfilters('flat',flatfilters,blockSize,meansfilter,blockpattern);
@@ -234,7 +232,6 @@ for rr=1:size(cfaPattern,1)
 
                     %% Create the texture filters
                     texturefilters = cell(1,numclusters);
-                    texturetrM = cell(1,numclusters);
 
                     trainclustermembers = L3Get(L3,'cluster members');
                     % vcNewGraphWin; hist(trainclustermembers(:))
@@ -257,12 +254,11 @@ for rr=1:size(cfaPattern,1)
                         %don't enforce symmetry for texture patches because they
                         %are oriented
                         symmetryflag=0; 
-                        [texturefilters{clusternum}, texturetrM{clusternum}] = ...
-                            L3findfilters_illum(L3,noiseFlag,clusterindices,symmetryflag);
+                        texturefilters{clusternum} = ...
+                            L3findfilters(L3,noiseFlag,clusterindices,symmetryflag);
 
                     end
                     L3 = L3Set(L3,'texture filters',texturefilters);
-                    L3 = L3Set_illum(L3,'texture trm',texturetrM);
 
                 else   % if not enough patches for luminance value
                     L3 = L3Set(L3,'empty filter',[]);  % place empty in filters structure

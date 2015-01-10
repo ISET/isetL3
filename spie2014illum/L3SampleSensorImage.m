@@ -1,6 +1,6 @@
 function [desiredImSamp, inputImSamp] = L3SampleSensorImage(desiredIm, inputIm, L3, nSamples)
 
-if ieNotDefined('nSamples'), nSamples = 500; end
+if ieNotDefined('nSamples'), nSamples = 50; end
 desiredImSamp = cell(nSamples,1);
 inputImSamp = cell(nSamples,1);
 
