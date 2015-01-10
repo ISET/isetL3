@@ -8,7 +8,7 @@
 % (c) Stanford VISTA Team
 
 %% Start ISET
-s_initISET
+% s_initISET
 
 %% Create and initialize L3 structure
 L3 = L3Create;
