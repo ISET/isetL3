@@ -1,4 +1,4 @@
-function scene = sceneAdjustLuminance(scene,meanL)
+function scene = sceneAdjustMaxLuminance(scene,maxL)
 % Scale scene mean luminance to meanL
 %
 %   scene = sceneAdjustLuminance(scene,meanL)
@@ -19,31 +19,26 @@ function scene = sceneAdjustLuminance(scene,meanL)
 %
 
 % Verify that current luminance exists, or calculate it
-% if not(strcmp(scene.name,'Reflectance Chart (Custom)'))
-  currentMeanL  = sceneGet(scene,'mean luminance');
-  photons       = sceneGet(scene,'photons');
+lum  = sceneGet(scene,'luminance');
+currentMaxL = max(lum(:));
+photons       = sceneGet(scene,'photons');
 
-  try
-      photons   = photons*(meanL/currentMeanL);
-  catch err
-      % Probably the data are too big for memory.  So scale the photons
-      % one waveband at a time.
-      nWave = sceneGet(scene,'wave');
-      for ii=1:nWave
-          photons(:,:,ii) = photons(:,:,ii)*(meanL/currentMeanL);
-      end
-  end
-% else
-%   
-% end
+try
+    photons   = photons*(maxL/currentMaxL);
+catch err
+    % Probably the data are too big for memory.  So scale the photons
+    % one waveband at a time.
+    nWave = sceneGet(scene,'wave');
+    for ii=1:nWave
+        photons(:,:,ii) = photons(:,:,ii)*(maxL/currentMaxL);
+    end
+end
 
 % We scale the photons and the illuminant data by the same amount to keep
 % the reflectances in 0,1 range.
 scene      = sceneSet(scene,'photons',photons);
 illuminant = sceneGet(scene,'illuminant photons');
-illuminant = illuminant*(meanL/currentMeanL);
+illuminant = illuminant*(maxL/currentMaxL);
 scene      = sceneSet(scene,'illuminant photons',illuminant);
-
-disp(['Luminance adjustment factor: ', num2str(meanL/currentMeanL)])
 
 return;

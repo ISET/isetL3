@@ -12,7 +12,7 @@ clear, clc, close all
 % s_initISET
 
 %% Illuminants and CFAs
-ill = 'D65norm'; % 'D65'
+ill = 'Tungsten'; % 'D65'
 cfa = 'Bayer'; % 'RGBW1'
 
 %% Training
@@ -60,14 +60,14 @@ L3.sensor.design.rows = floor(L3.sensor.design.cols*10/22)*2;
 
 %% Set training and rendering illuminant
 L3 = L3Set(L3, 'Training Illuminant', [ill, '.mat']);
-L3 = L3Set(L3, 'Rendering Illuminant', ['D65norm', '.mat']);
+L3 = L3Set(L3, 'Rendering Illuminant', ['D65', '.mat']);
 
 %% Change training scenes to color chart
 % L3.scene = {sceneCreate('nature100')};
 
 % Read training and rendering illuminant
 illumTraining = vcReadSpectra(L3Get(L3, 'training illuminant'), wave);
-illumD65 = vcReadSpectra('D65norm.mat', wave);
+illumD65 = vcReadSpectra('D65.mat', wave);
 
 %% Train and create camera
 L3 = L3TrainSimple_illum(L3);
