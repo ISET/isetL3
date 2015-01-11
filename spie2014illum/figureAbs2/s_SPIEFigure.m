@@ -1,24 +1,25 @@
 folder = pwd;
-cd ~/scien/iset
+cd ~/Stanford/iset
 isetPath(pwd)
-cd ~/scien/L3
+cd ~/Stanford/L3
 L3Path(pwd)
 cd(folder);
 
 clear all, clc, close all
 s_initISET
 
-lights = {{'Tungsten', 'D65'},{'Tungsten', 'D65', 'Fluorescent'}};% {'D65'},{'Fluorescent'},{'Tungsten'}
+lights = {{'Tungsten', 'D65'},{'Tungsten', 'D65', 'Fluorescent'},...
+{'Fluorescent', 'D65'},{'Fluorescent', 'D65', 'Tungsten'}};% {'D65'},{'Fluorescent'},{'Tungsten'}
 cfas = {'RGBW1','Bayer'};
-scenes = {'Chart'}; % AsianFemaleWithFlowers
+scenes = {'Vegetables'}; % AsianFemaleWithFlowers Chart Vegetables
 figure%('Visible','off')
 
 for ns = 1:length(scenes)
     for nl = 1:length(lights)
         for nc = 1:length(cfas)
             
-            %scene = sceneFromFile([scenes{ns} '.mat'],'multispectral');
-	    	scene = sceneCreate('nature100');
+            scene = sceneFromFile([scenes{ns} '.mat'],'multispectral');
+	    	% scene = sceneCreate('nature100');
             sz = sceneGet(scene,'size');
             lname = [lights{nl}{1},num2str(length(lights{nl}))];
             
