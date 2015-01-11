@@ -6,7 +6,7 @@
 %
 % (c) Stanford Vista Team 2014
 
-clear, clc, close all
+% clear, clc, close all
 
 %% Start ISET
 % s_initISET

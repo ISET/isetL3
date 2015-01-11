@@ -23,9 +23,9 @@ SRGBfeasible = SRGBfeasible(I,:);
 RefSRGBfeasible = RefSRGBfeasible(I,:);
 Ncharts = length(I)/100;
 
-for ns = 1:5
+for ns = 1:1
 %   scene = sceneCreate('reflectance chart prefilled',RefSRGBfeasible((ns-1)*100+1:ns*100,:)');
-  scene = sceneCreate('reflectance chart');
+  scene = sceneCreate('nature100');
   %   vcAddObject(scene);
   %   sceneWindow
   
