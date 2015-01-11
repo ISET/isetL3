@@ -69,7 +69,7 @@ end
 patches(ignorepixels,:) = [];
 
 %% Find Wiener filter
-if length(weightbiasvariance)>1 & any(abs(diff(weightbiasvariance))~=0)
+if length(weightbiasvariance)>1 && any(abs(diff(weightbiasvariance))~=0)
     % If channels are weighted differently, do color transform
    centeroutput = weightColorTransform * centeroutput; 
 
