@@ -9,14 +9,12 @@
 clear, clc, close all
 
 %% Start ISET
-% s_initISET
+s_initISET
 
 %% Illuminants and CFAs
 ils = {{'Tungsten','D65'}, {'Fluorescent','D65'}, {'Tungsten','D65','Fluorescent'}, {'Fluorescent','Tungsten','D65'}};
-ils = ils(nn);
 % {'Tungsten'}, {'Fluorescent'}, {'D65'}, 
 cfas = {'Bayer', 'RGBW1'};
-cfas = cfas(mm);
 
 %% Training
 for illumNum = 1 : length(ils)
@@ -64,7 +62,7 @@ for illumNum = 1 : length(ils)
         ilsmat = {};
         for ii = 1:length(ils{illumNum}), ilsmat{ii} = [ils{illumNum}{ii},'.mat']; end;
         L3 = L3Set(L3, 'Training Illuminant', ilsmat);
-        L3 = L3Set(L3, 'Rendering Illuminant', [ils{illumNum}{1}, '.mat']);
+        L3 = L3Set(L3, 'Rendering Illuminant', ilsmat);
         
         %% To compute correction matrices. We modify the ideal filters and
         % change L3Train and L3findfilters functions. It's a dirty and
@@ -75,7 +73,7 @@ for illumNum = 1 : length(ils)
         XYZ = idealFilters.transmissivities;
         
         % Read training and rendering illuminant
-        illumRender = vcReadSpectra(L3Get(L3, 'rendering illuminant'), wave);
+        illumRender = vcReadSpectra(ilsmat{1}, wave);
         illumD65 = vcReadSpectra('D65.mat', wave);
         
         % Scale XYZ and concatenate to ideal filters

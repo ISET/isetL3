@@ -46,8 +46,8 @@ for jj = 1:nIlls
         
         %% Compute ideal images
         % recompute oi if illuminant has changed
-        if ~strcmpi(trainingillum{jj},renderingillum)
-            thisScene = sceneAdjustIlluminant(thisScene, renderingillum);
+        if ~strcmpi(trainingillum{jj},renderingillum{jj})
+            thisScene = sceneAdjustIlluminant(thisScene, renderingillum{jj});
             oi = oiCompute(oi,thisScene);
         end
         

@@ -14,15 +14,18 @@ lights = {{'D65'},{'Tungsten'},{'Fluorescent'},...
     {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'},...
     {'Fluorescent','D65'},{'Fluorescent','D65','Tungsten'}};
 cfas = {'RGBW1','Bayer'};
+opts = [2,3,6];
 
 % lights = {'D65','Tungsten'};
 % cfas = {'Bayer'};
 
-results = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),2]);
+results = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),length(opts)]);
 
 for nl = 1:length(lights)
   for nc = 1:length(cfas)
-    for opt = 2:3
+    for nopt = 1:length(opts)
+        
+        opt = opts(nopt);
       close all
       sz = sceneGet(scene,'size');
       
@@ -144,15 +147,18 @@ for nl = 1:length(lights)
       v = sprintf('%.1f',mean(dE(:)));
       title(['Mean \Delta E ',v])
       
-      fprintf('%s %s %d %.1f\n',lname,cfas{nc},opt,mean(dE));
+      fprintf('%s %s %d %.1f %.1f %.1f\n',lname,cfas{nc},opt,mean(dE),std(dE),prctile(dE,90));
 
-      results(nl,nc,opt-1).light = lights{nl};
-      results(nl,nc,opt-1).cfa = cfas{nc};
-      results(nl,nc,opt-1).opt = opt;
-      results(nl,nc,opt-1).XYZ = XYZ;
-      results(nl,nc,opt-1).tgtXYZ = tgtXYZ;
-      results(nl,nc,opt-1).estXYZ = estXYZ;
-      results(nl,nc,opt-1).dE = dE;
+      results(nl,nc,nopt).light = lights{nl};
+      results(nl,nc,nopt).cfa = cfas{nc};
+      results(nl,nc,nopt).opt = opt;
+      results(nl,nc,nopt).XYZ = XYZ;
+      results(nl,nc,nopt).tgtXYZ = tgtXYZ;
+      results(nl,nc,nopt).estXYZ = estXYZ;
+      results(nl,nc,nopt).dE = dE;
+      results(nl,nc,nopt).meandE = mean(dE);
+      results(nl,nc,nopt).stddE = std(dE);
+      results(nl,nc,nopt).percdE = prctile(dE,90);
       
 %       [tgtXYZ(101,:)./estXYZ(101,:)]
 %       pause
