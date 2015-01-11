@@ -44,6 +44,6 @@ illuminant = sceneGet(scene,'illuminant photons');
 illuminant = illuminant*(meanL/currentMeanL);
 scene      = sceneSet(scene,'illuminant photons',illuminant);
 
-disp(['Luminance adjustment factor: ', num2str(meanL/currentMeanL)])
+% disp(['Luminance adjustment factor: ', num2str(meanL/currentMeanL)])
 
 return;

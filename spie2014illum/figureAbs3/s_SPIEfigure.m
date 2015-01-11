@@ -1,20 +1,22 @@
 folder = pwd;
-cd ~/Stanford/iset
+cd ~/scien/iset
 isetPath(pwd)
-cd ~/Stanford/L3
+cd ~/scien/L3
 L3Path(pwd)
 cd(folder);
 
-clear all, clc, close all
-s_initISET
+% clear all, clc, close all
+% s_initISET
 
 scene = sceneCreate('nature100');
 
-lights = {'D65','Tungsten','Fluorescent'};
+lights = {{'D65'},{'Tungsten'},{'Fluorescent'},...
+    {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'},...
+    {'Fluorescent','D65'},{'Fluorescent','D65','Tungsten'}};
 cfas = {'RGBW1','Bayer'};
 
-lights = {'D65','Tungsten'};
-cfas = {'Bayer'};
+% lights = {'D65','Tungsten'};
+% cfas = {'Bayer'};
 
 results = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),2]);
 
@@ -24,15 +26,21 @@ for nl = 1:length(lights)
       close all
       sz = sceneGet(scene,'size');
       
+      if length(lights{nl}) > 1
+          lname = [lights{nl}{1},num2str(length(lights{nl}))];
+      else
+          lname = lights{nl}{1};
+      end
+      
       load(['../QTtraindata/data/L3camera_',cfas{nc},'_','D65','.mat'])
       cameraD65 = camera;
-      load(['../QTtraindata/data/L3camera_',cfas{nc},'_',lights{nl},'.mat'])
+      load(['../QTtraindata/data/L3camera_',cfas{nc},'_',lname,'.mat'])
       
       cameraAlt = L3ModifyCameraFG(camera,cameraD65,opt);
       
       [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
         cameraComputesrgbNoCrop(cameraAlt, scene, 60, sz, [], ...
-        1,0,lights{nl});
+        1,0,lights{nl}{1});
       
       if strcmp(lights{nl},'D65')
         srgbIdealD65 = srgbIdeal;
@@ -103,7 +111,9 @@ for nl = 1:length(lights)
       cielab = RGB2XWFormat(cielab);
       
       tmp = XW2RGBFormat(estXYZ,r,c);
-      whiteXYZ = estXYZ(101,:);
+      whiteXYZest = estXYZ(101,:);
+      scale = mean(whiteXYZ)/mean(whiteXYZest);
+      estXYZ = estXYZ * scale;
       estCielab = xyz2lab(tmp,whiteXYZ);
       estCielab = RGB2XWFormat(estCielab);
       
@@ -134,7 +144,7 @@ for nl = 1:length(lights)
       v = sprintf('%.1f',mean(dE(:)));
       title(['Mean \Delta E ',v])
       
-      fprintf('%s %s %d %.1f\n',lights{nl},cfas{nc},opt,mean(dE));
+      fprintf('%s %s %d %.1f\n',lname,cfas{nc},opt,mean(dE));
 
       results(nl,nc,opt-1).light = lights{nl};
       results(nl,nc,opt-1).cfa = cfas{nc};
@@ -144,7 +154,7 @@ for nl = 1:length(lights)
       results(nl,nc,opt-1).estXYZ = estXYZ;
       results(nl,nc,opt-1).dE = dE;
       
-      [tgtXYZ(101,:)./estXYZ(101,:)]
+%       [tgtXYZ(101,:)./estXYZ(101,:)]
 %       pause
 %       pause
 %       
