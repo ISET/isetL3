@@ -26,7 +26,7 @@ filters = L3Get(L3, 'filters');
 L3D65 = cameraGet(cameraD65, 'L3');
 filtersD65 = L3Get(L3D65, 'filters');
 
-if opt >= 3
+if opt >= 3 && opt < 6
   
   [ptrow, ptcol, ltsz, stsz] = size(filtersD65);
   
@@ -110,6 +110,16 @@ else
                 thisFilters.global(1:3, :) = [];
                 thisFilters.flat(1:3, :) = [];
                 thisFilters.texture{1}(1:3, :) = [];
+              case 6
+                % Delete the first three rows to use the filters
+                % trained from some light to D65
+                thisFilters.global(4:6, :) = [];
+                thisFilters.flat(4:6, :) = [];
+                thisFilters.texture{1}(4:6, :) = [];
+                
+                thisFilters.global = L3.globaltrM * thisFilters.global;
+                thisFilters.flat = L3.globaltrM * thisFilters.flat;
+                thisFilters.texture{1} = L3.globaltrM * thisFilters.texture{1};
               otherwise
                 error('No such option');
             end
@@ -123,4 +133,5 @@ else
   camera.vci.L3.filters = filters;
   
 end
+
 

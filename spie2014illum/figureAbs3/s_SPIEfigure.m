@@ -14,15 +14,18 @@ lights = {{'D65'},{'Tungsten'},{'Fluorescent'},...
     {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'},...
     {'Fluorescent','D65'},{'Fluorescent','D65','Tungsten'}};
 cfas = {'RGBW1','Bayer'};
+opts = [2,3,6];
 
 % lights = {'D65','Tungsten'};
 % cfas = {'Bayer'};
 
-results = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),2]);
+results = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),length(opts)]);
 
 for nl = 1:length(lights)
   for nc = 1:length(cfas)
-    for opt = 2:3
+    for nopt = 1:length(opts)
+        
+        opt = opts(nopt);
       close all
       sz = sceneGet(scene,'size');
       
@@ -46,9 +49,6 @@ for nl = 1:length(lights)
         srgbIdealD65 = srgbIdeal;
         xyzIdealD65 = srgb2xyz(srgbIdeal);
       end
-      
-      imagesc(srgbIdeal); axis off; axis equal; axis tight;
-      imagesc(srgbResult); axis off; axis equal; axis tight;
       
       %% Collect up the chart ip data and the original XYZ
       
@@ -98,12 +98,6 @@ for nl = 1:length(lights)
       % L = mRGB\XYZ;
       % estXYZ = mRGB*L;
       
-      vcNewGraphWin([],'tall');
-      subplot(2,1,1)
-      plot(tgtXYZ(:),estXYZ(:),'o')
-      xlabel('True XYZ'); ylabel('Estimated XYZ');
-      grid on
-      
       % LAB comparisons
       tmp = XW2RGBFormat(tgtXYZ,r,c);
       whiteXYZ = tgtXYZ(101,:);
@@ -116,43 +110,24 @@ for nl = 1:length(lights)
       estXYZ = estXYZ * scale;
       estCielab = xyz2lab(tmp,whiteXYZ);
       estCielab = RGB2XWFormat(estCielab);
-      
-      subplot(2,1,2)
-      plot(cielab(:,1), estCielab(:,1),'ko', ...
-        cielab(:,2), estCielab(:,2),'rs',...
-        cielab(:,3),estCielab(:,3),'bx');
-      grid on;
-      axis equal
-      
-      xlabel('True LAB'); ylabel('Estimated LAB');
-      legend({'L*','a*','b*'},'Location','SouthEast')
-      
-      
-      %% Show the two images
-      vcNewGraphWin([],'tall');
-      subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:)),r,c)));
-      axis off; axis equal; axis tight;
-      subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
-      axis off; axis equal; axis tight;
+
+          
       
       %% Error histogram
-      vcNewGraphWin;
       dE = deltaEab(tgtXYZ,estXYZ,tgtXYZ(101,:));
-      hist(dE,30);
-      xlabel('\Delta E')
-      ylabel('Count');
-      v = sprintf('%.1f',mean(dE(:)));
-      title(['Mean \Delta E ',v])
       
-      fprintf('%s %s %d %.1f\n',lname,cfas{nc},opt,mean(dE));
+      fprintf('%s %s %d %.1f %.1f %.1f\n',lname,cfas{nc},opt,mean(dE),std(dE),prctile(dE,90));
 
-      results(nl,nc,opt-1).light = lights{nl};
-      results(nl,nc,opt-1).cfa = cfas{nc};
-      results(nl,nc,opt-1).opt = opt;
-      results(nl,nc,opt-1).XYZ = XYZ;
-      results(nl,nc,opt-1).tgtXYZ = tgtXYZ;
-      results(nl,nc,opt-1).estXYZ = estXYZ;
-      results(nl,nc,opt-1).dE = dE;
+      results(nl,nc,nopt).light = lights{nl};
+      results(nl,nc,nopt).cfa = cfas{nc};
+      results(nl,nc,nopt).opt = opt;
+      results(nl,nc,nopt).XYZ = XYZ;
+      results(nl,nc,nopt).tgtXYZ = tgtXYZ;
+      results(nl,nc,nopt).estXYZ = estXYZ;
+      results(nl,nc,nopt).dE = dE;
+      results(nl,nc,nopt).meandE = mean(dE);
+      results(nl,nc,nopt).stddE = std(dE);
+      results(nl,nc,nopt).percdE = prctile(dE,90);
       
 %       [tgtXYZ(101,:)./estXYZ(101,:)]
 %       pause
