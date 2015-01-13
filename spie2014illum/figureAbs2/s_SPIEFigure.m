@@ -8,20 +8,27 @@ cd(folder);
 clear all, clc, close all
 s_initISET
 
-lights = {{'Tungsten', 'D65'},{'Tungsten', 'D65', 'Fluorescent'},...
-{'Fluorescent', 'D65'},{'Fluorescent', 'D65', 'Tungsten'}};% {'D65'},{'Fluorescent'},{'Tungsten'}
+lights = {{'D65'},{'Fluorescent'},{'Tungsten'}};%{{'Tungsten', 'D65'},{'Tungsten', 'D65', 'Fluorescent'},...
+% {'Fluorescent', 'D65'},{'Fluorescent', 'D65', 'Tungsten'}};% {'D65'},{'Fluorescent'},{'Tungsten'}
 cfas = {'RGBW1','Bayer'};
-scenes = {'Vegetables'}; % AsianFemaleWithFlowers Chart Vegetables
+scenes = {'AsianFemaleWithFlowers','Chart'}; % AsianFemaleWithFlowers Chart Vegetables
 figure%('Visible','off')
 
 for ns = 1:length(scenes)
     for nl = 1:length(lights)
         for nc = 1:length(cfas)
             
-            scene = sceneFromFile([scenes{ns} '.mat'],'multispectral');
-	    	% scene = sceneCreate('nature100');
+            if strcmp(scenes{ns},'Chart')
+                scene = sceneCreate('nature100');
+            else
+                scene = sceneFromFile([scenes{ns} '.mat'],'multispectral');
+            end
             sz = sceneGet(scene,'size');
-            lname = [lights{nl}{1},num2str(length(lights{nl}))];
+            if length(lights{nl}) > 1
+                lname = [lights{nl}{1},num2str(length(lights{nl}))];
+            else
+                lname = lights{nl}{1};
+            end
             
             load(['../QTtraindata/data/L3camera_',cfas{nc},'_','D65','.mat'])
             cameraD65 = camera;
@@ -34,11 +41,11 @@ for ns = 1:length(scenes)
                 1,0,lights{nl}{1});
             
             imagesc(srgbIdeal); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'png');
-            %export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(1),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'png');
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(1),'.png'],'-png','-transparent');
             imagesc(srgbResult); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'png');
-            %export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(1),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(1),'.png'],'-png','-transparent');
             
             cameraAlt = L3ModifyCameraFG(camera,cameraD65,2);
             
@@ -47,11 +54,11 @@ for ns = 1:length(scenes)
                 1,0,lights{nl}{1});
             
             imagesc(srgbIdeal); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'png');
-            %export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(2),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'png');
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(2),'.png'],'-png','-transparent');
             imagesc(srgbResult); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'png');
-            %export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(2),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(2),'.png'],'-png','-transparent');
             
             cameraAlt = L3ModifyCameraFG(camera,cameraD65,3);
             
@@ -60,11 +67,11 @@ for ns = 1:length(scenes)
                 1,0,lights{nl}{1});
             
             imagesc(srgbIdeal); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(3),'.png'],'png');
-            %export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(3),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(3),'.png'],'png');
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(3),'.png'],'-png','-transparent');
             imagesc(srgbResult); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(3),'.png'],'png');
-            %export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(3),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(3),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(3),'.png'],'-png','-transparent');
             
             cameraAlt = L3ModifyCameraFG(camera,cameraD65,4);
             
@@ -73,11 +80,11 @@ for ns = 1:length(scenes)
                 1,0,lights{nl}{1});
             
             imagesc(srgbIdeal); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'png');
-            %export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(4),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'png');
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(4),'.png'],'-png','-transparent');
             imagesc(srgbResult); axis off; axis equal; axis tight;
-			saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'png');
-            %export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(4),'.png'],'-png','-transparent');
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(4),'.png'],'-png','-transparent');
             
             
         end

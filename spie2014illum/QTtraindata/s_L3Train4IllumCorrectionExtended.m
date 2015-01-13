@@ -9,7 +9,7 @@
 % clear, clc, close all
 
 %% Start ISET
-s_initISET
+% s_initISET
 
 %% Illuminants and CFAs
 ils = {{'Tungsten','D65'}, {'Fluorescent','D65'}, {'Tungsten','D65','Fluorescent'}, {'Fluorescent','Tungsten','D65'}};
