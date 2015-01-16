@@ -10,9 +10,17 @@ cd(folder);
 
 scene = sceneCreate('nature100');
 
+<<<<<<< HEAD
 lights = {{'D65'},{'Tungsten'},{'Fluorescent'}};
 % {'D65'},{'Tungsten'},{'Fluorescent'}, {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'}, {'Fluorescent','D65'},{'Fluorescent','D65','Tungsten'}
 cfas = {'RGBW1'};%,'Bayer'};
+=======
+lights = {{'Tungsten'},...
+    {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'},...
+    };
+% {'D65'},{'Tungsten'},{'Fluorescent'}, {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'}, {'Fluorescent','D65'},{'Fluorescent','D65','Tungsten'}
+cfas = {'RGBW1','Bayer'};
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
 opts = [2,3,6];
 
 % lights = {'D65','Tungsten'};
@@ -20,6 +28,7 @@ opts = [2,3,6];
 
 results = repmat(struct('light',[],'cfa',[],'opt',[],'XYZ',[],'tgtXYZ',[],'estXYZ',[],'dE',[]),[length(lights),length(cfas),length(opts)]);
 
+<<<<<<< HEAD
 figure(1);
 
 for nl = 1:length(lights)
@@ -35,12 +44,30 @@ for nl = 1:length(lights)
 %             end
             
             load(['../QTtraindata/data/L3camera_',cfas{nc},'_','D651','.mat'])
+=======
+for nl = 1:length(lights)
+    for nc = 1:length(cfas)
+        for nopt = 1:length(opts)
+            
+            opt = opts(nopt);
+            close all
+            sz = sceneGet(scene,'size');
+            
+            if length(lights{nl}) > 1
+                lname = [lights{nl}{1},num2str(length(lights{nl}))];
+            else
+                lname = lights{nl}{1};
+            end
+            
+            load(['../QTtraindata/data/L3camera_',cfas{nc},'_','D65','.mat'])
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             cameraD65 = camera;
             load(['../QTtraindata/data/L3camera_',cfas{nc},'_',lname,'.mat'])
             
             cameraAlt = L3ModifyCameraFG(camera,cameraD65,opt);
             
             [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
+<<<<<<< HEAD
                 cameraComputesrgbNoCrop(cameraAlt, scene, 40, sz, [], ...
                 1,0,lights{nl}{1});
             
@@ -54,6 +81,16 @@ for nl = 1:length(lights)
 %             y = xyzIdealD65(3:end-2,3:end-2,:);
 %             plot(x(:),y(:),'+')
 %             
+=======
+                cameraComputesrgbNoCrop(cameraAlt, scene, 80, sz, [], ...
+                1,0,lights{nl}{1});
+            
+            if strcmp(lights{nl},'D65')
+                srgbIdealD65 = srgbIdeal;
+                xyzIdealD65 = srgb2xyz(srgbIdeal);
+            end
+            
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
 %             imagesc(srgbIdeal); axis off; axis equal; axis tight;
             imagesc(srgbResult); axis off; axis equal; axis tight;
             
@@ -78,7 +115,11 @@ for nl = 1:length(lights)
             % hold on
             % plot(mLocs(2,ii),mLocs(1,ii),'o'); hold on;
             % end
+<<<<<<< HEAD
             xyzResult = lrgb2xyz(lrgbResult);
+=======
+            xyzResult = srgb2xyz(srgbResult);
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             % These are down the first column, starting at the upper left.
             delta = round(min(pSize)/4); % Central portion of the patch
             % mRGB = chartPatchData(ip,mLocs,delta);
@@ -96,10 +137,17 @@ for nl = 1:length(lights)
             % estXYZ = mRGB*L;
             
             whiteXYZ = tgtXYZ(101,:);
+<<<<<<< HEAD
 %             whiteXYZEst = estXYZ(101,:);
 %             estXYZ = estXYZ * whiteXYZ(2) / whiteXYZEst(2);
             
             figure(1);
+=======
+            whiteXYZEst = estXYZ(101,:);
+            estXYZ = estXYZ * mean(whiteXYZ) / mean(whiteXYZEst);
+            
+            vcNewGraphWin;
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             plot(tgtXYZ(:),estXYZ(:),'o')
             xlabel('True XYZ','FontSize',16,'FontWeight','b'); ylabel('Estimated XYZ','FontSize',16,'FontWeight','b');
             grid on
@@ -108,7 +156,11 @@ for nl = 1:length(lights)
             export_fig(['XYZ_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
             
             % LAB comparisons
+<<<<<<< HEAD
             % vcNewGraphWin;
+=======
+            vcNewGraphWin;
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             tmp = XW2RGBFormat(tgtXYZ,r,c);
             cielab = xyz2lab(tmp,whiteXYZ);
             cielab = RGB2XWFormat(cielab);
@@ -134,7 +186,11 @@ for nl = 1:length(lights)
 %             subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
 %             axis off; axis equal; axis tight;
             %% Error histogram
+<<<<<<< HEAD
             % vcNewGraphWin;
+=======
+            vcNewGraphWin;
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             dE = deltaEab(tgtXYZ,estXYZ,tgtXYZ(101,:));
             hist(dE,0:20);
             xlabel('\Delta E','FontSize',16,'FontWeight','b')

@@ -8,11 +8,19 @@ cd(folder);
 clear all, clc, close all
 s_initISET
 
+<<<<<<< HEAD
 lights = {{'Tungsten'},{'D65'},{'Fluorescent'}};%{{'Tungsten', 'D65'},{'Tungsten', 'D65', 'Fluorescent'},...
 % {'Fluorescent', 'D65'},{'Fluorescent', 'D65', 'Tungsten'}};% {'D65'},{'Fluorescent'},{'Tungsten'}
 cfas = {'RGBW1'};%,'Bayer'};
 scenes = {'Vegetables','AsianFemaleWithFlowers'}; % AsianFemaleWithFlowers Chart Vegetables
 % figure%('Visible','off')
+=======
+lights = {{'D65'},{'Fluorescent'},{'Tungsten'}};%{{'Tungsten', 'D65'},{'Tungsten', 'D65', 'Fluorescent'},...
+% {'Fluorescent', 'D65'},{'Fluorescent', 'D65', 'Tungsten'}};% {'D65'},{'Fluorescent'},{'Tungsten'}
+cfas = {'RGBW1','Bayer'};
+scenes = {'AsianFemaleWithFlowers','Chart'}; % AsianFemaleWithFlowers Chart Vegetables
+figure%('Visible','off')
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
 
 for ns = 1:length(scenes)
     for nl = 1:length(lights)
@@ -44,18 +52,26 @@ for ns = 1:length(scenes)
             srgbIdeal = xyz2srgb(xyzIdeal);
             imagesc(srgbIdeal); axis off; axis equal; axis tight;
 			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'png');
+<<<<<<< HEAD
             export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'-png','-transparent');
             export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.eps'],'-eps','-transparent');
 %             imagesc(srgbResult); axis off; axis equal; axis tight;
 % 			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'png');
 %             export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'-png','-transparent');
 %             export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.eps'],'-eps','-transparent');
+=======
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(1),'.png'],'-png','-transparent');
+            imagesc(srgbResult); axis off; axis equal; axis tight;
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(1),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(1),'.png'],'-png','-transparent');
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             
             cameraAlt = L3ModifyCameraFG(camera,cameraD65,2);
             
             [~, ~, cameraAlt, ~, xyzIdealTun, lrgbResult] = ...
                 cameraComputesrgbNoCrop(cameraAlt, scene, 60, sz, [], ...
                 1,0,lights{nl}{1});
+<<<<<<< HEAD
             xyzResult = lrgb2xyz(lrgbResult);
             xyzResult = xyzResult / max(max(xyzResult(:,:,2)));
             srgbResult = xyz2srgb(xyzResult);
@@ -69,12 +85,22 @@ for ns = 1:length(scenes)
 			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'png');
             export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'-png','-transparent');
             export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.eps'],'-eps','-transparent');
+=======
+            
+            imagesc(srgbIdeal); axis off; axis equal; axis tight;
+			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'png');
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(2),'.png'],'-png','-transparent');
+            imagesc(srgbResult); axis off; axis equal; axis tight;
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(2),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(2),'.png'],'-png','-transparent');
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             
             cameraAlt = L3ModifyCameraFG(camera,cameraD65,3);
             
             [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
                 cameraComputesrgbNoCrop(cameraAlt, scene, 60, sz, [], ...
                 1,0,lights{nl}{1});
+<<<<<<< HEAD
             xyzResult = lrgb2xyz(lrgbResult);
             xyzResult = xyzResult / max(max(xyzResult(:,:,2)));
             srgbResult = xyz2srgb(xyzResult);
@@ -102,6 +128,28 @@ for ns = 1:length(scenes)
 % 			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'png');
 %             export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'-png','-transparent');
 %             export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.eps'],'-eps','-transparent');
+=======
+            
+            imagesc(srgbIdeal); axis off; axis equal; axis tight;
+			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(3),'.png'],'png');
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(3),'.png'],'-png','-transparent');
+            imagesc(srgbResult); axis off; axis equal; axis tight;
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(3),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(3),'.png'],'-png','-transparent');
+            
+            cameraAlt = L3ModifyCameraFG(camera,cameraD65,4);
+            
+            [srgbResult, srgbIdeal, raw, cameraAlt, xyzIdeal, lrgbResult] = ...
+                cameraComputesrgbNoCrop(cameraAlt, scene, 60, sz, [], ...
+                1,0,lights{nl}{1});
+            
+            imagesc(srgbIdeal); axis off; axis equal; axis tight;
+			%saveas(gcf,['srgbI_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'png');
+            export_fig(['srgbI_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(4),'.png'],'-png','-transparent');
+            imagesc(srgbResult); axis off; axis equal; axis tight;
+			%saveas(gcf,['srgbR_',scenes{ns},'_',cfas{nc},'_',lname,'_opt',num2str(4),'.png'],'png');
+            export_fig(['srgbR_',scenes{ns},'_',cfas{nc},'_',lights{nl},'_opt',num2str(4),'.png'],'-png','-transparent');
+>>>>>>> 02849b46a4d9bb62e265031106a2f5a46ee69f67
             
             
         end
