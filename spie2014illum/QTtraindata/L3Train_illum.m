@@ -38,7 +38,7 @@ for ii = 1 : length(inputIm)
 end
 
 %% Derive global correction matrix 
-trM = L3ComputeClusterIndependentTrM(desiredIm);
+trM = L3ComputeClusterIndependentTrM(desiredIm, length(L3.scene));
 L3.globaltrM = trM;
 
 %% Load texture tree variables

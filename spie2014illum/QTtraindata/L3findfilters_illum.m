@@ -99,7 +99,8 @@ if symmetryflag
     filters = L3enforcesymmetry(filters, nIdealFilters, blockpattern, flip);
 end
 
-renderXYZ = centeroutput(1 : 3, :);
-D65XYZ = centeroutput(4 : 6, :);
+nScenes = length(L3.scene);
+renderXYZ = centeroutput(1 : 3, 1 : nScenes);
+D65XYZ = centeroutput(4 : 6, 1 : nScenes);
 trM = D65XYZ / renderXYZ; % least square solution
 return

@@ -102,7 +102,16 @@ scene = sceneSet(scene,'fov',scenefov);
 % Adjust mean luminance
 scene = sceneAdjustIlluminant(scene,'D65.mat');
 scene = sceneAdjustLuminance(scene,meanLuminance);
-scene = sceneAdjustIlluminant(scene,[illum '.mat']);
+fprintf('Mean luminance in D65: %d\n',sceneGet(scene,'meanluminance'));
+if illum(1) ~= 'B'
+    scene = sceneAdjustIlluminantEq(scene,[illum '.mat']);
+else
+    illum = illuminantCreate('blackbody',scene.spectrum.wave,str2double(illum(2:end)));
+    illum = Quanta2Energy(illum.spectrum.wave,double(illum.data.photons));
+    scene = sceneAdjustIlluminantEq(scene,illum);
+end
+
+fprintf('Mean luminance in light: %d\n',sceneGet(scene,'meanluminance'));
 
 if ~exist('plotFlag','var') || isempty(plotFlag), plotFlag = 2; end
 

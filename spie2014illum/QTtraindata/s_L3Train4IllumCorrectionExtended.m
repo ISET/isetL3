@@ -9,12 +9,14 @@
 % clear, clc, close all
 
 %% Start ISET
-s_initISET
+% s_initISET
 
 %% Illuminants and CFAs
-ils = {{'Tungsten','D65'}, {'Fluorescent','D65'}, {'Tungsten','D65','Fluorescent'}, {'Fluorescent','Tungsten','D65'}};
-% {'Tungsten'}, {'Fluorescent'}, {'D65'}, 
-cfas = {'Bayer', 'RGBW1'};
+ils = {{'Tungsten','D65','Fluorescent','D50','D55','D75','Fluorescent7','illuminantA','illuminantB','illuminantC',...
+    'B2700','B3000','B3375','B3857','B4500','B5400','B6750','B9000','B13500','B27000'}};
+ils = {{'Fluorescent'}};
+% {'Tungsten'}, {'Fluorescent'}, {'D65'}, {'Tungsten','D65'}, {'Fluorescent','D65'}, {'Tungsten','D65','Fluorescent'}, {'Fluorescent','Tungsten','D65'}
+cfas = {'RGBW1'};
 
 %% Training
 for illumNum = 1 : length(ils)
@@ -57,7 +59,6 @@ for illumNum = 1 : length(ils)
                            0.4505, 0.6753, 0.9, 1.1248, 1.3495, 1.5743, 0.99*1.8];
         L3 = L3Set(L3,'luminance list', patchLuminanceSamples);
         
-        
         %% Set training and rendering illuminant to be identical
         ilsmat = {};
         for ii = 1:length(ils{illumNum}), ilsmat{ii} = [ils{illumNum}{ii},'.mat']; end;
@@ -73,12 +74,22 @@ for illumNum = 1 : length(ils)
         XYZ = idealFilters.transmissivities;
         
         % Read training and rendering illuminant
-        illumRender = vcReadSpectra(ilsmat{1}, wave);
+        if ilsmat{1}(1) ~= 'B'
+            illumRender = vcReadSpectra(ilsmat{1}, wave);
+        else
+            wave2 = [3*wave(1)/2-wave(2)/2;wave;3*wave(end)/2-wave(end-1)/2];
+            illumRender = illuminantCreate('blackbody',wave2,str2double(ilsmat{1}(2:end-4)),100);
+            illumRender = Quanta2Energy(wave2,double(illumRender.data.photons))';
+            illumRender = illumRender(2:end-1);
+        end
         illumD65 = vcReadSpectra('D65.mat', wave);
         
         % Scale XYZ and concatenate to ideal filters
-        illumRender = illumRender / sum(illumRender);
-        illumD65 = illumD65 / sum(illumD65);
+        xyz = load('XYZ');
+        [~,I] = ismember(wave,xyz.wavelength);
+        Y = xyz.data(I,2);
+        illumRender = illumRender / (Y' * illumRender);
+        illumD65 = illumD65 / (Y' * illumD65);
         scale = illumD65 ./ illumRender;
         XYZm = XYZ .* repmat(scale, [1, 3]); % XYZm is to set render illum to train illum
         

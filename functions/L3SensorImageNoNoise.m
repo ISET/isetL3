@@ -34,9 +34,22 @@ inputIm   = cell(nScenes*nIlls,1);
 for jj = 1:nIlls
     for ii=1:nScenes
         thisScene = L3Get(L3,'scene',ii);
+        wave = sceneGet(thisScene, 'wave'); %use the wavelength samples from the first scene
+        
+        sceneAdjustIlluminant(thisScene,'D65.mat');
+        sceneAdjustLuminance(thisScene,100);
         
         %% Compute input images
-        thisScene = sceneAdjustIlluminant(thisScene, trainingillum{jj});
+        if trainingillum{jj}(1) ~= 'B'
+            thisScene = sceneAdjustIlluminantEq(thisScene,trainingillum{jj});
+        else
+            illum = trainingillum{jj}(1:end-4);
+            wave2 = [3*wave(1)/2-wave(2)/2;wave;3*wave(end)/2-wave(end-1)/2];
+            illum = illuminantCreate('blackbody',wave2,str2double(illum(2:end)),100);
+            illum = Quanta2Energy(wave2,double(illum.data.photons))';
+            illum = illum(2:end-1);
+            thisScene = sceneAdjustIlluminantEq(thisScene,illum);
+        end
         
         oi = oiCompute(oi,thisScene);
         
@@ -46,8 +59,15 @@ for jj = 1:nIlls
         
         %% Compute ideal images
         % recompute oi if illuminant has changed
-        if ~strcmpi(trainingillum{jj},renderingillum{jj})
-            thisScene = sceneAdjustIlluminant(thisScene, renderingillum{jj});
+        if ~strcmpi(trainingillum{jj},renderingillum{jj})        
+            if renderingillum{jj}(1) ~= 'B'
+                thisScene = sceneAdjustIlluminantEq(thisScene,trainingillum{jj});
+            else
+                illum = trainingillum{jj}(1:end-4);
+                illum = illuminantCreate('blackbody',thisScene.spectrum.wave,str2double(illum(2:end)));
+                illum = Quanta2Energy(illum.spectrum.wave,double(illum.data.photons));
+                thisScene = sceneAdjustIlluminantEq(thisScene,illum);
+            end
             oi = oiCompute(oi,thisScene);
         end
         
