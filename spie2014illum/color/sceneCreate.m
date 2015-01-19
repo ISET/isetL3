@@ -234,7 +234,7 @@ switch sceneName
             pSize = varargin{1};
             if length(varargin) > 1, grayFlag = varargin{2}; end            
         end
-        scene = sceneReflectanceChart(reflectances,[],pSize,wave,grayFlag,'r');
+        scene = sceneReflectanceChart(reflectances',[],pSize,wave,grayFlag,'r');
 
   case {'reflectancechartcustom'}
         % sceneCreate('reflectance chart Customs',LABcenter,pSize,nSamples,wave,grayFlag); 

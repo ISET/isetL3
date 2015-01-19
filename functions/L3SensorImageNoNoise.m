@@ -19,42 +19,39 @@ function [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
 %
 % (c) Stanford VISTA Team
 
-trainingillum = L3Get(L3, 'training illuminant');
-renderingillum = L3Get(L3, 'rendering illuminant');
-nIlls = length(trainingillum);
 
 %% Get parameters from L3
 nScenes   = L3Get(L3,'n scenes');
 sensorM   = L3Get(L3,'sensor monochrome');
 oi        = L3Get(L3,'oi');
-desiredIm = cell(nScenes*nIlls,1);
-inputIm   = cell(nScenes*nIlls,1);
+desiredIm = cell(nScenes,1);
+inputIm   = cell(nScenes,1);
 
+trainingillum = L3Get(L3, 'training illuminant');
+renderingillum = L3Get(L3, 'rendering illuminant');
 
-for jj = 1:nIlls
-    for ii=1:nScenes
-        thisScene = L3Get(L3,'scene',ii);
-        
-        %% Compute input images
-        thisScene = sceneAdjustIlluminant(thisScene, trainingillum{jj});
-        
+for ii=1:nScenes
+    thisScene = L3Get(L3,'scene',ii);
+
+    %% Compute input images    
+    thisScene = sceneAdjustIlluminant(thisScene, trainingillum);
+    
+    oi = oiCompute(oi,thisScene);
+
+    sensorM = sensorSet(sensorM, 'NoiseFlag',0);  % Turn off noise, keep analog-gain/offset, clipping, quantization    
+    cFilters = L3Get(L3,'design filter transmissivities');
+    inputIm{ii} = monoCompute(sensorM,oi,cFilters);
+
+    %% Compute ideal images
+    % recompute oi if illuminant has changed
+    if ~strcmpi(trainingillum,renderingillum)
+        thisScene = sceneAdjustIlluminant(thisScene, renderingillum);
         oi = oiCompute(oi,thisScene);
-        
-        sensorM = sensorSet(sensorM, 'NoiseFlag',0);  % Turn off noise, keep analog-gain/offset, clipping, quantization
-        cFilters = L3Get(L3,'design filter transmissivities');
-        inputIm{ii + (jj-1)*nScenes} = monoCompute(sensorM,oi,cFilters);
-        
-        %% Compute ideal images
-        % recompute oi if illuminant has changed
-        if ~strcmpi(trainingillum{jj},renderingillum{jj})
-            thisScene = sceneAdjustIlluminant(thisScene, renderingillum{jj});
-            oi = oiCompute(oi,thisScene);
-        end
-        
-        sensorM = sensorSet(sensorM,'NoiseFlag',-1);  % Turn off noise, analog-gain/offset, clipping, quantization
-        cFilters = L3Get(L3,'ideal filter transmissivities');
-        desiredIm{ii + (jj-1)*nScenes} = monoCompute(sensorM,oi,cFilters);
     end
+
+    sensorM = sensorSet(sensorM,'NoiseFlag',-1);  % Turn off noise, analog-gain/offset, clipping, quantization    
+    cFilters = L3Get(L3,'ideal filter transmissivities');
+    desiredIm{ii} = monoCompute(sensorM,oi,cFilters);
 end
 
 end
