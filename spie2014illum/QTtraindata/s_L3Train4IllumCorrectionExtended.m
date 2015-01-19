@@ -14,7 +14,9 @@
 %% Illuminants and CFAs
 ils = {{'Tungsten','D65','Fluorescent','D50','D55','D75','Fluorescent7','illuminantA','illuminantB','illuminantC',...
     'B2700','B3000','B3375','B3857','B4500','B5400','B6750','B9000','B13500','B27000'}};
-ils = {{'Fluorescent'}};
+ils = {{'Tungsten'}, {'Fluorescent'}, {'D65'}};
+ils = {{'Tungsten','D65'}, {'Tungsten','D65','Fluorescent'}};
+ils  = {{'Tungsten','D65','Fluorescent'}};
 % {'Tungsten'}, {'Fluorescent'}, {'D65'}, {'Tungsten','D65'}, {'Fluorescent','D65'}, {'Tungsten','D65','Fluorescent'}, {'Fluorescent','Tungsten','D65'}
 cfas = {'RGBW1'};
 
@@ -99,7 +101,7 @@ for illumNum = 1 : length(ils)
         L3 = L3Set(L3, 'idealFilters', idealFilters);
         
         %% Train and create camera
-        L3 = L3Train_illum(L3);
+        L3 = L3TrainExt_illum(L3);
         camera = L3CameraCreate_illum(L3);
         
         %% Save L3 camera and L3

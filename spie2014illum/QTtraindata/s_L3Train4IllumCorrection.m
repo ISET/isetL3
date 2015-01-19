@@ -13,7 +13,7 @@ s_initISET
 
 %% Illuminants and CFAs
 ils = {'Tungsten', 'Fluorescent', 'D65'};
-cfas = {'Bayer', 'RGBW1', 'CMY1'};
+cfas = {'RGBW1'};%{'Bayer', 'RGBW1', 'CMY1'};
 
 %% Training
 for illumNum = 1 : length(ils)
@@ -89,8 +89,8 @@ for illumNum = 1 : length(ils)
         camera = L3CameraCreate_illum(L3);
         
         %% Save L3 camera and L3
-        save(['data/L3_' cfas{cfaNum} '_' ils{illumNum} '.mat'], 'L3');
-        save(['data/L3camera_' cfas{cfaNum} '_' ils{illumNum} '.mat'], 'camera');
+        save(['dataNew/L3_' cfas{cfaNum} '_' ils{illumNum} '.mat'], 'L3');
+        save(['dataNew/L3camera_' cfas{cfaNum} '_' ils{illumNum} '.mat'], 'camera');
         
     end % end cfaNum
 end % end illumNum
