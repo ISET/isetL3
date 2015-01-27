@@ -337,14 +337,49 @@ save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% HDRcolor
 name = 'HDRcolor';
-comment = 'Bayer pattern modified with darker RGB in some pixels';
+comment = 'Bayer pattern modified with darker RGB pixels (1/4 original sensitivities) for HDR';
 rdark = r*.25;
 gdark = g*.25;
 bdark = b*.25;
 data = [r, g, b, rdark, gdark, bdark];
-filterNames = {'r', 'g', 'b', 'k', 'k', 'k'};
+filterNames = {'r', 'g', 'b', 'rdark', 'gdark', 'bdark'};
 filterOrder = [1, 2, 4, 5;...
                5, 6, 2, 3];
+save(name,'comment','data','filterNames','filterOrder','wavelength')
+
+%% HDRcolor1
+name = 'HDRcolor1';
+comment = 'Bayer pattern modified with darker RGB pixels (1/8 original sensitivities) for HDR';
+rdark = r*.125;
+gdark = g*.125;
+bdark = b*.125;
+data = [r, g, b, rdark, gdark, bdark];
+filterNames = {'r', 'g', 'b', 'rdark', 'gdark', 'bdark'};
+filterOrder = [1, 2, 4, 5;...
+               5, 6, 2, 3];
+save(name,'comment','data','filterNames','filterOrder','wavelength')
+
+%% HDRcy
+name = 'HDRcy';
+comment = 'Bayer pattern with additional Cyan and Yellow pixels for HDR';
+data = [r, g, b, c, y];
+filterNames = {'r', 'g', 'b', 'c', 'y'};
+filterOrder = [1, 2, 4; ...
+               2, 3, 5];
+save(name,'comment','data','filterNames','filterOrder','wavelength')
+
+%% HDRcy1
+name = 'HDRcy1';
+comment = 'Bayer pattern with additional Cyan and Yellow pixels for HDR with modified RGBCY sensitivities';
+rdark = r*.6;
+gdark = g*.6;
+bdark = b*.6;
+cbright = 2.*c;
+ybright = 1.5*y;
+data = [rdark, gdark, bdark, cbright, ybright];
+filterNames = {'rdark', 'gdark', 'bdark', 'cbright', 'ybright'};
+filterOrder = [1, 2, 4; ...
+               2, 3, 5];
 save(name,'comment','data','filterNames','filterOrder','wavelength')
 
 %% RGBx
