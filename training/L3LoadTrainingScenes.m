@@ -1,4 +1,4 @@
-function scenes = L3LoadTrainingScenes(sceneFolder, hfov)
+function scenes = L3LoadTrainingScenes(sceneFolder, hfov, wave)
 %
 % Load training scenes for L3 training. This function can be used to load
 % training scenes from any directory when initialize L3 structure. 
@@ -37,5 +37,12 @@ if exist('hfov','var')
     nScenes = length(scenes);
     for ii=1 : nScenes
         scenes{ii} = sceneSet(scenes{ii}, 'hfov', hfov);
+    end
+end
+
+if exist('wave','var')
+    nScenes = length(scenes);
+    for ii=1 : nScenes
+        scenes{ii} = sceneSet(scenes{ii}, 'wave', wave);
     end
 end

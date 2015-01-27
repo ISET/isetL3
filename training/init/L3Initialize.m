@@ -47,7 +47,17 @@ end
 if ieNotDefined('designsensor') || isempty(designsensor)
     L3 = L3InitDesignSensor(L3);
 else
+    % Check the sensor size is consistent with the training scene FOV
+    scenes = L3Get(L3,'scene');
+    oi = L3Get(L3,'oi');
+    hfov = sceneGet(scenes{1},'hfov');
+    [rows, cols] = L3SensorSize(designsensor, hfov, scenes{1}, oi);
+    designsensor = sensorSet(designsensor,'size',[rows cols]);
     L3 = L3Set(L3,'design sensor', designsensor);
+    sceneCol = sceneGet(scenes{1}, 'cols');
+    if sceneCol < cols
+        warning('More columns in sensor than in scene. Consider reducing scene FOV.');
+    end
 end
 
 
