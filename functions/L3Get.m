@@ -6,16 +6,41 @@ function [val, L3] = L3Get(L3,param,varargin)
 % The L3 structure contains data and parameters for training and applying
 % the linear, local, learned algorithm to image data.
 %
-% L3 structure is returned in case the flat or saturation indices are
+% Parameters can be specified with spaces and arbitrary case.  For example,
+%
+%   L3Get(L3,'n scenes') or L3Get(L3,'N scenes') or L3Get(L3,'nscenes')
+%
+% will all return the number of training scenes
+%
+%
+% Note:
+% The L3 structure is returned in case the flat or saturation indices are
 % changed by L3Get.  These indices are stored in a temporary location and
-% recalculated whenever they are not present.  The reason it is changed is
-% to eliminate duplicate computations in future.
+% recalculated whenever they are not present.  The reason is to eliminate
+% duplicate computations in future.
 % 
 % This happens for following variables:  sensor patch saturation
 %                                        flat indices
 %                                        saturation indices
 %
-% (c) Stanford VISTA Toolbox
+% Parameters (to expand and explain)
+%    name
+%    type
+%    patch type
+%    lum type
+%
+%    rendering illuminant
+%
+%
+%
+%
+% Programming TODO:
+%   We should enable L3Get(L3,'scene <var>',n) to return values for the nth
+%   scene, or L3Get(L3,'oi <var>') to return the variable for the oi, and
+%   so forth.  This can be done by using the ieParameterOtype function, as
+%   we do in ISET now.
+%
+% (c) Stanford VISTA Team, 2014
 
 % Should we check for L3, too?
 if ~exist('param','var') || isempty(param), error('param must be defined.'); end
@@ -23,14 +48,23 @@ if ~exist('param','var') || isempty(param), error('param must be defined.'); end
 % Default is empty when the parameter is not yet defined.
 val = [];
 
-% Following are needed to access filters, cluster, or saturation list
+
+%% ieParameterOtype switching should be inserted here
+
+%% Special handling of key L3 parameters to simplify code below
+
+% The following are needed to access properties of filters, cluster, or
+% saturation list.  Rather than pull them out separately below and repeat
+% this checking, we get them all at once here.
 if isfield(L3,'patchType'), pt = L3.patchType; end
 if isfield(L3,'lumType'), lt = L3.lumType; end  % integer pointer for lum level
 if isfield(L3,'saturationType'), st = L3.saturationType; end  % saturation type
 if isfield(L3,'contrastType'), ct = L3.contrastType; end  % contrast type
 
+%% Forces lower case and removes spaces
 param = ieParamFormat(param);
 
+%%
 switch(param)
     % Book-keeping
     case {'name'}
@@ -49,7 +83,7 @@ switch(param)
         val = L3.saturationType;
         
         % ISET structures used to create data set
-    case{'scene'}
+    case{'scenes','scene'}
         % L3Get(L3,'scene')
         % L3Get(L3,'scene',2);
         % A cell array of scenes
@@ -671,6 +705,8 @@ switch(param)
         error('Unknown %s\n',param);    
 end
 
+
+%% Not sure why this is here ... explain further.  
 function sensor = sensorMonochrome(sensor,filterFile)
 %
 %   Create a default monochrome image sensor array structure. This

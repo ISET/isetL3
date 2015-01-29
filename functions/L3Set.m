@@ -1,32 +1,51 @@
-function L3 = L3Set(L3,param,val)
-
+function L3 = L3Set(L3,param,val,varargin)
 %Set the parameters in an L3 structure
 %
-%   L3 = L3Set(L3,param,val)
+%   L3 = L3Set(L3,param,val,varargin)
 %
-% (c) Stanford VISTA Team
+% The fundamental L3 parameters are set here.  Parameter names can be upper
+% and lower case and include spaces.  Thus, these calls are equivalent
+%
+%   L3Set(L3,'rendering illuminant',val)
+%   L3Set(L3,'renderingIlluminant',val)
+%
+%
+% Parameter list
+%   name
+%   type
+%   ...
+%
+%
+% Programming todo:  Deal with ieParameterOtype as per the rest of ISET.
+% This will allow us to set parameters of the main objects inside of L3.
+%
+% (c) Stanford VISTA Team, 2014
 
+
+%% Parameter checking
 if ~exist('L3', 'var') || isempty(L3),        error('L3 struct required'); end
 if ~exist('param','var') || isempty(param) , error('param required');     end
 if ~exist('val','var'),                       error('val required');       end
 
+
+%% Set up for ieParameterOtype
+%
+
+%% Basic initialization
+
+% There are several key parameters that are widely needed in the set
+% operations.  Rather than check for them each time, we set them up at the
+% beginning here.
+%
 % Used for setting the patch type dependent parameters which are filters
 % and clusters
-if isfield(L3,'patchType')
-    pt = L3Get(L3,'patch type');
-end
-
-if isfield(L3,'lumType')
-    lt = L3Get(L3,'lum type');
-end
-
-if isfield(L3,'saturationType')   % saturation type
-    st = L3Get(L3,'saturation type');
-end
-
+if isfield(L3,'patchType'), pt = L3Get(L3,'patch type'); end
+if isfield(L3,'lumType'),   lt = L3Get(L3,'lum type'); end
+if isfield(L3,'saturationType'), st = L3Get(L3,'saturation type'); end
 
 param = ieParamFormat(param);
 
+%% Main switching
 switch param
     
     % Book-keeping
@@ -39,8 +58,16 @@ switch param
         L3 = L3ClearIndicesData(L3);  % reset flat and saturation indices
         
         % ISET structures used to create data set
-    case{'scene'};    % Maybe general scene conditions?
-        L3.scene = val;
+    case{'scenes','scene'}
+        if ~isempty(varargin)
+            % A single scene.  Should test whether n is in the scene list
+            % and whether the val is a scene.
+            n = varargin{1};
+            L3.scene{n} = val;
+        else
+            % All the scenes.  Should be cell array
+            L3.scene = val;
+        end
     case{'trainingilluminant'};  %Illuminant from first scene used for training
         %This is stored with the camera so incoming scenes can be set to
         %the correct illuminant.
