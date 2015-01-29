@@ -41,7 +41,12 @@ L3 = L3Set(L3,'scenes',scenes);
 % illuminant change as per FG).
 
 %%  Next we create examples of the sensor and ideal responses
-
+%
+% This code explores an overview of what happens in 
+%
+%     L3 = L3Train(L3);
+%
+%
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
 
 % The camera that we are designing for design is stored in L3.sensor.design
@@ -60,9 +65,11 @@ for ii=1:4
     subplot(2,2,ii), imagesc(inputIm{1}(:,:,ii)); colormap(gray); axis image
 end
 
+% vcNewGraphWin; tmp = inputIm{1}(:,:,4); hist(tmp(:),50)
 % These are the XYZ images.  The scale drives me nuts (BW).
 vcNewGraphWin([],'tall');
 for ii=1:3
     subplot(3,1,ii), imagesc(desiredIm{1}(:,:,ii)); colormap(gray); axis image
 end
 
+%%

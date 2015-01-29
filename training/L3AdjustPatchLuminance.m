@@ -60,6 +60,7 @@ else
     maxLum = (desiredluminance + lumList(lt + 1)) / 2;
 end
 
+% For each patch we choose a desired luminance level within its range.
 desiredluminancevector = rand(1, size(patches, 2)) * (maxLum - minLum) + minLum;
 
 %% Perform scaling

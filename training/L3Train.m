@@ -1,34 +1,43 @@
 function L3 = L3Train(L3)
-% Train the L3 processing pipeline based on the calibrated and sensor
-% design images
+% Train the L3 processing pipeline 
 %
 %    L3 = L3Train(L3)
 %
-% Take input patches from the sensor and the noise-free desired XYZ values
-% as inputs.  Also, a description of the data (e.g., the cfaPattern, and so
-% forth).
+% The L3 training uses the calibrated sensor information and calibrated
+% scenes. The method calculates noise-free input patches from the sensor
+% and the noise-free desired XYZ values as inputs.  Also, a description of
+% the data (e.g., the cfaPattern, and so forth).
 %
-% * Segment the patches according to type.
+% The steps in the training are
+%
+% * Segment the patches according to class.
 % * Add noise to the input.
-% * Solve for the kernel for each type of patch and each color pixel type
-%   using the Wiener method.
+% * Solve for the transform for each class of the patch
 %
-% The training is automatically run over a series of patch luminance values.
-% This is needed to process bright/dark images/regions of images. A patch's
-% luminance is a scalar given by luminancefilter*patch that describes the
-% overall brightness of the patch.  Filters for different patch luminance
-% values are different due to differing SNR and possibly saturation.
+% The training is automatically run over a series of patch luminance
+% values. This is needed to process bright/dark images/regions of images. A
+% patch's luminance is a scalar given by luminancefilter*patch that
+% describes the overall brightness of the patch.  Filters for different
+% patch luminance values are different due to differing SNR and possibly
+% saturation.
 %
 % The training is automatically run for each patchtype.  In general, there
 % are n*m patchtypes for an n x m CFA.  The patchtype string 'nm' describes
 % the center of the patch as the (n,m) location in the CFA.
 %
-% (c) Stanford VISTA Team
+% (c) Stanford VISTA Team, 2013
 
 %% Compute sensor volts for a monochrome sensor
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
 
 %% Delete any offset
+
+% Perhaps we should simply zero out the offset at the time of simulation?
+% There doesn't seem like a lot of reason to simulate it and then remove
+% it, right?  Or, if we are training with the offset removed, then we need
+% to make sure we render with the offset removed.  
+%
+% This needs more comment/discussion.
 sensorM = L3Get(L3,'sensor monochrome');
 ao = sensorGet(sensorM,'analogOffset');
 ag = sensorGet(sensorM,'analogGain');
