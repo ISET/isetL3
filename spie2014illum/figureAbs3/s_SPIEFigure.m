@@ -48,10 +48,10 @@ for nl = 1:length(lights)
             if strcmp(lights{nl},'D65')
                 srgbIdealD65 = srgbIdeal;
                 xyzIdealD65 = xyzIdeal;
+                imagesc(xyz2srgb(xyzIdealD65(3:end-2,3:end-2,:)/max(xyzIdealD65(:)))); axis off; axis equal; axis tight;
+                export_fig('chart.eps','-eps','-transparent');
             end
             
-            imagesc(xyz2srgb(xyzIdealD65/max(xyzIdealD65(:)))); axis off; axis equal; axis tight; pause
-%             export_fig('chart.eps','-eps','-transparent');
 %             return
 %             imagesc(srgbResult); axis off; axis equal; axis tight;
             
@@ -138,9 +138,11 @@ for nl = 1:length(lights)
             export_fig(['LAB_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
 
 %             %% Show the two images
-%             % vcNewGraphWin([],'tall');
-%             subplot(2,1,1), image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:)),r,c)));
-%             axis off; axis equal; axis tight;
+            vcNewGraphWin;
+            image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:,2)),r,c)));
+            axis off; axis equal; axis tight;
+            export_fig('chart.eps','-eps','-transparent')
+            return
 %             subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
 %             axis off; axis equal; axis tight;
             
@@ -170,7 +172,7 @@ for nl = 1:length(lights)
             export_fig(['Hist15_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
 
             
-            fprintf('%s %s %d %.1f %.1f %.1f\n',lname,cfas{nc},opt,mean(dE),std(dE),prctile(dE,90));
+            fprintf('%s %s %d %.1f %.1f %.1f %.1f\n',lname,cfas{nc},opt,mean(dE),std(dE),prctile(dE,90),max(dE));
             
             results(nl,nc,nopt).light = lights{nl};
             results(nl,nc,nopt).cfa = cfas{nc};
