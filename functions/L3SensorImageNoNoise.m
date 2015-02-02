@@ -22,7 +22,7 @@ function [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
 
 %% Get parameters from L3
 nScenes   = L3Get(L3,'n scenes');
-sensorM   = L3Get(L3,'sensor monochrome');
+sensorM   = L3Get(L3,'monochrome sensor');
 oi        = L3Get(L3,'oi');
 desiredIm = cell(nScenes,1);
 inputIm   = cell(nScenes,1);

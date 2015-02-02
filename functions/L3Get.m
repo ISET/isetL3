@@ -10,8 +10,13 @@ function [val, L3] = L3Get(L3,param,varargin)
 %
 %   L3Get(L3,'n scenes') or L3Get(L3,'N scenes') or L3Get(L3,'nscenes')
 %
-% will all return the number of training scenes
+% will all return the number of training scenes.
 %
+% It is also possible to retrieve parameters from the oi and sensor objects
+% attached to the L3 structure using the syntax
+%
+%   L3Get(L3,'sensor exptime','ms'), or
+%   L3Get(L3,'oi optics fnumber')
 %
 % Note:
 % The L3 structure is returned in case the flat or saturation indices are
@@ -31,15 +36,6 @@ function [val, L3] = L3Get(L3,param,varargin)
 %
 %    rendering illuminant
 %
-%
-%
-%
-% Programming TODO:
-%   We should enable L3Get(L3,'scene <var>',n) to return values for the nth
-%   scene, or L3Get(L3,'oi <var>') to return the variable for the oi, and
-%   so forth.  This can be done by using the ieParameterOtype function, as
-%   we do in ISET now.
-%
 % (c) Stanford VISTA Team, 2014
 
 % Should we check for L3, too?
@@ -49,7 +45,41 @@ if ~exist('param','var') || isempty(param), error('param must be defined.'); end
 val = [];
 
 
-%% ieParameterOtype switching should be inserted here
+%% Set up for ieParameterOtype
+%
+[oType,p] = ieParameterOtype(param);
+
+% Example calls
+%  v = L3Get(L3,'sensor pixel height','um');
+%  v = L3Get(L3,'sensor exptime','ms');
+%  v = L3Get(L3,'oi optics/fnumber');
+if isequal(oType,'sensor')
+    if isempty(p), val = L3.sensor.design; return;
+    else
+        if isempty(varargin), val = sensorGet(L3.sensor.design,p);
+        elseif length(varargin) == 1
+            val = sensorGet(L3.sensor.design,p,varargin{1});
+        elseif length(varargin) == 2
+            val = sensorGet(L3.sensor.design,p,varargin{1},varargin{2});
+        end
+        return;
+    end
+elseif isequal(oType,'oi')
+    if isempty(p), val = L3.oi; return;
+    else
+        if isempty(varargin), val = oiGet(L3.oi,p);
+        elseif length(varargin) == 1
+            val = oiGet(L3.oi,p,varargin{1});
+        elseif length(varargin) == 2
+            val = oiGet(L3.oi,p,varargin{1},varargin{2});
+        end
+        return;
+    end
+elseif isequal(oType,'scene')
+    % carry on
+elseif isempty(p)
+    error('oType %s. Empty param.\n',oType);
+end
 
 %% Special handling of key L3 parameters to simplify code below
 
@@ -105,7 +135,7 @@ switch(param)
         % The optical image is here mainly for lens information. 
         % Not sure what else. 
         val = L3.oi;
-    case {'monochromesensor','sensormonochrome','sensorm'}
+    case {'monochromesensor'}
         % ISET monochrome sensor structure. We only store the sensorD and
         % make a monochrome version of it.
         val = sensorMonochrome(L3.sensor.design, 'Monochrome');
@@ -134,7 +164,7 @@ switch(param)
         tmp = L3Get(L3,'ideal filters');
         val = tmp.filterNames;
         
-    case{'sensordesign','designsensor'}
+    case{'designsensor'}
         % This is the sensor we are trying to design. It can have an
         % unusual CFA and color filters
         val = L3.sensor.design;

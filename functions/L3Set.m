@@ -9,9 +9,117 @@ function L3 = L3Set(L3,param,val,varargin)
 %   L3Set(L3,'rendering illuminant',val)
 %   L3Set(L3,'renderingIlluminant',val)
 %
+% It is possible to set the parameters of some of the key objects directly
+% through this call.  For the sensor and oi, for example, you can use this
+% syntax.
+%
+%   L3Set(L3,'sensor pixel',pixel)
+%   L3Set(L3,'oi optics fnumber',5.6)
+%   L3Set(L3,'sensor exptime',0.05);  % This is the design.sensor
 %
 % Parameter list
-%   name
+%     name - This L3's name
+%     type - always 'L3'
+%     patchtype - 
+%     scenes    -  Cell array of scenes
+%     training illuminant- ;  %Illuminant from first scene used for training
+%         This is stored with the camera so incoming scenes can be set to
+%         the correct illuminant.
+%     rendering illuminant- ; % The target illuminant L3 tries to match.
+%         Scenes can only be rendered under this illuminant with the corresponding filters.
+%     oi -      % For lens information?  Maybe just optics?
+%     sensordesign','designsensor- ;
+%         ISET Sensor structure.  Adjust using sensorSet.
+%
+%     idealfilters','idealsensorfilters- 
+%         Structure for color filters used in front of monochrome sensor
+%     idealfiltername- 
+%     idealfiltertransmissivities- 
+%     idealfilternames- 
+%
+%         Data for training
+%     sensorpatches','spatches- 
+%         Save training patches from sensor for a particular patch type and
+%         luminance type
+%     sensorpatchessaturationcase- 
+%         Same as above but only overwrite the patches for current
+%         saturation indices
+%
+%     nsaturationpatches- 
+%         Number of saturation patches used when training this particular
+%         type of patch (patch type, luminance type, saturation type)
+%
+%     idealvector','ivector- 
+%         The ideal (correct) values for the center pixel for this patch
+%         type and luminance type
+%
+%         Filters.  Format needs to be described.
+%     filters-   % Whole structure
+%     globalfilter- 
+%     flatfilter- 
+%     texturefilter- 
+%     emptyfilter- 
+%         val is ignored
+%         Fill in empty matrix in filter structure at current patch type,
+%         luminance, and saturation.  This is used if there are not enough
+%         patches for training this case.
+%
+%         Other Patch training parameters
+%     training- 
+%         The whole structure.
+%     noversample- 
+%         Controls over sampling.  Describe here
+%     saturationflag- 
+%         Use saturation or not ... probably shouldn't be a flag.
+%     ntrainingpatches','npatches- 
+%     maxtrainingpatches- 
+%         Maximum number of training patches for patch type
+%         (see L3trainingPatches.m)
+%     randomseed - 
+%     flatpercent - 
+%         Percentage of patches we want to treat as flat
+%     minnonsatchannels - 
+%         Minimum number of non-saturated (good) channels in order to train
+%         a filter.  For example if we want XYZ out, it is hopeless to
+%         train filters that can only use 2 good input channels.
+%     max tree depth' - 
+%         When we cluster the textures, this is how many levels
+%         Cluster (Texture) analysis related
+%     luminance list -  Filters for each luminance level in the list.
+%     luminance type' - 
+%         Integer giving the index into luminancelist for the current
+%         luminance level.
+%
+%      saturationlist - ;
+%         We create filters for each saturation case in the list.
+%         At end of training, list should contain all saturation cases that
+%         occur in training data.
+%
+%     sattype','saturationtype - 
+%         Integer giving the index into saturationlist for the current
+%         saturation case.
+%     blocksize - 
+%         The size of the block (patch) used for training.
+%         This should probably be a 2-vector in general.
+%         But it could be a single number.  To decide and get clear.
+%     clusters - The whole structure
+%     cluster directions - 
+%     clustermembers - 
+%     clusterthresholds - 
+%     clusterflatthreshold','flatthreshold - 
+%     saturationindices - 
+%     luminanceindex - 
+%     saturationindex - 
+%     clusterindex - 
+%     xyzresult - 
+%     weightcolortransform - 
+%     globalweightbiasvariance - 
+%     flatweightbiasvariance - 
+%     textureweightbiasvariance - 
+%     contrasttype - 
+%     rendering - 
+%     transitioncontrastlow - 
+%     transitioncontrasthigh - 
 %   type
 %   ...
 %
@@ -24,12 +132,46 @@ function L3 = L3Set(L3,param,val,varargin)
 
 %% Parameter checking
 if ~exist('L3', 'var') || isempty(L3),        error('L3 struct required'); end
-if ~exist('param','var') || isempty(param) , error('param required');     end
+if ~exist('param','var') || isempty(param) ,  error('param required');     end
 if ~exist('val','var'),                       error('val required');       end
 
 
 %% Set up for ieParameterOtype
 %
+[oType,p] = ieParameterOtype(param);
+
+% Example calls
+%  L3 = L3Set(L3,'sensor pixel height','um');
+%  L3 = L3Set(L3,'sensor exptime',0.05);
+%  L3 = L3Set(L3,'oi optics/fnumber',5.6);
+if isequal(oType,'sensor')
+    % This refers to the design sensor.
+    if isempty(p), L3.sensor.design = val; return;
+    else
+        if isempty(varargin), L3.sensor.design = sensorSet(L3.sensor.design,p,val);
+        elseif length(varargin) == 1
+            L3.sensor.design = sensorSet(L3.sensor.design,p,val,varargin{1});
+        elseif length(varargin) == 2
+            L3.sensor.design = sensorSet(L3.sensor.design,p,val,varargin{1},varargin{2});
+        end
+        return;
+    end
+elseif isequal(oType,'oi')
+    if isempty(p), L3.oi = val; return;
+    else
+        if isempty(varargin), L3.oi = oiSet(L3.oi,p,val);
+        elseif length(varargin) == 1
+            L3.oi = oiSet(L3.oi,p,val,varargin{1});
+        elseif length(varargin) == 2
+            L3.oi = oiSet(L3.oi,p,val,varargin{1},varargin{2});
+        end
+        return;
+    end
+elseif isequal(oType,'scene')
+    % carry on
+elseif isempty(p)
+    error('oType %s. Empty param.\n',oType);
+end
 
 %% Basic initialization
 

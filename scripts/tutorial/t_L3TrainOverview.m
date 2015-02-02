@@ -46,12 +46,13 @@ L3 = L3Set(L3,'scenes',scenes);
 %
 %     L3 = L3Train(L3);
 %
-%
+L3 = L3Set(L3,'sensor exptime',0.02); 
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
+fprintf('Exposure time set %.1f ms\n',L3Get(L3,'sensor exptime','ms'))
 
 % The camera that we are designing for design is stored in L3.sensor.design
 % The default camera has 4 sensors (RGBW)
-sensor = L3Get(L3,'sensor design');
+sensor = L3Get(L3,'design sensor');
 plotSensor(sensor,'color filters');
 
 % There are two cell arrays, one for each of the input scenes
