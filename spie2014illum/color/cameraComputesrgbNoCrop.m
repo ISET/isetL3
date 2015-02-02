@@ -105,11 +105,10 @@ scene = sceneAdjustLuminance(scene,meanLuminance);
 if illum(1) ~= 'B'
     scene = sceneAdjustIlluminant(scene,[illum '.mat']);
 else
-    illum = illuminantCreate('blackbody',scene.spectrum.wave,str2double(illum(2:end)));
+    illum = illuminantCreate('blackbody',scene.spectrum.wave,str2double(illum(2:end)),100);
     illum = Quanta2Energy(illum.spectrum.wave,double(illum.data.photons));
     scene = sceneAdjustIlluminant(scene,illum);
 end
-
 
 if ~exist('plotFlag','var') || isempty(plotFlag), plotFlag = 2; end
 
