@@ -1,4 +1,4 @@
-function dataIG = removeOutOfGamut(data, wave)
+function dataIG = removeOutOfGamut(data, wave, lights)
 
 nwave = length(wave);
 nsamples = size(data,2);

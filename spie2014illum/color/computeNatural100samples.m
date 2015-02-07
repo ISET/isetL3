@@ -32,7 +32,7 @@ end
 
 % Clothes reflectances
 load Clothes_Vhrel
-data = removeOutOfGamutAlt1(data,wavelength,{'D65','Tungsten','Fluorescent'});
+data = removeOutOfGamut(data,wavelength,{'D65','Tungsten','Fluorescent'});
 dataM = bsxfun(@minus,data,dataMean);
 N = 20;
 r = zeros(N,length(wavelength));
@@ -65,7 +65,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Food reflectances
 load Food_Vhrel
-data = removeOutOfGamutAlt1(data,wavelength,{'D65','Tungsten','Fluorescent'});
+data = removeOutOfGamut(data,wavelength,{'D65','Tungsten','Fluorescent'});
 dataM = bsxfun(@minus,data,dataMean);
 N = 20;
 r = zeros(N,length(wavelength));
@@ -98,7 +98,7 @@ load Food_Vhrel
 foodData = data;
 load reflectances/Nature_Vhrel
 data = setdiff(data',foodData','rows')';
-data = removeOutOfGamutAlt1(data,wavelength,{'D65','Tungsten','Fluorescent'});
+data = removeOutOfGamut(data,wavelength,{'D65','Tungsten','Fluorescent'});
 dataM = bsxfun(@minus,data,dataMean);
 N = 20;
 r = zeros(N,length(wavelength));
@@ -128,7 +128,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Hair samples
 load Hair_Vhrel
-data = removeOutOfGamutAlt1(data,wavelength,{'D65','Tungsten','Fluorescent'});
+data = removeOutOfGamut(data,wavelength,{'D65','Tungsten','Fluorescent'});
 dataM = bsxfun(@minus,data,dataMean);
 N = 5;
 r = zeros(N,length(wavelength));
@@ -158,7 +158,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Skin samples
 load reflectances/Skin_Vhrel
-data = removeOutOfGamutAlt1(data,wavelength,{'D65','Tungsten','Fluorescent'});
+data = removeOutOfGamut(data,wavelength,{'D65','Tungsten','Fluorescent'});
 dataM = bsxfun(@minus,data,dataMean);
 N = 15;
 r = zeros(N,length(wavelength));
@@ -188,7 +188,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Dupont Paint samples
 load DupontPaintChip_Vhrel
-data = removeOutOfGamutAlt1(data,wavelength,{'D65','Tungsten','Fluorescent'});
+data = removeOutOfGamut(data,wavelength,{'D65','Tungsten','Fluorescent'});
 dataM = bsxfun(@minus,data,dataMean);
 N = 20;
 r = zeros(N,length(wavelength));
