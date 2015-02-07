@@ -1,0 +1,1 @@
+computeNatural100samples(true);
