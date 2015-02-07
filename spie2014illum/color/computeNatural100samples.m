@@ -143,10 +143,10 @@ end
 
 if plotFlag
     plot(wavelength,r(1:5,:)','LineWidth',2), axis tight, set(gca,'FontSize',13,'FontWeight','b')
-    legend('Hair 1','Hair 2','Hair 3','Hair 4','Hair 5')
+    legend('Hair 1','Hair 2','Hair 3','Hair 4','Hair 5','Location','northeastoutside')
     export_fig('ClothesR.eps','-eps','-transparent');
     plot(1:7,cPCA(1:5,:)','LineWidth',2), axis tight, set(gca,'FontSize',13,'FontWeight','b')
-    legend('Hair 1','Hair 2','Hair 3','Hair 4','Hair 5')
+    legend('Hair 1','Hair 2','Hair 3','Hair 4','Hair 5','Location','northeastoutside')
     export_fig('HairP.eps','-eps','-transparent');
 end
 
