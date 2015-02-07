@@ -8,7 +8,7 @@ cd(folder);
 % clear all, clc, close all
 s_initISET
 
-scene = sceneCreate('nature100');
+scene = sceneCreateNatural100;
 
 lights = {{'D65'},{'Tungsten'},{'Tungsten','D65'}};%,{'Tungsten','D65','Fluorescent'}};
 % lights = {{'D65'},{'Fluorescent'},{'Fluorescent','D65'}};
@@ -142,7 +142,7 @@ for nl = 1:length(lights)
             image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:,2)),r,c)));
             axis off; axis equal; axis tight;
             export_fig('chart.eps','-eps','-transparent')
-            return
+%             return
 %             subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
 %             axis off; axis equal; axis tight;
             
