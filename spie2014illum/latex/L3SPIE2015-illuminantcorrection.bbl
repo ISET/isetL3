@@ -1,0 +1,53 @@
+\begin{thebibliography}{10}
+
+\bibitem{Tian2014}
+Tian, Q., Lansel, S., Farrell, J.~E., and Wandell, B.~A., ``Automating the
+  design of image processing pipelines for novel color filter arrays: {L}ocal,
+  {L}inear, {L}earned (${L}^3$) method,'' in [{\em IS\&T/SPIE Electronic
+  Imaging}{\nolinebreak\hspace{0.1em}]},   90230K--90230K, International
+  Society for Optics and Photonics (2014).
+
+\bibitem{Lansel2011a}
+Lansel, S.~P. and Wandell, B.~A., ``Local linear learned image processing
+  pipeline,'' in [{\em Imaging Systems and
+  Applications}{\nolinebreak\hspace{0.1em}]},  Optical Society of America
+  (2011).
+
+\bibitem{Lansel2011}
+Lansel, S.~P., {\em Local Linear Learned Method for Image and Reflectance
+  Estimation}, PhD thesis, Stanford University (2011).
+
+\bibitem{Lansel2012}
+Lansel, S.~P. and Wandell, B.~A., ``Learning of image processing pipeline for
+  digital imaging devices,'' (Dec. 7 2012).
+\newblock WO Patent 2,012,166,840.
+
+\bibitem{Farrell2003}
+Farrell, J.~E., Xiao, F., Catrysse, P.~B., and Wandell, B.~A., ``A simulation
+  tool for evaluating digital camera image quality,'' in [{\em Electronic
+  Imaging 2004}{\nolinebreak\hspace{0.1em}]},   124--131, International Society
+  for Optics and Photonics (2003).
+
+\bibitem{Farrell2012}
+Farrell, J.~E., Catrysse, P.~B., and Wandell, B.~A., ``Digital camera
+  simulation,'' {\em Applied Optics}~{\bf 51}(4),  A80--A90 (2012).
+
+\bibitem{Wandell1995}
+Wandell, B.~A.,  [{\em Foundations of Vision}{\nolinebreak\hspace{0.1em}]},
+  Sinauer Associates, Sunderland, MA (1995).
+
+\bibitem{iset}
+\url{http://imageval.com/scene-database/}.
+
+\bibitem{Vrhel1994}
+Vrhel, M.~J., Gershon, R., and Iwan, L.~S., ``Measurement and analysis of
+  object reflectance spectra,'' {\em Color Research \& Application}~{\bf
+  19}(1),  4--9 (1994).
+
+\bibitem{Sharma2005}
+Sharma, G., Wu, W., and Dalal, E.~N., ``The {CIEDE2000} color-difference
+  formula: Implementation notes, supplementary test data, and mathematical
+  observations,'' {\em Color Research \& Application}~{\bf 30}(1),  21--30
+  (2005).
+
+\end{thebibliography}

@@ -52,7 +52,6 @@ for l = 0:100
     clc
     disp(LABsamples(idx,:));
     [eData,~,~,exitflag] = lsqlinFG(eye(nWave),zeros(nWave,1),[],[],683*dWave*S',XYZtarget(idx,:)',zeros(nWave,1),ones(nWave,1));
-    %   [eData,~,~,exitflag] = quadprog(eye(nWave),zeros(nWave,1),[],[],683*dWave*S',XYZtarget(idx,:)',zeros(nWave,1),ones(nWave,1));
     LABflag(idx) = (exitflag == 1);
     
     sData(idx,1,:) = Energy2Quanta(wave,eData);
@@ -64,4 +63,3 @@ for l = 0:100
 end
 
 save LABfeasible LABfeasible
-% XYZresult = RGB2XWFormat(ieXYZFromPhotons(sData,wave));
