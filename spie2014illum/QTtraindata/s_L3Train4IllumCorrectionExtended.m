@@ -9,7 +9,7 @@
 % clear, clc, close all
 
 %% Start ISET
-% s_initISET
+s_initISET
 
 %% Illuminants and CFAs
 ils = {{'Tungsten','D65','Fluorescent','D50','D55','D75','Fluorescent7','illuminantA','illuminantB','illuminantC',...
@@ -17,6 +17,24 @@ ils = {{'Tungsten','D65','Fluorescent','D50','D55','D75','Fluorescent7','illumin
 ils = {{'Tungsten'}, {'Fluorescent'}, {'D65'}};
 ils = {{'Tungsten','D65'}, {'Tungsten','D65','Fluorescent'}};
 ils  = {{'Tungsten','D65','Fluorescent'}};
+
+Ti = 3000; Te = 10000; Nils = 100;
+Tstep = 1/((1/Te-1/Ti)/Nils);
+T = round(1./(1/Ti:1/Tstep:1/Te));
+ils = cell(Nils,1);
+for i = 1:Nils
+   ils{i} = {sprintf('B%d',T(i))};
+end
+
+n = 1; ils{Nils+7}{n} = 'D65'; for i = 1:Nils+1, n = n+1; ils{Nils+7}{n} = sprintf('B%d',T(i)); end
+n = 1; ils{Nils+6}{n} = 'D65'; for i = 1:2:Nils+1, n = n+1; ils{Nils+6}{n} = sprintf('B%d',T(i)); end
+n = 1; ils{Nils+5}{n} = 'D65'; for i = 1:5:Nils+1, n = n+1; ils{Nils+5}{n} = sprintf('B%d',T(i)); end
+n = 1; ils{Nils+4}{n} = 'D65'; for i = 1:10:Nils+1, n = n+1; ils{Nils+4}{n} = sprintf('B%d',T(i)); end
+n = 1; ils{Nils+3}{n} = 'D65'; for i = 1:20:Nils+1, n = n+1; ils{Nils+3}{n} = sprintf('B%d',T(i)); end
+n = 1; ils{Nils+2}{n} = 'D65'; for i = 1:50:Nils+1, n = n+1; ils{Nils+2}{n} = sprintf('B%d',T(i)); end
+n = 1; ils{Nils+1}{n} = 'D65'; for i = 1:100:Nils+1, n = n+1; ils{Nils+1}{n} = sprintf('B%d',T(i)); end
+
+ils  = {{'B10000'}};
 % {'Tungsten'}, {'Fluorescent'}, {'D65'}, {'Tungsten','D65'}, {'Fluorescent','D65'}, {'Tungsten','D65','Fluorescent'}, {'Fluorescent','Tungsten','D65'}
 cfas = {'RGBW1'};
 
@@ -105,7 +123,7 @@ for illumNum = 1 : length(ils)
         camera = L3CameraCreate_illum(L3);
         
         %% Save L3 camera and L3
-        save(['dataSimple/L3_' cfas{cfaNum} '_' ils{illumNum}{1} num2str(length(ils{illumNum})) '.mat'], 'L3');
+        % save(['dataSimple/L3_' cfas{cfaNum} '_' ils{illumNum}{1} num2str(length(ils{illumNum})) '.mat'], 'L3');
         save(['dataSimple/L3camera_' cfas{cfaNum} '_' ils{illumNum}{1} num2str(length(ils{illumNum})) '.mat'], 'camera');
         
     end % end cfaNum
