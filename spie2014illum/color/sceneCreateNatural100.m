@@ -8,6 +8,7 @@ function [scene,parms] = sceneCreateNatural100(varargin)
 %
 % Copyright ...
 
+sceneName = 'natural100';
 parms = [];  % Returned in some cases, not many.
 
 % Identify the object type
@@ -35,7 +36,7 @@ else
     pSize = varargin{1};
     if length(varargin) > 1, grayFlag = varargin{2}; end            
 end
-scene = sceneReflectanceChart(reflectances,[],pSize,wave,grayFlag,'r');
+scene = sceneReflectanceChart(reflectances',[],pSize,wave,grayFlag,'r');
 
 % Initialize scene geometry, spatial sampling
 scene = sceneInitGeometry(scene);
