@@ -1,0 +1,54 @@
+\documentclass[]{spie}
+\usepackage[]{graphicx}
+\usepackage{url}
+\usepackage[]{amsmath}
+% \usepackage{subcaption}
+% \usepackage[font=small,labelfont=bf]{caption}
+
+\newcommand{\Lcube}{L^3}
+\newcommand{\XI}{\mathrm{XI}}
+\newcommand{\SI}{\mathrm{SI}}
+\newcommand{\XIT}{\mathrm{XI_{Tun}}}
+\newcommand{\XIF}{\mathrm{XI_{Flu}}}
+\newcommand{\SIT}{\mathrm{SI_{Tun}}}
+\newcommand{\SIF}{\mathrm{SI_{Flu}}}
+\newcommand{\SID}{\mathrm{SI_{D65}}}
+\newcommand{\SIE}{\mathrm{SI_{Ens}}}
+\newcommand{\SIGT}{\mathrm{SI-T}}
+\newcommand{\SITT}{\mathrm{SI_{Tun}-T}}
+\newcommand{\SIFT}{\mathrm{SI_{Flu}-T}}
+\newcommand{\SIDT}{\mathrm{SI_{D65}-T}}
+\newcommand{\SIET}{\mathrm{SI_{Ens}-T}}
+\newcommand{\TT}{\mathrm{T}}
+
+
+\title{Efficient illuminant correction in the Local, Linear, Learned ({\LARGE$\boldsymbol L^3$}) method}
+
+\author{Francois G. Germain\supit{a}, Iretiayo A. Akinola\supit{b}, Qiyuan Tian\supit{b}, Steven Lansel\supit{c}, and Brian A. Wandell\supit{b,d}
+\skiplinehalf
+\supit{a}Center for Computer Research in Music and Acoustics,\\ Stanford University, Stanford, CA-94305, USA;\\
+\supit{b}Electrical Engineering Department, Stanford University, Stanford, CA-94305, USA;\\
+\supit{c}Olympus Corporation of the Americas, Sunnyvale, CA-94085, USA;\\
+\supit{d}Psychology Department, Stanford University, Stanford, CA-94305, USA.
+}
+
+\authorinfo{Send correspondence to Francois G. Germain. E-mail: FG (fgermain@stanford.edu), IA (iakinola@stanford.edu), QT (qytian@stanford.edu), SL (steven.lansel@olympus.com), BW (wandell@stanford.edu)}
+
+\begin{document}
+\maketitle
+
+\begin {table}[b]
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline 
+Color reproduction & Average & 90th \\ 
+error ($\Delta E$) & (Std. dev.) & perc. \\ \hline 
+$\XIT$ & 2.5 (1.8) & 4.9 \\ 
+$\SITT$ & 2.5 (2.0) & 5.4 \\ 
+$\SIDT$ & 4.0 (3.0) & 8.3 \\
+$\SIET$ & 2.9 (2.2) & 6.0 \\\hline 
+\end{tabular} 
+\end{center}
+\end{table}
+
+\end{document}

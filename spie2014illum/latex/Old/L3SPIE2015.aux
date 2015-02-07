@@ -1,0 +1,47 @@
+\relax 
+\citation{Tian2014,Lansel2011a,Lansel2011,Lansel2012}
+\citation{Tian2014}
+\citation{Farrell2003,Farrell2012}
+\citation{Wandell1995}
+\@writefile{toc}{\contentsline {section}{\numberline {1}INTRODUCTION}{1}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}MOTIVATION: ILLUMINANT CORRECTION}{1}}
+\citation{Farrell2003,Farrell2012}
+\citation{Tian2014}
+\citation{Tian2014}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces  \textbf  {Illuminant correction with $\boldsymbol  L^3$ image processing pipelines.} (a) Cross-illuminant ($\mathrm  {XI}$) illuminant-dependent $\boldsymbol  L^3$ processing. (b) Same-illuminant ($\mathrm  {SI}$) illuminant-independent $\boldsymbol  L^3$ processing followed by a linear color correction transform ($\mathrm  {T}$).}}{2}}
+\newlabel{fig:sensordisplay}{{1}{2}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}METHOD}{2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}General simulation conditions}{2}}
+\citation{iset}
+\citation{Vrhel1994}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Sensor parameter values (left) and Natural-100 color test chart (right)}}}{3}}
+\newlabel{fig:natureBasedChart}{{2}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Learning the $\boldsymbol  L^3$ tables}{3}}
+\@writefile{toc}{\contentsline {paragraph}{Learning the cross-illuminant tables}{3}}
+\@writefile{toc}{\contentsline {paragraph}{Learning the same-illuminant table}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Color evaluation}{3}}
+\@writefile{toc}{\contentsline {paragraph}{Multispectral scenes}{3}}
+\citation{Sharma2005}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {Cross-illuminant and same-illuminant algorithms perform equally well in color rendering for a tungsten illuminant.} (a) The sensor image under tungsten, uncorrected. (b) The ideal image under a D65 illumination. (c) A cross-illuminant analysis for the same image but acquired under a tungsten light. The $\boldsymbol  L^3$ table was built from the tungsten-acquisition data and XYZ target values for a D65-rendered image. (d) A same-illuminant rendering. In this case the L3 table was built using the same-illuminant D65 table, and the final rendering combined this table with an illuminant correction matrix $\mathrm  {T}$. The cross-illuminant and same-illuminant architectures produce similar images.}}{4}}
+\newlabel{fig:examplestungsten}{{3}{4}}
+\@writefile{toc}{\contentsline {paragraph}{Natural-100 reflectance chart}{4}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}EXPERIMENTAL RESULTS}{4}}
+\bibdata{L3}
+\bibcite{Tian2014}{1}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textbf  {Cross-illuminant and same-illuminant algorithms perform equally well in color rendering for a fluorescent illuminant.} (a) The sensor image under fluorescent, uncorrected. (b) The ideal image under a D65 illumination. (c) A cross-illuminant analysis for the same image but acquired under a fluorescent light. The $\boldsymbol  L^3$ table was built from the fluorescent-acquisition data and XYZ target values for a D65-rendered image. (d) A same-illuminant rendering. In this case the L3 table was built using the same-illuminant D65 table, and the final rendering combined this table with an illuminant correction matrix $\mathrm  {T}$. The cross-illuminant and same-illuminant architectures produce similar images.}}{5}}
+\newlabel{fig:examplesfluorescent}{{4}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}CONCLUSIONS}{5}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {Color reproduction errors ($\Delta E$) for the Natural-100 color chart.} The original images were simulated using a tungsten illuminant. The left column shows the training method used to derive the $\boldsymbol  L^3$ table. The mean reproduction error (middle) and the relatively large reproduction errors (right) are shown. The smallest reproduction error is from the cross-illuminant table. But the errors from several same-illuminant tables followed by a linear transform are only slightly larger.}}{5}}
+\newlabel{tab:colorErrorTable}{{1}{5}}
+\bibcite{Lansel2011a}{2}
+\bibcite{Lansel2011}{3}
+\bibcite{Lansel2012}{4}
+\bibcite{Farrell2003}{5}
+\bibcite{Farrell2012}{6}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \textbf  {Color error distributions for a Natural-100 chart acquired under a tungsten illuminant and rendered using different $\boldsymbol  L^3$ tables.} We compare the distribution of color reproduction error in $\Delta E$ units (top) and the comparison between true and estimated XYZ (middle) and L*a*b* coordinates (bottom) for the 110 chart reflectances for (a) the cross-illuminant table ($\mathrm  {XI_{Tun}}$), (b) the same-illuminant table trained under tungsten followed by the illuminant transform $\mathrm  {T}$ ($\mathrm  {SI_{Tun}-T}$), (c) the same-illuminant table trained under D65 followed by the illuminant transform $\mathrm  {T}$ ($\mathrm  {SI_{D65}-T}$) and (d) the same-illuminant table trained under an ensemble of illuminants followed by the illuminant transform $\mathrm  {T}$ ($\mathrm  {SI_{Ens}-T}$).}}{6}}
+\newlabel{fig:colorStatisticsPlot}{{5}{6}}
+\bibcite{Wandell1995}{7}
+\bibcite{iset}{8}
+\bibcite{Vrhel1994}{9}
+\bibcite{Sharma2005}{10}
+\bibstyle{spiebib}

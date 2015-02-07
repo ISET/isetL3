@@ -84,7 +84,7 @@ for nl = 1:length(lights)
                 
                 d = floor(blockSize/2);
                 [mx,my] = meshgrid(-d:d,-d:d);
-                mark = {'x','s','s'};
+                mark = {'x','o','s'};
                 
                 for ndist = 1:length(mark)
                     maskd = max(abs(mx),abs(my)) == (ndist-1);
@@ -116,7 +116,7 @@ for nl = 1:length(lights)
                     xlabel(['SI\_D65']);
                     ylabel(['SI\_Tun']);
 %                     title([cfas{nc},', ',type,' filters / ',lights{nl},' -> ',lights{nl},' vs. ','D65',' -> ','D65'])
-                    set(gca,'FontSize',12,'FontWeight','b')
+                    set(gca,'FontSize',16,'FontWeight','b')
                     
                 end
                 export_fig(['scatterPlot_',cfas{nc},'_',lights{nl},'_',type,'_',colors{ncol},'.png'],'-png','-transparent')
