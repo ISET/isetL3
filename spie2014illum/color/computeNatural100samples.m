@@ -1,4 +1,4 @@
-function [reflectances,wavelength] = computeNature100samples()
+function [reflectances,wavelength] = computeNatural100samples()
 
 reflectances = [];
 rng(1);
@@ -21,7 +21,7 @@ P = diag(1./diag(S))*U';
 
 % Clothes reflectances
 load Clothes_Vhrel
-data = removeOutOfGamut2(data,wavelength);
+data = removeOutOfGamut(data,wavelength);
 N = 20;
 r = zeros(N,length(wavelength));
 c = P * data;
@@ -40,7 +40,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Food reflectances
 load Food_Vhrel
-data = removeOutOfGamut2(data,wavelength);
+data = removeOutOfGamut(data,wavelength);
 N = 20;
 r = zeros(N,length(wavelength));
 c = P * data;
@@ -62,7 +62,7 @@ load Food_Vhrel
 foodData = data;
 load reflectances/Nature_Vhrel
 data = setdiff(data',foodData','rows')';
-data = removeOutOfGamut2(data,wavelength);
+data = removeOutOfGamut(data,wavelength);
 N = 20;
 r = zeros(N,length(wavelength));
 c = P * data;
@@ -81,7 +81,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Hair samples
 load Hair_Vhrel
-data = removeOutOfGamut2(data,wavelength);
+data = removeOutOfGamut(data,wavelength);
 N = 5;
 r = zeros(N,length(wavelength));
 c = P * data;
@@ -100,7 +100,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Skin samples
 load reflectances/Skin_Vhrel
-data = removeOutOfGamut2(data,wavelength);
+data = removeOutOfGamut(data,wavelength);
 N = 15;
 r = zeros(N,length(wavelength));
 c = P * data;
@@ -119,7 +119,7 @@ reflectances = [reflectances;r];% size(reflectances)
 
 % Munsell samples
 load DupontPaintChip_Vhrel
-data = removeOutOfGamut2(data,wavelength);
+data = removeOutOfGamut(data,wavelength);
 N = 20;
 r = zeros(N,length(wavelength));
 c = P * data;
