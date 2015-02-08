@@ -11,6 +11,7 @@ s_initISET
 scene = sceneCreateNatural100;
 
 lights = {{'D65'},{'Tungsten'},{'Tungsten','D65'}};%,{'Tungsten','D65','Fluorescent'}};
+lights = {{'D65'},{'Tungsten'}};
 % lights = {{'D65'},{'Fluorescent'},{'Fluorescent','D65'}};
 % {'D65'},{'Tungsten'},{'Fluorescent'}, {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'}, {'Fluorescent','D65'},{'Fluorescent','D65','Tungsten'}
 cfas = {'RGBW1'};%,'Bayer'};
@@ -138,10 +139,10 @@ for nl = 1:length(lights)
             export_fig(['LAB_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
 
 %             %% Show the two images
-            vcNewGraphWin;
-            image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:,2)),r,c)));
-            axis off; axis equal; axis tight;
-            export_fig('chart.eps','-eps','-transparent')
+%             vcNewGraphWin;
+%             image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:,2)),r,c)));
+%             axis off; axis equal; axis tight;
+%             export_fig('chart.eps','-eps','-transparent')
 %             return
 %             subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
 %             axis off; axis equal; axis tight;
