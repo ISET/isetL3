@@ -1,5 +1,5 @@
 
-Ti = 3000; Te = 10000; Nils = 20;
+Ti = 3000; Te = 10000; Nils = 50;
 Tstep = 1/((1/Te-1/Ti)/Nils);
 T = round(1./(1/Ti:1/Tstep:1/Te));
 ils = cell(Nils,1);

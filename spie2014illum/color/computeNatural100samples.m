@@ -28,9 +28,10 @@ P = U';
 
 if plotFlag
     close all
-    figure, set(gcf,'Position',[0 0 800 1200])
+    figure, set(gcf,'Position',[0 0 800 1500])
     
-    plot(wavelength,bsxfun(@plus,U,(0:6)*.8),'LineWidth',2)    
+    plot(wavelength,bsxfun(@plus,U,-(0:6)*.8),'LineWidth',2)    
+    set(gca,'YTick',[])
     axis tight, set(gca,'FontSize',13,'FontWeight','b')
     legend('Component 1','Component 2','Component 3','Component 4','Component 5','Component 6','Component 7','Location','northeastoutside')
     export_fig('PCA.eps','-eps','-transparent');
