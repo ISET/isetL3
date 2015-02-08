@@ -1,5 +1,5 @@
 
-Ti = 3000; Te = 10000; Nils = 20;
+Ti = 3000; Te = 10000; Nils = 50;
 Tstep = 1/((1/Te-1/Ti)/Nils);
 T = round(1./(1/Ti:1/Tstep:1/Te));
 ils = cell(Nils,1);
@@ -12,7 +12,7 @@ ils{Nils+2} = 'D65';
 scene = sceneFromFile('StuffedAnimals.mat','multispectral');
 
 load L3camera_RGBW1_D651
-sz = sceneGet(scene,'size') + 20;
+sz = sceneGet(scene,'size');
 camera = cameraSet(camera,'sensor size',sz);
 oi     = cameraGet(camera,'oi');
 sensor = cameraGet(camera,'sensor');
@@ -20,7 +20,7 @@ sDist  = sceneGet(scene,'distance');
 scenefov = sensorGet(sensor,'fov',sDist,oi);
 scene = sceneSet(scene,'fov',scenefov);
 
-for i = length(ils)
+for i = 1:length(ils)
     illum = ils{i};
     if illum(1) ~= 'B'
         scene = sceneAdjustIlluminant(scene,[illum '.mat']);
@@ -30,7 +30,7 @@ for i = length(ils)
         scene = sceneAdjustIlluminant(scene,illum);
     end
     [~,xyzIdeal] = cameraCompute(camera,scene,'idealxyz');
-    imagesc(xyz2srgb(xyzIdeal/max(xyzIdeal(:)))); axis equal, axis off
+    imagesc(xyz2srgb(xyzIdeal/max(max(xyzIdeal(:,:,2))))); axis equal, axis off
     if ils{i}(1) ~= 'B'
         title(ils{i},'FontSize',16,'FontWeight','b'); 
     else

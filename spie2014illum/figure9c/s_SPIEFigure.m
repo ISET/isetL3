@@ -12,7 +12,7 @@ ils{Nils+2} = 'D65';
 scene = sceneCreateNatural100();
 
 load L3camera_RGBW1_D651
-sz = sceneGet(scene,'size') + 20;
+sz = sceneGet(scene,'size');
 camera = cameraSet(camera,'sensor size',sz);
 oi     = cameraGet(camera,'oi');
 sensor = cameraGet(camera,'sensor');
@@ -30,7 +30,7 @@ for i = 1:length(ils)
         scene = sceneAdjustIlluminant(scene,illum);
     end
     [~,xyzIdeal] = cameraCompute(camera,scene,'idealxyz');
-    imagesc(xyz2srgb(xyzIdeal/max(xyzIdeal(:)))); axis equal, axis off
+    imagesc(xyz2srgb(xyzIdeal/max(max(xyzIdeal(:,:,2))))); axis equal, axis off
     if ils{i}(1) ~= 'B'
         title(ils{i},'FontSize',16,'FontWeight','b'); 
     else

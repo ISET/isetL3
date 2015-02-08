@@ -27,18 +27,23 @@ P = U';
 % P = diag(1./diag(S))*U'; % Normalize variances
 
 if plotFlag
-   close all
-   figure, set(gcf,'Position',[0 0 800 400])
-     plot(wavelength,U,'LineWidth',2), axis tight, set(gca,'FontSize',13,'FontWeight','b')
+    close all
+    figure, set(gcf,'Position',[0 0 800 1200])
+    
+    plot(wavelength,bsxfun(@plus,U,(0:6)*.8),'LineWidth',2)    
+    axis tight, set(gca,'FontSize',13,'FontWeight','b')
     legend('Component 1','Component 2','Component 3','Component 4','Component 5','Component 6','Component 7','Location','northeastoutside')
-    export_fig('PCA.eps','-eps','-transparent');   
-    export_fig('PCA.png','-png');   
-     plot(wavelength,dataMean,'k--','LineWidth',2), axis tight, set(gca,'FontSize',13,'FontWeight','b'), ylim([0 Inf])
+    export_fig('PCA.eps','-eps','-transparent');
+    export_fig('PCA.png','-png');
+        
+    figure, set(gcf,'Position',[0 0 800 400])
+    plot(wavelength,dataMean,'k--','LineWidth',2), axis tight, set(gca,'FontSize',13,'FontWeight','b'), ylim([0 Inf])
     legend('PCA Mean','Location','northeastoutside')
-    export_fig('PCAm.eps','-eps','-transparent');   
-    export_fig('PCAm.png','-png');   
+    export_fig('PCAm.eps','-eps','-transparent');
+    export_fig('PCAm.png','-png');
 end
 
+   
 % Clothes reflectances
 load Clothes_Vhrel
 data = removeOutOfGamut(data,wavelength,{'D65','Tungsten','Fluorescent'});
@@ -63,6 +68,7 @@ if plotFlag
     export_fig('ClothesR.png','-png');
     set(gcf,'Position',[0 0 700 400])
     scatter(c(1,:),c(2,:),50,'LineWidth',2), grid on, axis equal, set(gca,'FontSize',13,'FontWeight','b')
+    xlabel('PCA Component 1'), ylabel('PCA Component 2')
     export_fig('ClothesP.eps','-eps','-transparent');
     export_fig('ClothesP.png','-png');
     for i = 1:N
@@ -107,6 +113,7 @@ if plotFlag
     export_fig('FoodR.png','-png');
     set(gcf,'Position',[0 0 700 400])
     scatter(c(1,:),c(2,:),50,'LineWidth',2), grid on, axis equal, set(gca,'FontSize',13,'FontWeight','b')
+    xlabel('PCA Component 1'), ylabel('PCA Component 2')
     export_fig('FoodP.eps','-eps','-transparent');
     export_fig('FoodP.png','-png');
     for i = 1:N
@@ -153,6 +160,7 @@ if plotFlag
     export_fig('NatureR.png','-png');
     set(gcf,'Position',[0 0 700 400])
     scatter(c(1,:),c(2,:),50,'LineWidth',2), grid on, axis equal, set(gca,'FontSize',13,'FontWeight','b')
+    xlabel('PCA Component 1'), ylabel('PCA Component 2')
     export_fig('NatureP.eps','-eps','-transparent');
     export_fig('NatureP.png','-png');
     for i = 1:N
@@ -196,6 +204,7 @@ if plotFlag
     export_fig('HairR.png','-png');
     set(gcf,'Position',[0 0 700 400])
     scatter(c(1,:),c(2,:),50,'LineWidth',2), grid on, axis equal, set(gca,'FontSize',13,'FontWeight','b')
+    xlabel('PCA Component 1'), ylabel('PCA Component 2')
     export_fig('HairP.eps','-eps','-transparent');
     export_fig('HairP.png','-png');
     for i = 1:N
@@ -239,6 +248,7 @@ if plotFlag
     export_fig('SkinR.png','-png');
     set(gcf,'Position',[0 0 700 400])
     scatter(c(1,:),c(2,:),50,'LineWidth',2), grid on, axis equal, set(gca,'FontSize',13,'FontWeight','b')
+    xlabel('PCA Component 1'), ylabel('PCA Component 2')
     export_fig('SkinP.eps','-eps','-transparent');
     export_fig('SkinP.png','-png');
     for i = 1:N
@@ -282,6 +292,7 @@ if plotFlag
     export_fig('DupontR.png','-png');
     set(gcf,'Position',[0 0 700 400])
     scatter(c(1,:),c(2,:),50,'LineWidth',2), grid on, axis equal, set(gca,'FontSize',13,'FontWeight','b')
+    xlabel('PCA Component 1'), ylabel('PCA Component 2')
     export_fig('DupontP.eps','-eps','-transparent');
     export_fig('DupontP.png','-png');
     for i = 1:N
