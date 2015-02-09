@@ -2,6 +2,8 @@
 Ti = 3000; Te = 10000; Nils = 50;
 Tstep = 1/((1/Te-1/Ti)/Nils);
 T = round(1./(1/Ti:1/Tstep:1/Te));
+Tstep = (Te-Ti)/Nils;
+T = Ti:Tstep:Te;
 ils = cell(Nils,1);
 for i = 1:Nils+1
    ils{i} = sprintf('B%d',T(i));
