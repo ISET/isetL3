@@ -9,11 +9,11 @@ clear all, clc, close all
 s_initISET
 
 lights = {{'Tungsten'},{'D65'},{'Fluorescent'}};%{{'Tungsten', 'D65'},{'Tungsten', 'D65', 'Fluorescent'},...
-lights = {{'Tungsten'},{'D65'}};
+% lights = {{'Tungsten'},{'D65'}};
 % {'Fluorescent', 'D65'},{'Fluorescent', 'D65', 'Tungsten'}};% {'D65'},{'Fluorescent'},{'Tungsten'}
 cfas = {'RGBW1'};%,'Bayer'};
 scenes = {'Vegetables','AsianFemaleWithFlowers'}; % AsianFemaleWithFlowers Natural100 Vegetables
-scenes = {'Natural100'}; % AsianFemaleWithFlowers Natural100 Vegetables
+% scenes = {'Natural100'}; % AsianFemaleWithFlowers Natural100 Vegetables
 % figure%('Visible','off')
 
 

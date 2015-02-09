@@ -10,12 +10,20 @@ s_initISET
 
 scene = sceneCreateNatural100;
 
-lights = {{'D65'},{'Tungsten'},{'Tungsten','D65'}};%,{'Tungsten','D65','Fluorescent'}};
-lights = {{'D65'},{'Tungsten'}};
+% lights = {{'D65'},{'Tungsten'},{'Tungsten','D65'}};%,{'Tungsten','D65','Fluorescent'}};
+% lights = {{'D65'},{'Tungsten'}};
+lights = {{'D65'}};
+Ti = 3000; Te = 10000; Nils = 100;
+Tstep = 1/((1/Te-1/Ti)/Nils);
+T = round(1./(1/Ti:1/Tstep:1/Te));
+ils = cell(Nils,1);
+for i = 1:Nils+1
+   lights{i+1} = {sprintf('B%d',T(i))};
+end
 % lights = {{'D65'},{'Fluorescent'},{'Fluorescent','D65'}};
 % {'D65'},{'Tungsten'},{'Fluorescent'}, {'Tungsten','D65'},{'Tungsten','D65','Fluorescent'}, {'Fluorescent','D65'},{'Fluorescent','D65','Tungsten'}
 cfas = {'RGBW1'};%,'Bayer'};
-opts = [2,3,6];
+opts = [2,3];
 
 % lights = {'D65','Tungsten'};
 % cfas = {'Bayer'};
@@ -50,7 +58,7 @@ for nl = 1:length(lights)
                 srgbIdealD65 = srgbIdeal;
                 xyzIdealD65 = xyzIdeal;
                 imagesc(xyz2srgb(xyzIdealD65(3:end-2,3:end-2,:)/max(xyzIdealD65(:)))); axis off; axis equal; axis tight;
-                export_fig('chart.eps','-eps','-transparent');
+                % export_fig('chart.eps','-eps','-transparent');
             end
             
 %             return
@@ -114,8 +122,8 @@ for nl = 1:length(lights)
             legend({'X','Y','Z'},'Location','SouthEast','FontSize',22,'FontWeight','b')
             set(gca,'FontSize',20,'FontWeight','b')
             xlim([0 1]),ylim([0,1]),
-            export_fig(['XYZ_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
-            export_fig(['XYZ_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
+            % export_fig(['XYZ_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
+            % export_fig(['XYZ_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
             
             % LAB comparisons
             % vcNewGraphWin;
@@ -135,14 +143,14 @@ for nl = 1:length(lights)
             legend({'L*','a*','b*'},'Location','SouthEast','FontSize',22,'FontWeight','b')
             set(gca,'FontSize',20,'FontWeight','b')
             xlim([-50 100]),ylim([-50,100]),
-            export_fig(['LAB_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
-            export_fig(['LAB_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
+            % export_fig(['LAB_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
+            % export_fig(['LAB_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
 
 %             %% Show the two images
 %             vcNewGraphWin;
 %             image(xyz2srgb(XW2RGBFormat(tgtXYZ/max(tgtXYZ(:,2)),r,c)));
 %             axis off; axis equal; axis tight;
-%             export_fig('chart.eps','-eps','-transparent')
+%             % export_fig('chart.eps','-eps','-transparent')
 %             return
 %             subplot(2,1,2), image(xyz2srgb(XW2RGBFormat(estXYZ/max(tgtXYZ(:)),r,c)));
 %             axis off; axis equal; axis tight;
@@ -165,12 +173,12 @@ for nl = 1:length(lights)
             xlim([-0.5 20.5]),ylim([0 50])
             set(gca,'FontSize',16,'FontWeight','b')
             
-            export_fig(['Hist20_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
-            export_fig(['Hist20_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
+            % export_fig(['Hist20_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
+            % export_fig(['Hist20_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
             
             xlim([-0.5 15.5])
-            export_fig(['Hist15_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
-            export_fig(['Hist15_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
+            % export_fig(['Hist15_',lname,'_',cfas{nc},'_',num2str(opt),'.png'],'-png','-transparent')
+            % export_fig(['Hist15_',lname,'_',cfas{nc},'_',num2str(opt),'.eps'],'-eps','-transparent')
 
             
             fprintf('%s %s %d %.1f %.1f %.1f %.1f\n',lname,cfas{nc},opt,mean(dE),std(dE),prctile(dE,90),max(dE));
@@ -185,6 +193,7 @@ for nl = 1:length(lights)
             results(nl,nc,nopt).meandE = mean(dE);
             results(nl,nc,nopt).stddE = std(dE);
             results(nl,nc,nopt).percdE = prctile(dE,90);
+            results(nl,nc,nopt).maxdE = max(dE);
             
             %       [tgtXYZ(101,:)./estXYZ(101,:)]
             %       pause

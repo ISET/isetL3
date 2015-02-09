@@ -22,7 +22,7 @@ Ti = 3000; Te = 10000; Nils = 100;
 Tstep = 1/((1/Te-1/Ti)/Nils);
 T = round(1./(1/Ti:1/Tstep:1/Te));
 ils = cell(Nils,1);
-for i = 1:Nils
+for i = 1:Nils+1
    ils{i} = {sprintf('B%d',T(i))};
 end
 
@@ -34,7 +34,6 @@ n = 1; ils{Nils+3}{n} = 'D65'; for i = 1:20:Nils+1, n = n+1; ils{Nils+3}{n} = sp
 n = 1; ils{Nils+2}{n} = 'D65'; for i = 1:50:Nils+1, n = n+1; ils{Nils+2}{n} = sprintf('B%d',T(i)); end
 n = 1; ils{Nils+1}{n} = 'D65'; for i = 1:100:Nils+1, n = n+1; ils{Nils+1}{n} = sprintf('B%d',T(i)); end
 
-ils  = {{'B10000'}};
 % {'Tungsten'}, {'Fluorescent'}, {'D65'}, {'Tungsten','D65'}, {'Fluorescent','D65'}, {'Tungsten','D65','Fluorescent'}, {'Fluorescent','Tungsten','D65'}
 cfas = {'RGBW1'};
 
