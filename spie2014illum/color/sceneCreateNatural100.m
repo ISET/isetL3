@@ -29,13 +29,20 @@ sceneName = ieParamFormat(sceneName);
 pSize = 24;     % Patch size in pixels
 grayFlag = 1;   % Add a gray strip column on right
 
-[reflectances, wave] = computeNatural100samples();
-
 if isempty(varargin)
+    recomputeFlag = false;
 else
-    pSize = varargin{1};
-    if length(varargin) > 1, grayFlag = varargin{2}; end            
+    recomputeFlag = varargin{1};
+    if length(varargin) > 1, pSize = varargin{2}; end
+    if length(varargin) > 2, grayFlag = varargin{3}; end            
 end
+
+if recomputeFlag
+    [reflectances, wave] = computeNatural100samples();
+else
+    load('reflectancesNatural100.mat','reflectances','wave')
+end
+    
 scene = sceneReflectanceChart(reflectances',[],pSize,wave,grayFlag,'r');
 
 % Initialize scene geometry, spatial sampling
