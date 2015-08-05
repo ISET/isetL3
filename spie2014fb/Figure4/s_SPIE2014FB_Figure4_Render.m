@@ -45,7 +45,7 @@ for ii = 1 : length(files)
     lrgbBasic = L3imcrop(L3, lrgbBasic); 
 
     %% Scale and convert to sRGB
-    satPercent = 99;
+    satPercent = 95;
     
     prctileSatL3 = prctile(lrgbL3(:), satPercent);
     lrgbL3Scaled = lrgbL3 / prctileSatL3;

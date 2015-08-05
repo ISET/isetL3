@@ -44,43 +44,6 @@ if ~exist('param','var') || isempty(param), error('param must be defined.'); end
 % Default is empty when the parameter is not yet defined.
 val = [];
 
-
-%% Set up for ieParameterOtype
-%
-[oType,p] = ieParameterOtype(param);
-
-% Example calls
-%  v = L3Get(L3,'sensor pixel height','um');
-%  v = L3Get(L3,'sensor exptime','ms');
-%  v = L3Get(L3,'oi optics/fnumber');
-if isequal(oType,'sensor')
-    if isempty(p), val = L3.sensor.design; return;
-    else
-        if isempty(varargin), val = sensorGet(L3.sensor.design,p);
-        elseif length(varargin) == 1
-            val = sensorGet(L3.sensor.design,p,varargin{1});
-        elseif length(varargin) == 2
-            val = sensorGet(L3.sensor.design,p,varargin{1},varargin{2});
-        end
-        return;
-    end
-elseif isequal(oType,'oi')
-    if isempty(p), val = L3.oi; return;
-    else
-        if isempty(varargin), val = oiGet(L3.oi,p);
-        elseif length(varargin) == 1
-            val = oiGet(L3.oi,p,varargin{1});
-        elseif length(varargin) == 2
-            val = oiGet(L3.oi,p,varargin{1},varargin{2});
-        end
-        return;
-    end
-elseif isequal(oType,'scene')
-    % carry on
-elseif isempty(p)
-    error('oType %s. Empty param.\n',oType);
-end
-
 %% Special handling of key L3 parameters to simplify code below
 
 % The following are needed to access properties of filters, cluster, or
@@ -164,7 +127,7 @@ switch(param)
         tmp = L3Get(L3,'ideal filters');
         val = tmp.filterNames;
         
-    case{'designsensor'}
+    case{'designsensor', 'sensordesign'}
         % This is the sensor we are trying to design. It can have an
         % unusual CFA and color filters
         val = L3.sensor.design;
@@ -292,7 +255,7 @@ switch(param)
         %
         % For example original data is in interval [ao/ag, voltageswing]
         % but new range is [0, voltageswing-ao/ag]
-        sensorD = L3Get(L3,'sensordesign');
+        sensorD = L3Get(L3,'designsensor');
         pixel = sensorGet(sensorD,'pixel');
         voltageSwing = pixelGet(pixel,'voltage swing');  % pixel's actual voltage swing
         ao = sensorGet(sensorD,'analogOffset');

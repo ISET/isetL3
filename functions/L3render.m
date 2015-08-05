@@ -40,7 +40,7 @@ if ieNotDefined('L3Type'), error('L3Type required'); end
 inputIm = sensorGet(sensor,'volts');
 
 %% Delete any offset
-sensorM = L3Get(L3,'sensor monochrome');
+sensorM = L3Get(L3,'monochrome sensor');
 ao = sensorGet(sensorM,'analogOffset');
 ag = sensorGet(sensorM,'analogGain');
 

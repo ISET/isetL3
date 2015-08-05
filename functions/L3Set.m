@@ -135,44 +135,6 @@ if ~exist('L3', 'var') || isempty(L3),        error('L3 struct required'); end
 if ~exist('param','var') || isempty(param) ,  error('param required');     end
 if ~exist('val','var'),                       error('val required');       end
 
-
-%% Set up for ieParameterOtype
-%
-[oType,p] = ieParameterOtype(param);
-
-% Example calls
-%  L3 = L3Set(L3,'sensor pixel height','um');
-%  L3 = L3Set(L3,'sensor exptime',0.05);
-%  L3 = L3Set(L3,'oi optics/fnumber',5.6);
-if isequal(oType,'sensor')
-    % This refers to the design sensor.
-    if isempty(p), L3.sensor.design = val; return;
-    else
-        if isempty(varargin), L3.sensor.design = sensorSet(L3.sensor.design,p,val);
-        elseif length(varargin) == 1
-            L3.sensor.design = sensorSet(L3.sensor.design,p,val,varargin{1});
-        elseif length(varargin) == 2
-            L3.sensor.design = sensorSet(L3.sensor.design,p,val,varargin{1},varargin{2});
-        end
-        return;
-    end
-elseif isequal(oType,'oi')
-    if isempty(p), L3.oi = val; return;
-    else
-        if isempty(varargin), L3.oi = oiSet(L3.oi,p,val);
-        elseif length(varargin) == 1
-            L3.oi = oiSet(L3.oi,p,val,varargin{1});
-        elseif length(varargin) == 2
-            L3.oi = oiSet(L3.oi,p,val,varargin{1},varargin{2});
-        end
-        return;
-    end
-elseif isequal(oType,'scene')
-    % carry on
-elseif isempty(p)
-    error('oType %s. Empty param.\n',oType);
-end
-
 %% Basic initialization
 
 % There are several key parameters that are widely needed in the set

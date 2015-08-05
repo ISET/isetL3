@@ -38,7 +38,7 @@ function L3 = L3Train(L3)
 % to make sure we render with the offset removed.  
 %
 % This needs more comment/discussion.
-sensorM = L3Get(L3,'sensor monochrome');
+sensorM = L3Get(L3,'monochromesensor');
 ao = sensorGet(sensorM,'analogOffset');
 ag = sensorGet(sensorM,'analogGain');
 for ii = 1 : length(inputIm)
@@ -51,7 +51,7 @@ numclusters    = L3Get(L3,'n clusters');
 lumList    = L3Get(L3,'luminance list');
 
 %% Main loop
-cfaPattern = sensorGet(L3Get(L3,'sensor design'),'cfa pattern');
+cfaPattern = sensorGet(L3Get(L3,'design sensor'), 'cfa pattern');
 for rr=1:size(cfaPattern,1)
     for cc=1:size(cfaPattern,2)
         disp('**********Patch Type**********');
