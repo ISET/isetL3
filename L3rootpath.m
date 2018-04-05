@@ -1,4 +1,4 @@
-function rootpath=L3rootpath()
+function rootpath = L3rootpath()
 %% L3ROOTPATH Returns the path to the root L^3 directory
 %
 % This function must reside in the main directory containing the L^3
@@ -10,6 +10,6 @@ function rootpath=L3rootpath()
 
 rootpath=which('L3rootpath');
 
-[rootpath,fName,ext]=fileparts(rootpath);
+[rootpath, fName, ext] = fileparts(rootpath);
 
 return
