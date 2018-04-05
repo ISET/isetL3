@@ -7,7 +7,7 @@ The L3 toolbox (Matlab) was created to automate the construction of an image pro
 
 The scripts here show how to perform the training and testing of the L3 (Local, Linear, Learned) algorithm for automatic generation of image processing pipelines for arbitrary CFA measurement schemes for digital imaging sensors. The L3 pipeline performs demosaicking, denoising, and the color transform in one step.  The algorithm allows output estimated images to be in any user specified color bands.
 
-The L3 software here relies on the ISET software, and in particular the camera branch of that software.
+The L3 software here relies on the ISETCAM software.
 
 The main scripts involved in using the L^3 algorithm are
 
@@ -33,6 +33,6 @@ The following describes the contents of some of the folders of interest:
 	-Scripts to Show Results:  Contains a few scripts to display the 
      	 original and estimated images, the derived filters, etc.
 
-The L3 algorithm and software were developed by Steven Lansel and Brian Wandell at Stanford University.  The code in this repository was initially drafted by SL, then edited to work with ISET by SL and BW, and then further developed by Qiyuan Tian with help from SL and BW.
+The L3 algorithm and software were developed by Steven Lansel and Brian Wandell at Stanford University.  The code in this repository was initially drafted by SL, then edited to work with ISET by SL and BW, and then further developed by Qiyuan Tian and Haomiao Jiang.
 
 Copyright Steven Lansel, 2013
