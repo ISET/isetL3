@@ -1,11 +1,17 @@
 %% t_L3Object
 %
-% Examples on how to use l3 object
+% Examples on how to use l3 object.
+%
+% I think the pgm file is the raw sensor and the jpg file is the
+% rendered file.  Hence, in this case we are using the L3 object to
+% train to match a particular camera rendering algorithm.
 %
 % (HJ) VISTA TEAM, 2015
 
 %% Init
 ieInit;
+
+%% Set up the training parameters a bit
 cfa = [2 1; 3 4];
 patch_sz = [5 5];
 pad_sz = (patch_sz - 1) / 2;
