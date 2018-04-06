@@ -2,10 +2,13 @@ L3 - Creating image processing pipelines for novel sensor designs
 ==
 
 The code here implements the work described in this patented work
+
 https://patents.google.com/patent/US20120307116
 
 Learning of Image Processing Pipeline for Digital Imaging Devices
+
 Abstract
+
 A learning technique is provided that learns how to process images by exploiting the spatial and spectral correlations inherent in image data to process and enhance images. Using a training set of input and desired output images, regression coefficients are learned that are optimal for a predefined estimation function that estimates the values at a pixel of the desired output image using a collection of similarly located pixels in the input image. Application of the learned regression coefficients is fast, robust to noise, adapts to the particulars of a dataset, and generalizes to a large variety of applications. The invention enables the use of image sensors with novel color filter array designs that offer expanded capabilities beyond existing sensors and take advantage of typical high pixel counts.
 
 Linear, Local, Learned
