@@ -1,6 +1,13 @@
 L3 - Creating image processing pipelines for novel sensor designs
 ==
 
+The code here implements the work described in this patented work
+https://patents.google.com/patent/US20120307116
+
+Learning of Image Processing Pipeline for Digital Imaging Devices
+Abstract
+A learning technique is provided that learns how to process images by exploiting the spatial and spectral correlations inherent in image data to process and enhance images. Using a training set of input and desired output images, regression coefficients are learned that are optimal for a predefined estimation function that estimates the values at a pixel of the desired output image using a collection of similarly located pixels in the input image. Application of the learned regression coefficients is fast, robust to noise, adapts to the particulars of a dataset, and generalizes to a large variety of applications. The invention enables the use of image sensors with novel color filter array designs that offer expanded capabilities beyond existing sensors and take advantage of typical high pixel counts.
+
 Linear, Local, Learned
 
 The L3 toolbox (Matlab) was created to automate the construction of an image processing pipeline for novel sensor arrays.  These arrays might contain novel CFAs, or sensors with different dynamic ranges.
@@ -33,6 +40,6 @@ The following describes the contents of some of the folders of interest:
 	-Scripts to Show Results:  Contains a few scripts to display the 
      	 original and estimated images, the derived filters, etc.
 
-The L3 algorithm and software were developed by Steven Lansel and Brian Wandell at Stanford University.  The code in this repository was initially drafted by SL, then edited to work with ISET by SL and BW, and then further developed by Qiyuan Tian and Haomiao Jiang.
+The L3 algorithm and software were developed by Steven Lansel and Brian Wandell at Stanford University.  The code in this repository was initially drafted by SL, edited to work with ISET by SL and BW, and then extensivel developed by Haomiao Jiang, Qiyuan Tian, and Brian Wandell.
 
 Copyright Steven Lansel, 2013
