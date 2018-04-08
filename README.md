@@ -21,7 +21,7 @@ The L3 software here relies on the ISETCAM software.
 
 The tutorial scripts illustrating how to read, train and render are t_L3DataSimulation(); and t_L3DataISET;
 
-For more instructions and references see this [temporary copy of the old wiki page](https://isetcam.git/isetL3/wiki/Scratch---from-old-pdc-wiki) and the [newer one under development](https://isetcam.git/isetL3/wiki).
+For more instructions and references see this [temporary copy of the old wiki page](https://github.com/isetcam/isetL3/wiki/Scratch---from-old-pdc-wiki) and the [newer one under development](https://github.com/isetcam/isetL3/wiki).
 
 
 The scripts currently are written to run an example calculation for a 2x2 CFA containing red, green, blue, and white pixels.  The white pixel does not contain any filter and is much more sensitive to light, which allows imaging in low light.  Sample data containing images of faces is included to perform the calculation.
