@@ -1,4 +1,4 @@
-L3 - Creating image processing pipelines for novel sensor designs
+Designing image processing pipelines for novel sensor designs (L3)
 ==
 
 The code in the isetL3 repository implements  work described in this patent: [Learning of Image Processing Pipeline for Digital Imaging Devices](https://patents.google.com/patent/US20120307116) and this published paper
