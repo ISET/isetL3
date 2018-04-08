@@ -7,11 +7,11 @@ https://patents.google.com/patent/US20120307116
 
 Learning of Image Processing Pipeline for Digital Imaging Devices
 
-Abstract
+## Abstract
 
 A learning technique is provided that learns how to process images by exploiting the spatial and spectral correlations inherent in image data to process and enhance images. Using a training set of input and desired output images, regression coefficients are learned that are optimal for a predefined estimation function that estimates the values at a pixel of the desired output image using a collection of similarly located pixels in the input image. Application of the learned regression coefficients is fast, robust to noise, adapts to the particulars of a dataset, and generalizes to a large variety of applications. The invention enables the use of image sensors with novel color filter array designs that offer expanded capabilities beyond existing sensors and take advantage of typical high pixel counts.
 
-Linear, Local, Learned
+## Linear, Local, Learned (L3)
 
 The L3 toolbox (Matlab) was created to automate the construction of an image processing pipeline for novel sensor arrays.  These arrays might contain novel CFAs, or sensors with different dynamic ranges.
 
@@ -19,15 +19,10 @@ The scripts here show how to perform the training and testing of the L3 (Local, 
 
 The L3 software here relies on the ISETCAM software.
 
-The main scripts involved in using the L^3 algorithm are
+The tutorial scripts illustrating how to read, train and render are t_L3DataSimulation(); and t_L3DataISET;
 
-	-s_L3TrainCamera:  Trains L^3 camera for a specific CFA using a set of 
-	 multispectral scenes for training.
-
-	-s_L3Render:  Applies the L^3 camera to a multispectral scene. 
-	Result images are shown.
-
-For more instructions and references see the Docs folder and http://white.stanford.edu/pdcwiki/index.php/L3_Algorithm
+For more instructions and references see this [old wiki page](OLD-WIKI-PAGE) and the [newer one under development](https://isetcam.git/isetcam/isetL3/wiki).
+http://white.stanford.edu/pdcwiki/index.php/L3_Algorithm
 
 The scripts currently are written to run an example calculation for a 2x2 CFA containing red, green, blue, and white pixels.  The white pixel does not contain any filter and is much more sensitive to light, which allows imaging in low light.  Sample data containing images of faces is included to perform the calculation.
 
