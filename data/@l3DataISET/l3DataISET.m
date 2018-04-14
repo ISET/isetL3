@@ -56,13 +56,8 @@ classdef l3DataISET < l3DataS
             
             % load multispectral scenes from remote server
             if isempty(obj.scenes)
-                try
-                    obj.scenes = rdtScenesLoad('nScenes', obj.nScenes);
-                catch
-                    fprintf('Load from RemoteDataToolbox server failed.');
-                    fprintf('Trying using scarlet server\n');
-                    obj.scenes = scarletScenesLoad('nScenes', obj.nScenes);
-                end
+                disp('Loading default scenes from RDT');
+                obj.scenes = rdtScenesLoad('nScenes', obj.nScenes);
             end
         end        
         

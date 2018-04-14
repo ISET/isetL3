@@ -76,7 +76,7 @@ classdef l3TrainOLS < l3TrainS
             % HJ/BW, VISTA TEAM, 2015
             
             % Check inputs
-            l3c = obj.l3c;
+            l3c = obj.l3c;    % A method that classifies data
             if exist('l3d', 'var') && ~isempty(l3d)
                 % Compute labels
                 assert(isa(l3d, 'l3DataS'), 'Unsupported l3d type');
