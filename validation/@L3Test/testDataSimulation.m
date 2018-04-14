@@ -46,8 +46,8 @@ testCase.verifyNumElements(out, 2, 'Unexpected number of data returned');
 
 % Compute with custom scene / oi
 scene = sceneCreate;
-oi = oiCompute(scene, cameraGet(l3d.camera, 'oi'));
-l3d.sources = {scene, oiCompute(scene, oi)};
+oi = oiCompute(cameraGet(l3d.camera, 'oi'), scene);
+l3d.sources = {scene, oi};
 
 [in, out, ~] = l3d.dataGet(2, true);
 errMsg = 'Mismatch between scene and oi, potential bug in l3DataSimutaion';
