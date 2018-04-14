@@ -7,22 +7,6 @@
 %
 % Wandell
 
-
-%%
-remoteDirectory = '/resources/scenes/multiband/yasuma';
-scenes = rdtScenesLoad('nscenes',[7 9], ...
-    'remote directory', remoteDirectory, ...
-    'print',false);
-%%
-scene = scenes{2};
-ieAddObject(scene); sceneWindow;
-
-%%
-oi = oiCreate;
-oi = oiCompute(oi,scene);
-ieAddObject(oi); oiWindow;
-
-%%
 sensor = sensorCreate;
 
 quadPattern = ...
