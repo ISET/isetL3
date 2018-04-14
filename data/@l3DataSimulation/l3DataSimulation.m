@@ -55,13 +55,14 @@ classdef l3DataSimulation < l3DataS
             % parse and set to object properties
             p.parse(varargin{:});
             if ~isempty(p.Results.camera), obj.camera  = p.Results.camera;
-            else obj.camera = cameraCreate; end
+            else, obj.camera = cameraCreate; end
             obj.name = p.Results.name;
             obj.sources = p.Results.sources;
             obj.expFrac = p.Results.expFrac;
             obj.verbose = p.Results.verbose;
             
-            % load color matching function is it's specified as string
+            % load alternative color matching function if it is specified
+            % as a string
             if ischar(p.Results.idealCMF)
                 wave = cameraGet(obj.camera, 'sensor wave');
                 obj.idealCMF = ieReadSpectra(p.Results.idealCMF, wave);

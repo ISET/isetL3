@@ -1,46 +1,54 @@
 function sources = loadSources(obj, nImg, type, varargin)
 % load sources (scene / oi) for l3DataSimulation class
+%
 %   sources = loadSources(nImg, type, varargin)
 %
 % Inputs:
 %   obj  - l3DataSimulation object instance
-%   nImg - number of sources to be loaded. By default, we load all things
-%          available
+%   nImg - number of sources to be loaded. By default, we load all
+%          available objects of that type.
 %   type - what kind of sources to be loaded. Can be chosen from 'scene',
-%          'oi' or 'all' (default). When type is 'all', we load scenes
-%          first
+%          'oi' or 'all' (default). When type is 'all', we load 'scenes'
+%          first and then 'oi'
 %
 % Outputs:
 %   sources - cell array of scenes and optical images
 %
-% See also:
-%   scarletScenesLoad, rdtScenesLoad, rdtOILoad
-%
 % HJ, VISTA TEAM, 2015
+%
+% See also:
+%   rdtScenesLoad, rdtOILoad
 
-% Check inputs
+%% Check inputs
 if notDefined('nImg'), nImg = inf; end
 if notDefined('type'), type = 'all'; end
 sources = {};
 
-% Load scenes from remote server
-if strcmp(type, 'all') || strcmp(type, 'scene')
-    try
-        % fprintf('Trying from RDT/SCIEN\n');
+type = ieParamFormat(type);
+%% Load scenes from remote server
+switch type
+    case {'all'}
+        
         sources = rdtScenesLoad('nScenes', nImg);
-    catch
-        fprintf('Load from RemoteDataToolbox server failed.');
-        fprintf('Trying using scarlet server\n');
-        sources = scarletScenesLoad('nScenes', nImg);
-    end
-    nImg = nImg - length(sources);
+        nImg = nImg - length(sources);
+        
+        % Combine the oi cell array with the scene cell array
+        if nImg > 0
+            sources = cat(1, sources, rdtOILoad('nOI', nImg));
+        end
+        
+    case {'scene'}
+        sources = rdtScenesLoad('nScenes', nImg);
+
+    case {'oi'}
+        sources = cat(1, sources, rdtOILoad('nOI', nImg));
+        
+    otherwise
+        error('Unknown type %s\n',type);
 end
 
-% Load oi from remote sever
-if strcmp(type, 'all') || strcmp(type, 'oi')
-    % Combine the oi cell array with the scene cell array
-    sources = cat(1, sources, rdtOILoad('nOI', nImg));
-end
-
+% It appears that the sources can be a cell array of ISETCAM scenes and
+% ois.  That's interesting and surprising. (BW).
 obj.sources = sources;
+
 end
