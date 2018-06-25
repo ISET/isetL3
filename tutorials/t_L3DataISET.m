@@ -12,7 +12,6 @@
 %  t_L3DataSimulation
 
 %% Init the isetcam environment
-
 ieInit
 
 %% l3Data class
