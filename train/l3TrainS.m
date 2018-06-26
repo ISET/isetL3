@@ -38,7 +38,7 @@ classdef l3TrainS < hiddenHandle
         %
         obj = train(obj, l3d, varargin)
     end
-    
+            
     methods (Access = public)
         function obj = l3TrainS(varargin)
             % constructor for l3TrainS class
