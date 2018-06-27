@@ -51,5 +51,8 @@ classdef l3ClassifyS < hiddenHandle
         % 
         % For the render case, the p_out will simply be empty
         [p_in, p_out] = getClassData(obj, label, varargin)
+        
+        % This function is used to concatenate data from indicated classes
+        [c_data, c_grndTruth] = concatenateClassData(obj, idx, varargin)
     end
 end

@@ -266,6 +266,19 @@ classdef l3ClassifyFast < l3ClassifyS
             p_out = obj.p_out{label}';
         end
         
+        function [c_data, c_grndTruth] = concatenateClassData(obj, idx, varargin)
+            assert(max(idx) <= obj.nLabels, 'Index exceeds number of classes.');
+            assert(min(idx) >= 1, 'Index should be equal or larger than 1.');
+            
+            c_data = []; c_grndTruth = [];
+            for ii = 1 : length(idx)
+                fprintf('Merging class %i \n', idx(ii));
+                [X, y] = obj.getClassData(idx(ii));
+                c_data = [c_data; X];
+                c_grndTruth = [c_grndTruth; y];
+            end
+        end
+        
         function labels = query(obj, varargin)
             % find classes that satisfy certain contraints
             %   labels = query(obj, [name-value pairs]);
