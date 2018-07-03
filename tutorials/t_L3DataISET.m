@@ -77,7 +77,7 @@ axis off; title('Camera Raw Data');
 % scene image. This is a result of lens blur in the camera.
 outImg = l3r.render(cmosaic, cfa, l3t);
 outImg = outImg / max(max(outImg(:,:,2)));
-subplot(1,3,3); imshow(xyz2srgb(outImg)); title('L3 Rendered Image');
+subplot(1,3,3); imshow(xyz2srgboutImg); title('L3 Rendered Image');
 
 %% Now, render a scene that we did not use as part of the training
 
