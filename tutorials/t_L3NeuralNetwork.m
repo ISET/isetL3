@@ -30,27 +30,38 @@ l3c.classify(l3d);
 
 %% Newly added function called concatenate class data
 idx = [1 : l3c.nLabels];
-[mergedDataTrain, mergedGrndtruthTrain] = l3c.concatenateClassData(idx);
+[cattedDataTrain, cattedGrndtruthTrain] = l3c.concatenateClassData(idx);
+
+%%
+rdmIdx = randperm(size(cattedDataTrain, 1));
+
+cattedDataTrain = cattedDataTrain(rdmIdx,:);
+cattedGrndtruthTrain = cattedGrndtruthTrain(rdmIdx,:);
 
 
-%% Generate data for training example after training
-l3cTest = l3c.copy();
+%% Validation data (same as the test data).
+cattedDataVal = cattedDataTrain;
+cattedGrndtruthVal = cattedGrndtruthTrain;
 
-% Obtain the sensor mosaic response to a scene.  Could be any scene
-scene = l3d.get('scenes', 1);
+%% Save training dataset.
+SAVE_FOLDER = '/Users/zhenglyu/Graduate/research/isetL3/dataset/';
+SAVE_NAME = 'l3NeuralNetworkTraining';
+trainImgSz = size(l3d.pType);
+patchSz = l3c.patchSize;
 
-% Use isetcam to compute the camera data.
-camera  = cameraCompute(l3d.camera, scene);
-cfa     = cameraGet(l3d.camera, 'sensor cfa pattern');
-cmosaic = cameraGet(camera, 'sensor volts');
+fprintf('Saving the training data ...');
+save(strcat(SAVE_FOLDER, SAVE_NAME), 'cattedDataTrain',...
+                 'cattedGrndtruthTrain', 'trainImgSz','patchSz',...
+                  '-v7.3');
+fprintf('Done. \n')
+%% Save validation dataset.
 
-l3dTest = l3DataCamera({cmosaic}, {}, cfa);
-pType = l3dTest.pType;
+SAVE_FOLDER = '/Users/zhenglyu/Graduate/research/isetL3/dataset/';
+SAVE_NAME = 'l3NeuralNetworkVal';
+valImgSz = size(l3d.pType);
 
-% Calculate the 
-l3cTest.classify(l3dTest);
-
-[mergedDataTest, mergedGrndtruthTest] = l3cTest.concatenateClassData(idx);
-
-
-
+fprintf('Saving the validation data ...');
+save(strcat(SAVE_FOLDER, SAVE_NAME), 'cattedDataVal',...
+                 'cattedGrndtruthVal', 'valImgSz','patchSz',...
+                  '-v7.3');
+fprintf('Done. \n');

@@ -31,10 +31,10 @@ function [patchVec,row,col] = raw2PatchVecFormat(rawData, patchSz, format, varar
 
 % Example:
 %{
-scene = sceneCreate; oi = oiCreate; oi = oiCompute(oi,scene);
-sensor = sensorCreate; sensor = sensorCompute(sensor,oi);
-rawData = sensorGet(sensor,'volts');
-mlData = raw2PatchVecFormat(rawData, [5,5], 'rggb');
+    scene = sceneCreate; oi = oiCreate; oi = oiCompute(oi,scene);
+    sensor = sensorCreate; sensor = sensorCompute(sensor,oi);
+    rawData = sensorGet(sensor,'volts');
+    mlData = raw2PatchVecFormat(rawData, [5,5], 'rggb');
 %}
 
 %% Extract the parms
@@ -63,16 +63,26 @@ cPatch = patchSz(2);
 
 switch format
     case 'single'
-        rowSamps = rRawData - rPatch + 1;
-        colSamps = cRawData - cPatch + 1;
-        patchVec = zeros(rowSamps * colSamps, rPatch * cPatch);
+        % Calculating how many patches we expect.
+        % 
+        boundary = ceil(rPatch/2);
+        rowSamps = boundary : (rRawData - boundary);
+        boundary = ceil(cPatch/2);
+        colSamps = boundary : (cRawData - boundary);
         
-        for rr = 1 : rowSamps
-            for cc = 1 : colSamps
-                Crop = cropAndFlatten(rawData, rr, cc, [rPatch,cPatch]);
-                patchVec((rr - 1) * colSamps + cc, :) = Crop;
+        patchVec = zeros(numel(rowSamps), numel(colSamps), rPatch*cPatch);
+        halfSize = floor(patchSz/2);
+        for rr = 1:numel(rowSamps)
+            for cc = 1:numel(colSamps)
+                
+                rows = (rowSamps(rr):(rowSamps(rr) + rPatch - 1)) - halfSize(1);
+                cols = (colSamps(cc):(colSamps(cc) + cPatch - 1)) - halfSize(2);
+                
+                tmp = rawData(rows, cols);     Crop = tmp(:)';
+                patchVec(rr, cc, :) = Crop;
             end
         end
+        [patchVec,row,col] = RGB2XWFormat(patchVec);
         
     case 'rggb'
         % Calculating how many patches we expect.
