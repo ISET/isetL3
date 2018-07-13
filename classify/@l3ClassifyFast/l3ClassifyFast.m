@@ -267,6 +267,8 @@ classdef l3ClassifyFast < l3ClassifyS
         end
         
         function [c_data, c_grndTruth] = concatenateClassData(obj, idx, varargin)
+            % Let's allow concatenation with the same type of pixel
+            % (e.g., R), not across pixel classes.
             assert(max(idx) <= obj.nLabels, 'Index exceeds number of classes.');
             assert(min(idx) >= 1, 'Index should be equal or larger than 1.');
             

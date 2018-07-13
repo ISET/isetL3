@@ -1,9 +1,9 @@
 function checkLinearity(classPatch, classTgt, nSample, nTrain, nVal, classNumber)
-% This function is used to check the linearity relationship between the raw
+% This function is used to check the linear relationship between the raw
 % data from a class and the target data. In this function we used two
 % method to check, one is the Least-squares solution (LSS), the other one
 % is using MATLAB LinearModel Class.
-
+%
 % Inputs
 %   classPatch          - Raw data for a classp.parse(rawData, patchSz, format, varargin{:});
 %   classTgt            - Target data for the class
@@ -14,7 +14,11 @@ function checkLinearity(classPatch, classTgt, nSample, nTrain, nVal, classNumber
 % 
 % Outputs
 %   None
-
+%
+% When we can do something without an extra toolbox, that is better.
+% Not everybody has all the toolboxes.
+%
+% ZL
 %% init input parser
 p = inputParser;
 
@@ -80,7 +84,7 @@ Channels = ['X', 'Y', 'Z'];
 %
 fprintf('Analysing the result by using LSS: \n\n');
 figure;
-suptitle(['Error for least-squares solution for class: ', num2str(classNumber)])
+% suptitle(['Error for least-squares solution for class: ', num2str(classNumber)])
 for ii = 1 : 3
     subplot(1, 3, ii)
     title(['Channel: ', Channels(ii)]);
@@ -108,7 +112,7 @@ end
 
 fprintf('Analysing the result by using LinearModel Class: \n\n');
 figure;
-suptitle(['Error for LinearModel class: ', num2str(classNumber)])
+% suptitle(['Error for LinearModel class: ', num2str(classNumber)])
 for ii = 1 : 3
     subplot(1, 3, ii)
     title(['Channel: ', Channels(ii)]);

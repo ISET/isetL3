@@ -20,6 +20,10 @@ l3c.patchSize = [5 5];
 
 l3c.classify(l3d);
 
+%{
+fName = fullfile(L3rootpath,'local','classified');
+save(fName,'l3c')
+%}
 %% Check the linearity for single class
 
 classNumber = 10;
@@ -60,7 +64,14 @@ checkLinearity(classPatch, classTgtNorm, nSample, nTrain, nVal, classNumber);
 
 
 %% Check the linearity for whole classes
-[classWholeData, classWholeTgt] = l3c.concatenateClassData([1:l3c.nLabels]);
+
+% theseClasses = (1:l3c.nLabels);
+first = 1; last = l3c.nLabels;
+theseClasses = ((last-20):(last-5));
+% Specify the pixel type that you want to merge as an additional
+% argument to concatenateClassData.  People should not really want to
+% merge red with green, for example.
+[classWholeData, classWholeTgt] = l3c.concatenateClassData(theseClasses);
 nSample = size(classWholeData, 1);              
 nTrain = floor(nSample * 0.9);              
 nVal = nSample - nTrain;                    
@@ -82,7 +93,7 @@ uatDataVal = uatDataTrain;
 uatGrndVal = uatGrndTrueTrain;
 
 %% Saving training data
-SAVE_FOLDER = '/Users/zhenglyu/Graduate/research/isetL3/local/';
+SAVE_FOLDER = fullfile(L3rootpath,'local');
 SAVE_NAME = 'l3UniversalApproxTrain_Class101';
 trainImgSz = size(l3d.pType);
 patchSz = l3c.patchSize;
