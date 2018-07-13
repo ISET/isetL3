@@ -2,6 +2,8 @@
 % Approximation is able to be used in our problem.
 % 
 % ZL/BW, VISTA TEAM, 2018
+%%
+ieInit;
 %% l3d class data
 l3d = l3DataISET();
 
@@ -13,24 +15,75 @@ l3d.outIlluminantSPD = {'D65'};
 l3c = l3ClassifyFast();
 
 % set parameters
-l3c.cutPoints = {logspace(-1.7, -0.12, 40), []};
+l3c.cutPoints = {logspace(-1.7, -0.12, 30), []};
 l3c.patchSize = [5 5];
 
 l3c.classify(l3d);
 
+%% Check the linearity for single class
+
+classNumber = 10;
+classPatch = (l3c.p_data{classNumber})';    % raw data for a class
+classTgt = (l3c.p_out{classNumber})';       % target data for the class
+nSample = size(classPatch, 1);              % Total number of samples
+nTrain = floor(nSample * 0.9);              % Number of the samples used for 
+                                            % linear regression
+nVal = nSample - nTrain;                    % Samples used for validation.                                            
+%{
+    rdmIdx = randi([1, nSample], 1, 25);
+    example = ClassPatch(rdmIdx, :);
+    tgt = ClassTgtNorm(rdmIdx,:);
+
+    vcNewGraphWin([], 'wide');
+    for ii = 1 : length(rdmIdx)
+        subplot(5, 5, ii);
+        imgCur = reshape(example(ii,:), [5, 5]);
+        imagesc(imgCur); colormap(gray); colorbar;
+    end
+
+    vcNewGraphWin([], 'wide');
+    for ii = 1 : length(rdmIdx)
+        subplot(5, 5, ii);
+        imgCur = tgt(ii,:);
+        imagesc(imgCur); colorbar;
+    end
+%}
+
+% Check the linearity with target data w/o normailization
+checkLinearity(classPatch, classTgt, nSample, nTrain, nVal, classNumber);
+
+% Check the linearity with target data w/ normalization
+maxTgt = max(classTgt, [], 1);              % max target value for each channel
+classTgtNorm = classTgt ./ maxTgt;          % Normalized target value
+
+checkLinearity(classPatch, classTgtNorm, nSample, nTrain, nVal, classNumber);
+
+
+%% Check the linearity for whole classes
+[classWholeData, classWholeTgt] = l3c.concatenateClassData([1:l3c.nLabels]);
+nSample = size(classWholeData, 1);              
+nTrain = floor(nSample * 0.9);              
+nVal = nSample - nTrain;                    
+checkLinearity(classWholeData, classWholeTgt, nSample, nTrain, nVal, classNumber);
+
+% Check the linearity with target data w/ normalization
+maxTgt = max(classTgt, [], 1);              % max target value for each channel
+classTgtNorm = classTgt ./ maxTgt;          % Normalized target value
+
+checkLinearity(classPatch, classTgtNorm, nSample, nTrain, nVal, classNumber);
 %% Take the single class as for UAT validation
 % Training data
-uatDataTrain = l3c.p_data{1};
-uatGrndTrueTrain = l3c.p_out{1};
+uatDataTrain = l3c.p_data{classNumber};
+uatGrndTrueTrain = l3c.p_out{classNumber};
 
 
 % Validation data (same for the UAT validation)
-uatDataVal = uatTraining;
+uatDataVal = uatDataTrain;
 uatGrndVal = uatGrndTrueTrain;
 
 %% Saving training data
 SAVE_FOLDER = '/Users/zhenglyu/Graduate/research/isetL3/local/';
-SAVE_NAME = 'l3UniversalApproxTrain';
+SAVE_NAME = 'l3UniversalApproxTrain_Class101';
 trainImgSz = size(l3d.pType);
 patchSz = l3c.patchSize;
 
@@ -42,7 +95,7 @@ fprintf('Done. \n')
 
 %% Saving again for the tesing data
 SAVE_FOLDER = '/Users/zhenglyu/Graduate/research/isetL3/local/';
-SAVE_NAME = 'l3UniversalApproxVAl';
+SAVE_NAME = 'l3UniversalApproxVAl_Class101';
 valImgSz = size(l3d.pType);
 
 fprintf('Saving the validation data ...');
