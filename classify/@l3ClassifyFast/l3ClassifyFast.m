@@ -22,6 +22,8 @@ classdef l3ClassifyFast < l3ClassifyS
         
         p_data;                     % patch data
         p_out;                      % patch target output
+        
+        p_center;                   % (r, c) for each patch 
     end
     
     properties (Dependent)
@@ -165,6 +167,7 @@ classdef l3ClassifyFast < l3ClassifyS
             nc = numel(cfa); % number of channels
             n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1);
             
+            % allocate spaces for the p_center
             if isNew || isempty(obj.p_data)
                 obj.p_data = cell(n_lvls, 1);
                 obj.p_out  = cell(n_lvls, 1);
@@ -266,18 +269,51 @@ classdef l3ClassifyFast < l3ClassifyS
             p_out = obj.p_out{label}';
         end
         
-        function [c_data, c_grndTruth] = concatenateClassData(obj, idx, varargin)
-            % Let's allow concatenation with the same type of pixel
-            % (e.g., R), not across pixel classes.
-            assert(max(idx) <= obj.nLabels, 'Index exceeds number of classes.');
-            assert(min(idx) >= 1, 'Index should be equal or larger than 1.');
+        function [c_data, c_grndTruth] = concatenateClassData(obj, cfa, varargin)
+            % This function is used to concatenate different classes. Two
+            % types of inputs are allowed for now: a)an array of indeces of
+            % the classes that we want to concatenate and b) a certain
+            % type of pixel (channel).
             
-            c_data = []; c_grndTruth = [];
-            for ii = 1 : length(idx)
-                fprintf('Merging class %i \n', idx(ii));
-                [X, y] = obj.getClassData(idx(ii));
-                c_data = [c_data; X];
-                c_grndTruth = [c_grndTruth; y];
+            assert(~isempty(varargin), 'Must give the index or the channel.');
+            assert(length(varargin) == 1, 'Make sure give only index OR channel.');
+            
+            if isnumeric(varargin{1})
+                idx = varargin{1};
+                assert(max(idx) <= obj.nLabels, 'Index exceeds number of classes.');
+                assert(min(idx) >= 1, 'Index should be equal or larger than 1.');
+                       
+            elseif ischar(varargin{1})
+                channel = ieParamFormat(varargin{1});
+                assert(length(channel) == 1, 'Please give only one channel');
+                assert(channel == 'r' || channel == 'g' || channel == 'b' ||...
+                        channel == 'w', 'Channels must be R, G, B, or W.');
+                dictChannel = ['r', 'g', 'b', 'w'];
+                pixType = find(dictChannel == channel);
+                cfaChannel = find(cfa == pixType);
+                idx = [];
+                
+                for ii = 1 : numel(cfaChannel)
+                    idx = cat(1, idx, [cfaChannel(ii) : obj.nPixelTypes : length(obj.p_data)]);
+                end
+                idx = sort(idx);
+            else
+                error('Please enter indices(array) or a channel');
+            end
+            
+            c_data = cell(size(idx, 1), 1); c_grndTruth = cell(size(idx, 1), 1);
+            for ii = 1 : size(idx, 1)
+                cur_data = []; cur_grndTruth = [];
+                fprintf('Merging current channel: %c...\n', channel);
+                for jj = 1 : size(idx, 2)
+                    fprintf('Merging current class: %i... ', idx(ii, jj));
+                    [X, y] = obj.getClassData(idx(ii, jj));
+                    cur_data = cat(1, cur_data, X);
+                    cur_grndTruth = cat(1, cur_grndTruth, y);
+                    fprintf('Done.\n');
+                end
+                c_data{ii} = cur_data;
+                c_grndTruth{ii} = cur_grndTruth;
             end
         end
         

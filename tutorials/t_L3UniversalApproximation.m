@@ -24,15 +24,20 @@ l3c.classify(l3d);
 fName = fullfile(L3rootpath,'local','classified');
 save(fName,'l3c')
 %}
+
+%% Another class to confirm the claim
+l3cChannel = l3ClassifyChannel();
+l3cChannel.cutPoints = {logspace(-1.7, -0.12, 30), []};
+l3cChannel.patchSize = [5 5];
+
+l3cChannel.classify(l3d);
 %% Check the linearity for single class
 
 classNumber = 10;
-classPatch = (l3c.p_data{classNumber})';    % raw data for a class
-classTgt = (l3c.p_out{classNumber})';       % target data for the class
-nSample = size(classPatch, 1);              % Total number of samples
-nTrain = floor(nSample * 0.9);              % Number of the samples used for 
-                                            % linear regression
-nVal = nSample - nTrain;                    % Samples used for validation.                                            
+classPatch = cell(1); classTgt = cell(1);
+classPatch{1} = (l3c.p_data{classNumber})';    % raw data for a class
+classTgt{1} = (l3c.p_out{classNumber})';       % target data for the class
+                                           
 %{
     rdmIdx = randi([1, nSample], 1, 25);
     example = ClassPatch(rdmIdx, :);
@@ -54,13 +59,13 @@ nVal = nSample - nTrain;                    % Samples used for validation.
 %}
 
 % Check the linearity with target data w/o normailization
-checkLinearity(classPatch, classTgt, nSample, nTrain, nVal, classNumber);
+checkLinearity(classPatch, classTgt);
 
 % Check the linearity with target data w/ normalization
 maxTgt = max(classTgt, [], 1);              % max target value for each channel
 classTgtNorm = classTgt ./ maxTgt;          % Normalized target value
 
-checkLinearity(classPatch, classTgtNorm, nSample, nTrain, nVal, classNumber);
+checkLinearity(classPatch, classTgtNorm);
 
 
 %% Check the linearity for whole classes
@@ -71,30 +76,44 @@ theseClasses = ((last-20):(last-5));
 % Specify the pixel type that you want to merge as an additional
 % argument to concatenateClassData.  People should not really want to
 % merge red with green, for example.
-[classWholeData, classWholeTgt] = l3c.concatenateClassData(theseClasses);
-nSample = size(classWholeData, 1);              
-nTrain = floor(nSample * 0.9);              
-nVal = nSample - nTrain;                    
-checkLinearity(classWholeData, classWholeTgt, nSample, nTrain, nVal, classNumber);
+[classWholeData, classWholeTgt] = l3c.concatenateClassData(l3d.cfa, theseClasses);
+                   
+checkLinearity(classWholeData, classWholeTgt);
 
 % Check the linearity with target data w/ normalization
 maxTgt = max(classTgt, [], 1);              % max target value for each channel
 classTgtNorm = classTgt ./ maxTgt;          % Normalized target value
 
-checkLinearity(classPatch, classTgtNorm, nSample, nTrain, nVal, classNumber);
+checkLinearity(classWholeData, classTgtNorm);
+
+%% Check the linearity for one of the RGB channel
+% Set the channel to be classified
+thisChannel = 'G';
+[classChannelData, classChannelTgt] = l3c.concatenateClassData(l3d.cfa, thisChannel);
+
+checkLinearity(classChannelData, classChannelTgt);
+
+% Check the linearity with target data w/ normalization
+classTgtNorm = cell(size(classChannelTgt));
+for ii = 1 : length(classChannelTgt)
+    maxTgt = max(classChannelTgt{ii}, [], 1);              % max target value for each channel
+    classTgtNorm{ii} = classChannelTgt{ii} ./ maxTgt;
+end
+
+checkLinearity(classChannelData, classTgtNorm);
 %% Take the single class as for UAT validation
 % Training data
-uatDataTrain = l3c.p_data{classNumber};
-uatGrndTrueTrain = l3c.p_out{classNumber};
+uatDataTrain = classChannelData;
+uatGrndTrueTrain = classTgtNorm;
 
 
 % Validation data (same for the UAT validation)
-uatDataVal = uatDataTrain;
-uatGrndVal = uatGrndTrueTrain;
+uatDataVal = classChannelData;
+uatGrndVal = classTgtNorm;
 
 %% Saving training data
 SAVE_FOLDER = fullfile(L3rootpath,'local');
-SAVE_NAME = 'l3UniversalApproxTrain_Class101';
+SAVE_NAME = 'l3UniversalApproxTrain_Channel';
 trainImgSz = size(l3d.pType);
 patchSz = l3c.patchSize;
 
