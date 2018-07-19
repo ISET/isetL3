@@ -5,19 +5,42 @@
 %%
 ieInit;
 %% l3d class data
+
+% Creates a sample data set from four people
 l3d = l3DataISET();
 
-l3d.illuminantLev = [50 10 80];
-l3d.inIlluminantSPD = {'D65'};
+% We duplicate the images at multiple illumination levels and
+% potentially using different relative spectral power distributions.
+l3d.illuminantLev = [10 50 80];     % These are the luminance levels
+l3d.inIlluminantSPD = {'D65'};      % These are the SPDs of the input and output
 l3d.outIlluminantSPD = {'D65'};
 
 %% Classify the data
+
+% Make the classifier object
 l3c = l3ClassifyFast();
 
-% set parameters
-l3c.cutPoints = {logspace(-1.7, -0.12, 30), []};
+% Set classifier parameters
+l3c.cutPoints = {logspace(-1.7, -0.12, 3), []};
 l3c.patchSize = [5 5];
 
+% Compute the sensor data and put the patches into the classes. The
+% p_data slot are the patch data from the camera The p_out slot are
+% the ground truth data from the scene. 
+%
+% Each cell in p_data or p_out is a particular pixel type, and
+% luminance level. So for an RGGB sensor there are hPixelTypes (4)
+% types of pixels (because we count the greens separately).  In this
+% case we have four different class centers (3 cut points makes 4
+% classes).  So there are a total of 16 different cells.
+%
+% The L3 process finds a set of linear transforms between the
+% corresponding p_data and p_out cells.  It would be nice to have
+% another slot p_label{} that contained parameters that describe the
+% cells.  For example
+%   p_label{1}.pixelType = 'G2'
+%   p_label{1}.lowerCut = ...
+%   p{label{1}.upperCut = ...
 l3c.classify(l3d);
 
 %{
@@ -26,18 +49,19 @@ save(fName,'l3c')
 %}
 
 %% Another class to confirm the claim
+%{
 l3cChannel = l3ClassifyChannel();
-l3cChannel.cutPoints = {logspace(-1.7, -0.12, 30), []};
+l3cChannel.cutPoints = {logspace(-1.7, -0.12, 3), []};
 l3cChannel.patchSize = [5 5];
 
 l3cChannel.classify(l3d);
+%}
 %% Check the linearity for single class
 
 classNumber = 10;
-classPatch = cell(1); classTgt = cell(1);
-classPatch{1} = (l3c.p_data{classNumber})';    % raw data for a class
-classTgt{1} = (l3c.p_out{classNumber})';       % target data for the class
-                                           
+classPatch{1} = (l3c.p_data{classNumber})';  % raw data for a class
+classTgt{1}   = (l3c.p_out{classNumber})';   % target data for the class
+
 %{
     rdmIdx = randi([1, nSample], 1, 25);
     example = ClassPatch(rdmIdx, :);
@@ -59,13 +83,22 @@ classTgt{1} = (l3c.p_out{classNumber})';       % target data for the class
 %}
 
 % Check the linearity with target data w/o normailization
-checkLinearity(classPatch, classTgt);
+% checkLinearity(classPatch, classTgt);
 
-% Check the linearity with target data w/ normalization
-maxTgt = max(classTgt, [], 1);              % max target value for each channel
-classTgtNorm = classTgt ./ maxTgt;          % Normalized target value
+% The numbers (by default) are annoyingly small.  So to make life
+% easier scale them both to a max of 1.  Just helps diagnosing things.
+tmp = ieScale(classTgt{1},1);
+classTgtNorm{1} = tmp;
 
-checkLinearity(classPatch, classTgtNorm);
+tmp = ieScale(classPatch{1},1);
+classPatchNorm{1} = tmp;
+
+checkLinearity(classPatchNorm, classTgtNorm);
+
+%{
+maxTgt = max(classTgt{1}, [], 1);              % max target value for each channel
+classTgtNorm{1} = classTgt{1} ./ maxTgt;          % Normalized target value
+%}
 
 
 %% Check the linearity for whole classes

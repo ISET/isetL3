@@ -1,12 +1,18 @@
 function labels = patchLabels(cutPoints, s, p_type, varargin)
 % Compute labels based on statistics
 %
-%   labels = computeLabels(obj, s, varargin)
+%   labels = patchLabels(cutPoints, s, p_type, varargin)
 %
 % Inputs:
-%   cutPoints - cell array containing cutPoints for each stats
-%   s         - stats matrix, each column contains stats from one patch
-%   p_type    - center pixel type of each type as a 1xN vector
+%   cutPoints - cell array containing cutPoints (luminance levels) for each one the level stat
+%   s         - a nStats x nPatch matrix, each column contains stats from a patch
+%               The nStats are usually mean level and contrast.  But
+%               in fact, there are stats functions defined as part of
+%               the classifier.  See ???
+%   p_type    - center pixel type of each patch (as a 1 x nPatch)
+%
+% Optional
+%   varargin{1} can be number of channels (default is length(p_type))
 %
 % Outputs:
 %   labels - labels of each patch 
@@ -20,7 +26,7 @@ if notDefined('p_type'), error('pixel type is not defined'); end
 
 % number of channels
 if ~isempty(varargin), nc = varargin{1}; 
-else nc = length(unique(p_type)); end
+else, nc = length(unique(p_type)); end
 
 % Compute levels of each statistics
 lvl = cell(size(s, 1), 1);

@@ -193,7 +193,7 @@ classdef l3ClassifyFast < l3ClassifyS
                 % Compute labels
                 %
                 % levels for mean and contrast as a column vector
-                % We see wither the mean/cont is less than each entry in
+                % We see whether the mean/cont is less than each entry in
                 % the list of levels and contrast. Then we find the
                 % largest index that the mean is less than and store it.
                 pdSz = (obj.patchSize-1)/2;
