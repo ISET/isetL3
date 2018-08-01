@@ -77,7 +77,7 @@ for ii = 1 : length(classPatch)
     identityLine;
     
     vcNewGraphWin;
-    imagesc(reshape(kernels(:,2),5,5))
+    imagesc(reshape(kernels(:,whichChannel),5,5))
     colormap(gray); axis image; colorbar;
     
     %{
@@ -138,6 +138,14 @@ for ii = 1 : length(classPatch)
     absLMResidual = abs(lmResidual);
     relLMResidual = absLMResidual ./ classTgt{ii} * 100;
 
+    vcNewGraphWin;
+    whichChannel = 1;
+    input = classPatch{ii};
+    predicted = input*w(:,whichChannel) + b(:,whichChannel);  % First channel prediction
+    measured  = classTgt{ii}(:,whichChannel);
+    plot(measured(:),predicted(:),'.');
+    grid on; xlabel('Measured'); ylabel('Predicted');
+    identityLine;
    
 
     fprintf('Analysing the result by using LinearModel Class: \n\n');

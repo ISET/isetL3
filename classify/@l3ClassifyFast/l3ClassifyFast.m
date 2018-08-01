@@ -19,10 +19,13 @@ classdef l3ClassifyFast < l3ClassifyS
         verbose@logical scalar;     % print progress information or not
         storeData@logical scalar;   % whether or not to store p_data
         dataKernel@function_handle; % data kernel function
+        dictChannel;                % Define the channel name
         
         p_data;                     % patch data
         p_out;                      % patch target output
-        
+        p_PixelTypes;               % patch pixel types
+        p_lowerCut;                 % the lower cut point of the patch
+        p_upperCut;                 % the upper cut point of the patch
         p_center;                   % (r, c) for each patch 
     end
     
@@ -171,7 +174,29 @@ classdef l3ClassifyFast < l3ClassifyS
             if isNew || isempty(obj.p_data)
                 obj.p_data = cell(n_lvls, 1);
                 obj.p_out  = cell(n_lvls, 1);
+                obj.p_PixelTypes = cell(n_lvls, 1);
+                obj.p_lowerCut = cell(n_lvls, 1);
+                obj.p_upperCut = cell(n_lvls, 1);
             end
+            
+            % Assign the values for the p_PixelTypes, p_lowerCut and
+            % p_upperCut
+            for ii = 1 : n_lvls
+                % Tricky. E.g. mod(4 - 1, 4) + 1 = 4
+                obj.p_PixelTypes{ii} = obj.dictChannel(mod(ii - 1, nc) + 1);
+            end
+            
+            cutPointLower = [0, obj.cutPoints{1}];
+            cutPointUpper = [obj.cutPoints{1}, Inf];
+
+            for ii = 1 : nc
+                idx = [ii : nc : n_lvls];
+                for jj = 1 : length(idx)
+                    obj.p_lowerCut{idx(jj)} = cutPointLower(jj);
+                    obj.p_upperCut{idx(jj)} = cutPointUpper(jj);
+                end
+            end
+
             
             % Loop for each image
             for ii = 1:nImg
@@ -182,9 +207,9 @@ classdef l3ClassifyFast < l3ClassifyS
                 
                 % Compute the statistics
                 stat = [];
-                for jj = 1 : length(obj.statFunc)
-                    stat = cat(1, stat, obj.statFunc{jj}(raw{ii}, ...
-                         cfa, obj.patchSize, obj.statFuncParam{jj}{:}));
+                for ii = 1 : length(obj.statFunc)
+                    stat = cat(1, stat, obj.statFunc{ii}(raw{ii}, ...
+                         cfa, obj.patchSize, obj.statFuncParam{ii}{:}));
                 end
                 if obj.verbose
                     fprintf('Done\n\tComputing label levels...');
@@ -215,14 +240,14 @@ classdef l3ClassifyFast < l3ClassifyS
                 % same label into a class.  We will solve the kernels with
                 % the rawdata from each class.
                 labelValue = unique(curLabel);
-                for jj = 1 : length(labelValue)
+                for ii = 1 : length(labelValue)
                     if obj.verbose
-                        str = sprintf('%d/%d', jj, length(labelValue));
+                        str = sprintf('%d/%d', ii, length(labelValue));
                         fprintf(str);
                     end
                     
                     % Shorten the name
-                    lv = labelValue(jj);
+                    lv = labelValue(ii);
                     
                     % Find the indices with that label value
                     indx = find(curLabel == lv);
@@ -283,37 +308,29 @@ classdef l3ClassifyFast < l3ClassifyS
                 assert(max(idx) <= obj.nLabels, 'Index exceeds number of classes.');
                 assert(min(idx) >= 1, 'Index should be equal or larger than 1.');
                        
-            elseif ischar(varargin{1})
-                channel = ieParamFormat(varargin{1});
-                assert(length(channel) == 1, 'Please give only one channel');
-                assert(channel == 'r' || channel == 'g' || channel == 'b' ||...
-                        channel == 'w', 'Channels must be R, G, B, or W.');
-                dictChannel = ['r', 'g', 'b', 'w'];
-                pixType = find(dictChannel == channel);
-                cfaChannel = find(cfa == pixType);
-                idx = [];
+            elseif isstring(varargin{1})
+%                 channel = ieParamFormat(varargin{1});
+                channel = lower(varargin{1});
+                assert(length(channel) <= 2, 'Please give only one channel');
                 
-                for ii = 1 : numel(cfaChannel)
-                    idx = cat(1, idx, [cfaChannel(ii) : obj.nPixelTypes : length(obj.p_data)]);
-                end
+%                 pixType = find(dictChannel == channel);
+                cfaChannel = find(channel == obj.dictChannel);
+                idx = [cfaChannel : obj.nPixelTypes : length(obj.p_data)];
                 idx = sort(idx);
             else
                 error('Please enter indices(array) or a channel');
             end
             
-            c_data = cell(size(idx, 1), 1); c_grndTruth = cell(size(idx, 1), 1);
-            for ii = 1 : size(idx, 1)
-                cur_data = []; cur_grndTruth = [];
-                fprintf('Merging current channel: %c...\n', channel);
-                for jj = 1 : size(idx, 2)
-                    fprintf('Merging current class: %i... ', idx(ii, jj));
-                    [X, y] = obj.getClassData(idx(ii, jj));
-                    cur_data = cat(1, cur_data, X);
-                    cur_grndTruth = cat(1, cur_grndTruth, y);
-                    fprintf('Done.\n');
-                end
-                c_data{ii} = cur_data;
-                c_grndTruth{ii} = cur_grndTruth;
+            
+
+            c_data = []; c_grndTruth = [];
+            fprintf('Merging current channel: %s...\n', channel);
+            for ii = 1 : length(idx)
+                fprintf('Merging current class: %i... ', idx(ii));
+                [X, y] = obj.getClassData(idx(ii));
+                c_data = cat(1, c_data, X);
+                c_grndTruth = cat(1, c_grndTruth, y);
+                fprintf('Done.\n');
             end
         end
         

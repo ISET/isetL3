@@ -21,8 +21,9 @@ l3d.outIlluminantSPD = {'D65'};
 l3c = l3ClassifyFast();
 
 % Set classifier parameters
-l3c.cutPoints = {logspace(-1.7, -0.12, 3), []};
+l3c.cutPoints = {logspace(-1.7, -0.12, 30)};
 l3c.patchSize = [5 5];
+l3c.dictChannel = ["g1", "r", "b", "g2", "w"];
 
 % Compute the sensor data and put the patches into the classes. The
 % p_data slot are the patch data from the camera The p_out slot are
@@ -40,7 +41,7 @@ l3c.patchSize = [5 5];
 % cells.  For example
 %   p_label{1}.pixelType = 'G2'
 %   p_label{1}.lowerCut = ...
-%   p{label{1}.upperCut = ...
+%   p_label{1}.upperCut = ...
 l3c.classify(l3d);
 
 %{
@@ -58,7 +59,7 @@ l3cChannel.classify(l3d);
 %}
 %% Check the linearity for single class
 
-classNumber = 10;
+classNumber = 80;
 classPatch{1} = (l3c.p_data{classNumber})';  % raw data for a class
 classTgt{1}   = (l3c.p_out{classNumber})';   % target data for the class
 
@@ -88,12 +89,19 @@ classTgt{1}   = (l3c.p_out{classNumber})';   % target data for the class
 % The numbers (by default) are annoyingly small.  So to make life
 % easier scale them both to a max of 1.  Just helps diagnosing things.
 tmp = ieScale(classTgt{1},1);
-classTgtNorm{1} = tmp;
+classTgtPatchNorm{1} = tmp;
 
 tmp = ieScale(classPatch{1},1);
 classPatchNorm{1} = tmp;
 
-checkLinearity(classPatchNorm, classTgtNorm);
+% tmp = max(classPatch{1});
+% classPatchNorm{1} = classPatch{1} / tmp;
+% 
+% tmp = max(classTgt{1}, [], 1); 
+% classTgtPatchNorm{1} = classTgt{1} ./ tmp;
+
+
+checkLinearity(classPatchNorm, classTgtPatchNorm);
 
 %{
 maxTgt = max(classTgt{1}, [], 1);              % max target value for each channel
@@ -121,32 +129,37 @@ checkLinearity(classWholeData, classTgtNorm);
 
 %% Check the linearity for one of the RGB channel
 % Set the channel to be classified
-thisChannel = 'G';
+thisChannel = "G1";
 [classChannelData, classChannelTgt] = l3c.concatenateClassData(l3d.cfa, thisChannel);
 
-checkLinearity(classChannelData, classChannelTgt);
+% checkLinearity(classChannelData, classChannelTgt);
 
 % Check the linearity with target data w/ normalization
+classChannelNorm = cell(size(classChannelData));
 classTgtNorm = cell(size(classChannelTgt));
 for ii = 1 : length(classChannelTgt)
-    maxTgt = max(classChannelTgt{ii}, [], 1);              % max target value for each channel
-    classTgtNorm{ii} = classChannelTgt{ii} ./ maxTgt;
+    tmp = ieScale(classChannelTgt{ii},1);
+    classTgtNorm{ii} = tmp;
+    
+    tmp = ieScale(classChannelData{ii}, 1);
+    classChannelNorm{ii} = tmp;
 end
 
-checkLinearity(classChannelData, classTgtNorm);
+checkLinearity(classChannelNorm, classTgtNorm);
 %% Take the single class as for UAT validation
 % Training data
-uatDataTrain = classChannelData;
-uatGrndTrueTrain = classTgtNorm;
+uatDataTrain = classPatchNorm{1};
+uatGrndTrueTrain = classTgtPatchNorm{1};
 
 
 % Validation data (same for the UAT validation)
-uatDataVal = classChannelData;
-uatGrndVal = classTgtNorm;
+uatDataVal = classPatchNorm{1};
+uatGrndVal = classTgtPatchNorm{1};
+
 
 %% Saving training data
 SAVE_FOLDER = fullfile(L3rootpath,'local');
-SAVE_NAME = 'l3UniversalApproxTrain_Channel';
+SAVE_NAME = '/l3UniversalApproxTrain_Channel80';
 trainImgSz = size(l3d.pType);
 patchSz = l3c.patchSize;
 
@@ -158,7 +171,7 @@ fprintf('Done. \n')
 
 %% Saving again for the tesing data
 SAVE_FOLDER = '/Users/zhenglyu/Graduate/research/isetL3/local/';
-SAVE_NAME = 'l3UniversalApproxVAl_Class101';
+SAVE_NAME = 'l3UniversalApproxVAl_Channel80';
 valImgSz = size(l3d.pType);
 
 fprintf('Saving the validation data ...');
