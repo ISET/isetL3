@@ -207,9 +207,9 @@ classdef l3ClassifyFast < l3ClassifyS
                 
                 % Compute the statistics
                 stat = [];
-                for ii = 1 : length(obj.statFunc)
-                    stat = cat(1, stat, obj.statFunc{ii}(raw{ii}, ...
-                         cfa, obj.patchSize, obj.statFuncParam{ii}{:}));
+                for jj = 1 : length(obj.statFunc)
+                    stat = cat(1, stat, obj.statFunc{jj}(raw{ii}, ...
+                         cfa, obj.patchSize, obj.statFuncParam{jj}{:}));
                 end
                 if obj.verbose
                     fprintf('Done\n\tComputing label levels...');
@@ -240,14 +240,14 @@ classdef l3ClassifyFast < l3ClassifyS
                 % same label into a class.  We will solve the kernels with
                 % the rawdata from each class.
                 labelValue = unique(curLabel);
-                for ii = 1 : length(labelValue)
+                for jj = 1 : length(labelValue)
                     if obj.verbose
-                        str = sprintf('%d/%d', ii, length(labelValue));
+                        str = sprintf('%d/%d', jj, length(labelValue));
                         fprintf(str);
                     end
                     
                     % Shorten the name
-                    lv = labelValue(ii);
+                    lv = labelValue(jj);
                     
                     % Find the indices with that label value
                     indx = find(curLabel == lv);
@@ -294,7 +294,7 @@ classdef l3ClassifyFast < l3ClassifyS
             p_out = obj.p_out{label}';
         end
         
-        function [c_data, c_grndTruth] = concatenateClassData(obj, cfa, varargin)
+        function [c_data, c_grndTruth] = concatenateClassData(obj, varargin)
             % This function is used to concatenate different classes. Two
             % types of inputs are allowed for now: a)an array of indeces of
             % the classes that we want to concatenate and b) a certain
@@ -317,6 +317,7 @@ classdef l3ClassifyFast < l3ClassifyS
                 cfaChannel = find(channel == obj.dictChannel);
                 idx = [cfaChannel : obj.nPixelTypes : length(obj.p_data)];
                 idx = sort(idx);
+                fprintf('Merging current channel: %s...\n', channel);
             else
                 error('Please enter indices(array) or a channel');
             end
@@ -324,7 +325,7 @@ classdef l3ClassifyFast < l3ClassifyS
             
 
             c_data = []; c_grndTruth = [];
-            fprintf('Merging current channel: %s...\n', channel);
+            
             for ii = 1 : length(idx)
                 fprintf('Merging current class: %i... ', idx(ii));
                 [X, y] = obj.getClassData(idx(ii));
