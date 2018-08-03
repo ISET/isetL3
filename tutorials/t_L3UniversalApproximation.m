@@ -23,7 +23,7 @@ l3c = l3ClassifyFast();
 % Set classifier parameters
 l3c.cutPoints = {logspace(-1.7, -0.12, 30), []};
 l3c.patchSize = [5 5];
-l3c.dictChannel = ["g1", "r", "b", "g2", "w"];
+l3c.channelName = ["g1", "r", "b", "g2", "w"];
 
 % Compute the sensor data and put the patches into the classes. The
 % p_data slot are the patch data from the camera The p_out slot are

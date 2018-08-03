@@ -19,11 +19,11 @@ classdef l3ClassifyFast < l3ClassifyS
         verbose@logical scalar;     % print progress information or not
         storeData@logical scalar;   % whether or not to store p_data
         dataKernel@function_handle; % data kernel function
-        dictChannel;                % Define the channel name
+        channelName;                % Define the "channel name"
         
         p_data;                     % patch data
         p_out;                      % patch target output
-        p_PixelTypes;               % patch pixel types
+        p_channelTypes;               % patch pixel types "channel"
         p_lowerCut;                 % the lower cut point of the patch
         p_upperCut;                 % the upper cut point of the patch
         p_center;                   % (r, c) for each patch 
@@ -174,7 +174,7 @@ classdef l3ClassifyFast < l3ClassifyS
             if isNew || isempty(obj.p_data)
                 obj.p_data = cell(n_lvls, 1);
                 obj.p_out  = cell(n_lvls, 1);
-                obj.p_PixelTypes = cell(n_lvls, 1);
+                obj.p_channelTypes = cell(n_lvls, 1);
                 obj.p_lowerCut = cell(n_lvls, 1);
                 obj.p_upperCut = cell(n_lvls, 1);
             end
@@ -183,7 +183,7 @@ classdef l3ClassifyFast < l3ClassifyS
             % p_upperCut
             for ii = 1 : n_lvls
                 % Tricky. E.g. mod(4 - 1, 4) + 1 = 4
-                obj.p_PixelTypes{ii} = obj.dictChannel(mod(ii - 1, nc) + 1);
+                obj.p_channelTypes{ii} = obj.channelName(mod(ii - 1, nc) + 1);
             end
             
             cutPointLower = [0, obj.cutPoints{1}];
@@ -314,7 +314,7 @@ classdef l3ClassifyFast < l3ClassifyS
                 assert(length(channel) <= 2, 'Please give only one channel');
                 
 %                 pixType = find(dictChannel == channel);
-                cfaChannel = find(channel == obj.dictChannel);
+                cfaChannel = find(channel == obj.channelName);
                 idx = [cfaChannel : obj.nPixelTypes : length(obj.p_data)];
                 idx = sort(idx);
                 fprintf('Merging current channel: %s...\n', channel);
