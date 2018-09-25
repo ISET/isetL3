@@ -17,6 +17,9 @@ classdef l3ClassifyStats < l3ClassifyS
         statFuncParam@cell;       % additional parameters for statFunc
         statNames@cell;           % cell array of statistics names
         verbose@logical scalar;   % print progress information or not
+        storeData@logical scalar;   % whether or not to store p_data
+        satChannels       % number of the saturation channels
+        satVolt
     end
     
     properties (GetAccess = public, SetAccess = private)
@@ -152,7 +155,10 @@ classdef l3ClassifyStats < l3ClassifyS
             
             % allocate spaces
             nc = length(unique(pType)); % number of channels
-            n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1);
+            satChannel = zeros(1, length(obj.cutPoints));
+            satChannel(1) = power(2, nc) - 1;
+            obj.satChannels = satChannel;
+            n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1 + satChannel);
             
             if isNew || isempty(obj.p_data)
                 obj.p_data = cell(n_lvls, 1);
@@ -179,10 +185,20 @@ classdef l3ClassifyStats < l3ClassifyS
                 % Compute labels
                 %
                 % levels for mean and contrast as a column vector
-                % We see wither the mean/cont is less than each entry in
+                % We see whether the mean/cont is less than each entry in
                 % the list of levels and contrast. Then we find the
                 % largest index that the mean is less than and store it.
-                labelCol = obj.computeLabels(stat, pTypeCol);
+                
+                % We use the threshold saturate voltage to find for each
+                % patch, and label them as which type.
+                if isempty(obj.satVolt)
+                    thresh = cameraGet(l3d.camera, 'sensor voltage swing') - 0.05;
+                    obj.satVolt = thresh;
+                else
+                    thresh = obj.satVolt;
+                end
+                p_sat = patchSaturation(pData, pTypeCol, thresh);
+                labelCol = obj.computeLabels(stat, pTypeCol, p_sat, satChannel);
                 
                 % compute overall label values
                 labels{ii} = reshape(labelCol, outSz);
@@ -377,7 +393,8 @@ classdef l3ClassifyStats < l3ClassifyS
             range = struct('pixelType', cell(length(label), 1));
             
             % compute sub-index
-            sz = [obj.nPixelTypes cellfun(@(x)length(x), obj.cutPoints)+1];
+            % Update: changed the sz
+            sz = [obj.nPixelTypes cellfun(@(x)length(x), obj.cutPoints)+1 + obj.satChannels];
             [l_indx{:}] = ind2sub(sz, label);
             
             % set pixel types
@@ -391,8 +408,14 @@ classdef l3ClassifyStats < l3ClassifyS
                     indx = l_indx{ii+1}(jj);
                 
                     % compute lower bound
+                    % Update: lower bound will be infinity when patches
+                    % saturated
                     if indx > 1
-                        range(jj).(sName)(1) = obj.cutPoints{ii}(indx-1);
+                        if indx > length(obj.cutPoints{ii}) + 1
+                            range(jj).(sName)(1) = inf;
+                        else
+                            range(jj).(sName)(1) = obj.cutPoints{ii}(indx-1);
+                        end
                     else
                         range(jj).(sName)(1) = -inf;
                     end
@@ -428,7 +451,7 @@ classdef l3ClassifyStats < l3ClassifyS
         function val = get.nPixelTypes(obj)
             % number of different pixel types
             val = obj.nLabels / prod(cellfun(@(x) length(x), ...
-                            obj.cutPoints) + 1);
+                            obj.cutPoints) + 1 + obj.satChannels);
         end
     end
     

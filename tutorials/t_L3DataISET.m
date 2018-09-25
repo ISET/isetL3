@@ -37,9 +37,9 @@ l3t = l3TrainRidge();
 
 % set training parameters for the lookup tables.  These are the number and
 % spacing of the response levels, and the training patch size
-l3t.l3c.cutPoints = {logspace(-1.7, -0.12, 30), 1/32};
+l3t.l3c.cutPoints = {logspace(-1.7, -0.12, 30), []};
 l3t.l3c.patchSize = [5 5];
-
+%l3t.l3c.channelName = ["g1", "r", "b", "g2", "w"];
 % Invoke the training algorithm
 l3t.train(l3d);
 
@@ -77,8 +77,10 @@ axis off; title('Camera Raw Data');
 % scene image. This is a result of lens blur in the camera.
 outImg = l3r.render(cmosaic, cfa, l3t);
 outImg = outImg / max(max(outImg(:,:,2)));
-subplot(1,3,3); imshow(xyz2srgboutImg); title('L3 Rendered Image');
-
+subplot(1,3,3); imshow(xyz2srgb(outImg)); title('L3 Rendered Image');
+%% Check the linearity for saturated classes
+nClass = 129;
+% thisKernel = 
 %% Now, render a scene that we did not use as part of the training
 
 scene = sceneFromFile('hats.jpg', 'rgb', 50, 'LCD-Apple');

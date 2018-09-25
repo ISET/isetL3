@@ -1,7 +1,7 @@
 function p_sat = patchSaturation(p_data, p_type, thresh)
 % Compute contrast for all patches
 %
-%   p_cont = patchContrast(p_data, p_type, [c_mean])
+%   p_cont = patchSaturation(p_data, p_type, thresh)
 %
 % Inputs:
 %   p_data - patch_data, each column represents one patch

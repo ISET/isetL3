@@ -84,7 +84,7 @@ for ii = 1 : length(luminance)
     l3t.l3c.statFuncParam = {{}};
     l3t.l3c.statNames = {'mean'};
 
-    l3t.l3c.channelName = ["g1", "r", "b", "g2", "w"];
+    % l3t.l3c.channelName = ["g1", "r", "b", "g2", "w"];
     
     l3t.l3c.cutPoints = {logspace(minCutPoint(ii), maxCutPoint(ii), 40)};
     

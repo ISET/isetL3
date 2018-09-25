@@ -38,7 +38,9 @@ classdef l3TrainOLS < l3TrainS
             
             vFunc = @(x) assert(isa(x, 'l3ClassifyS'), ...
                 'l3c must be of class l3ClassifyS (or its descendants');
-            p.addParameter('l3c', l3ClassifyFast, vFunc);
+            % Changed the function used instead of l3ClassifyFast to
+            % l3Classifystats.
+            p.addParameter('l3c', l3ClassifyStats, vFunc);  
             
             vFunc = @(x) validateattributes(x, {'numeric'}, ...
                          {'scalar', '>', 0});

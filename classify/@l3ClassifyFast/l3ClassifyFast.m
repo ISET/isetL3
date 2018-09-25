@@ -19,14 +19,14 @@ classdef l3ClassifyFast < l3ClassifyS
         verbose@logical scalar;     % print progress information or not
         storeData@logical scalar;   % whether or not to store p_data
         dataKernel@function_handle; % data kernel function
-        channelName;                % Define the "channel name"
         
+%         channelName;                % Define the "channel name"
         p_data;                     % patch data
         p_out;                      % patch target output
-        p_channelTypes;               % patch pixel types "channel"
-        p_lowerCut;                 % the lower cut point of the patch
-        p_upperCut;                 % the upper cut point of the patch
-        p_center;                   % (r, c) for each patch 
+%         p_channelTypes;               % patch pixel types "channel"
+%         p_lowerCut;                 % the lower cut point of the patch
+%         p_upperCut;                 % the upper cut point of the patch
+%         p_center;                   % (r, c) for each patch 
     end
     
     properties (Dependent)
@@ -168,34 +168,44 @@ classdef l3ClassifyFast < l3ClassifyS
             % allocate spaces
             labels = cell(nImg, 1);
             nc = numel(cfa); % number of channels
+            
+            % Here we might want to re-define the n_lvls: It contains the
+            % range of (0, c1), (c1, c2), ... , (cn-1, cn), (cn,
+            % I_not_saturated) AND (Saturated). That's why we need double +
+            % 1.
             n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1);
+            
+            
             
             % allocate spaces for the p_center
             if isNew || isempty(obj.p_data)
                 obj.p_data = cell(n_lvls, 1);
                 obj.p_out  = cell(n_lvls, 1);
-                obj.p_channelTypes = cell(n_lvls, 1);
-                obj.p_lowerCut = cell(n_lvls, 1);
-                obj.p_upperCut = cell(n_lvls, 1);
+%                 obj.p_channelTypes = cell(n_lvls, 1);
+%                 obj.p_lowerCut = cell(n_lvls, 1);
+%                 obj.p_upperCut = cell(n_lvls, 1);
             end
             
-            % Assign the values for the p_PixelTypes, p_lowerCut and
-            % p_upperCut
-            for ii = 1 : n_lvls
-                % Tricky. E.g. mod(4 - 1, 4) + 1 = 4
-                obj.p_channelTypes{ii} = obj.channelName(mod(ii - 1, nc) + 1);
-            end
+%             % Assign the values for the p_PixelTypes, p_lowerCut and
+%             % p_upperCut
+%             for ii = 1 : n_lvls
+%                 % Tricky. E.g. mod(4 - 1, 4) + 1 = 4
+%                 obj.p_channelTypes{ii} = obj.channelName(mod(ii - 1, nc) + 1);
+%             end
             
-            cutPointLower = [0, obj.cutPoints{1}];
-            cutPointUpper = [obj.cutPoints{1}, Inf];
-
-            for ii = 1 : nc
-                idx = [ii : nc : n_lvls];
-                for jj = 1 : length(idx)
-                    obj.p_lowerCut{idx(jj)} = cutPointLower(jj);
-                    obj.p_upperCut{idx(jj)} = cutPointUpper(jj);
-                end
-            end
+%             cutPointLower = [0, obj.cutPoints{1}];
+%             cutPointUpper = [obj.cutPoints{1}, Inf];
+%             
+%             % Check the increment step size of the lower and upper cut.
+%             incrementSz = n_lvls / (length(obj.cutPoints{1}) + 2);
+            
+%             for ii = 1 : incrementSz
+%                 idx = [ii : incrementSz : n_lvls];
+%                 for jj = 1 : length(idx)
+%                     obj.p_lowerCut{idx(jj)} = cutPointLower(jj);
+%                     obj.p_upperCut{idx(jj)} = cutPointUpper(jj);
+%                 end
+%             end
 
             
             % Loop for each image

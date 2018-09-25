@@ -41,7 +41,7 @@ classdef l3DataISET < l3DataS
             
             % Fill up the parameters with the general defaults
             obj.camera = cameraCreate; % Use ISET default camera
-            obj.nScenes = 4;
+            obj.nScenes = 7;
             obj.illuminantLev = [40, 10, 80]; % cd/m2
             obj.idealCMF = 'XYZQuanta.mat';
             obj.inIlluminantSPD = {'D65', 'Tungsten'};
