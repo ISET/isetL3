@@ -1,4 +1,4 @@
-function c_mean = patchChannelMean(p_data, p_type)
+function [c_mean, c_num] = patchChannelMean(p_data, p_type)
 % Compute channel mean for all patches
 % 
 %   c_mean = patchChannelMean(p_data, p_type)
@@ -25,9 +25,11 @@ channels = unique(p_type(:, 1));
 
 % Compute channel mean for each patch
 c_mean = zeros(length(channels), size(p_type, 2));
+c_num = zeros(length(channels), size(p_type, 2));
 for ii = 1 : length(channels)
     indx = (p_type == channels(ii));
     c_mean(ii, :) = bsxfun(@rdivide, sum(p_data.*indx), sum(indx));
+    c_num(ii, :) = sum(indx);
 end
 
 

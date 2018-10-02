@@ -98,6 +98,16 @@ classdef l3TrainRidge < l3TrainOLS
                 % process for each channel
                 kernels(:, c) =  V * diag(d./(d.^2 + l(c)))*(U'*y(:, c));
             end
+            
+            %{
+                % Exam the linearity of the kernels
+                y_pred  = X * kernels;
+                thisChannel = 2;
+                vcNewGraphWin; plot(y(:,thisChannel), y_pred(:,thisChannel), 'o');
+                axis square;
+                identityLine;
+            %}
+            
             p_val = nan(size(kernels));
         end
         

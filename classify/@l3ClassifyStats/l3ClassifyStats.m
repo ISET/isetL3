@@ -148,6 +148,18 @@ classdef l3ClassifyStats < l3ClassifyS
             nImg  = length(raw); % number of images
             labels = cell(nImg, 1);
             
+            padSz = (obj.patchSize-1)/2;
+            if ~isempty(tgt)
+                for ii = 1 : nImg
+                    target_sz = [size(tgt{ii}, 1) size(tgt{ii}, 2)];
+                    if all(size(raw{ii}) == target_sz)
+                        % crop target image
+                        tgt{ii} = tgt{ii}(padSz(1)+1:end-padSz(1), ...
+                                      padSz(2)+1:end-padSz(2), :);
+                    end
+                end
+            end
+            
             % Compute size of images accounting for the fact that the
             % patches must stay inside the image data.
             imgSz = size(pType); % input image size
@@ -249,27 +261,35 @@ classdef l3ClassifyStats < l3ClassifyS
                         newSz = sum(indx);
                         newData = pData(:, indx);
                         
-                        % Randomly resample the patches, but don't keep
-                        % more than the maximum allowable.  We want the
-                        % retention policy to keep the likelihood of
-                        % retaining a recent or older sample as about the
-                        % same.
-                        n = round(curSz/(curSz+newSz)*obj.p_max);
-                        idx1 = randperm(curSz, min(n, curSz));
-                        curData = obj.p_data{lv}(:, idx1);
-                        idx2 = randperm(newSz, min(obj.p_max-n, newSz));
-                        newData = newData(:, idx2);
+                        obj.p_data{lv} = [obj.p_data{lv} newData];
                         
-                        obj.p_data{lv} = [curData newData];
-                        
-                        % store target patches in the output slot.  We use
-                        % these to solve for the transform.
                         if ~isempty(tgt)
                             tgtD = RGB2XWFormat(tgt{ii});
-                            tgtData = tgtD(indx, :)';
-                            obj.p_out{lv} = [obj.p_out{lv}(:, idx1) ...
-                                tgtData(:, idx2)];
+                            tgtD = tgtD';
+                            obj.p_out{lv} = [obj.p_out{lv} tgtD(:, indx)];
                         end
+                        
+%                         % Randomly resample the patches, but don't keep
+%                         % more than the maximum allowable.  We want the
+%                         % retention policy to keep the likelihood of
+%                         % retaining a recent or older sample as about the
+%                         % same.
+%                         n = round(curSz/(curSz+newSz)*obj.p_max);
+%                         idx1 = randperm(curSz, min(n, curSz));
+%                         curData = obj.p_data{lv}(:, idx1);
+%                         idx2 = randperm(newSz, min(obj.p_max-n, newSz));
+%                         newData = newData(:, idx2);
+%                         
+%                         obj.p_data{lv} = [curData newData];
+%                         
+%                         % store target patches in the output slot.  We use
+%                         % these to solve for the transform.
+%                         if ~isempty(tgt)
+%                             tgtD = RGB2XWFormat(tgt{ii});
+%                             tgtData = tgtD(indx, :)';
+%                             obj.p_out{lv} = [obj.p_out{lv}(:, idx1) ...
+%                                 tgtData(:, idx2)];
+%                         end
                     end
                     
                     if obj.verbose

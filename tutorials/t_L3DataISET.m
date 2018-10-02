@@ -25,7 +25,7 @@ l3d = l3DataISET();
 
 % Set up parameters for boosting the training data. The variations in the
 % scene illuminant level and SPD are established here.
-l3d.illuminantLev = [50 10 80];
+l3d.illuminantLev = [50 20 10 30 80];
 l3d.inIlluminantSPD = {'D65'};
 l3d.outIlluminantSPD = {'D65'};
 
@@ -42,6 +42,25 @@ l3t.l3c.patchSize = [5 5];
 %l3t.l3c.channelName = ["g1", "r", "b", "g2", "w"];
 % Invoke the training algorithm
 l3t.train(l3d);
+
+%% Exam the training result
+%{
+    % Exam the linearity of the kernels
+    thisClass = 129;
+    
+    [X, y_true]  = l3t.l3c.getClassData(thisClass);
+    X = padarray(X, [0 1], 1, 'pre');
+    y_pred = X * l3t.kernels{thisClass};
+    thisChannel = 2;
+    vcNewGraphWin; plot(y_true(:,thisChannel), y_pred(:,thisChannel), 'o');
+    axis square;
+    identityLine;
+
+    vcNewGraphWin; plot()
+%}
+
+
+
 
 % If the data set is small, we interpolate the missing kernels
 l3t.fillEmptyKernels;
@@ -78,9 +97,6 @@ axis off; title('Camera Raw Data');
 outImg = l3r.render(cmosaic, cfa, l3t);
 outImg = outImg / max(max(outImg(:,:,2)));
 subplot(1,3,3); imshow(xyz2srgb(outImg)); title('L3 Rendered Image');
-%% Check the linearity for saturated classes
-nClass = 129;
-% thisKernel = 
 %% Now, render a scene that we did not use as part of the training
 
 scene = sceneFromFile('hats.jpg', 'rgb', 50, 'LCD-Apple');
