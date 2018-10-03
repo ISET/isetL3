@@ -32,6 +32,8 @@ channels = unique(p_type(:, 1));
 % channel is saturated. There can be 2^4 possible patterns for the case
 % with 4 channels, so s.sat is between 0 and 15. Later, we use it for
 % indexing and increment by 1
+% For example: channel 1 only : 8, channel 2 only: 4, channel 3 only: 2,
+% channel 4 only: 1.
 p_sat = zeros(1, size(p_data, 2));
 sat_indx = p_data > thresh;
 
