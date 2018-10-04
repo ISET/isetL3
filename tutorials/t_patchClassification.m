@@ -18,6 +18,12 @@ l3d.illuminantLev = [100];
 l3d.inIlluminantSPD = {'D65'};
 l3d.outIlluminantSPD = {'D65'};
 
+% Create camera and get autoexposure
+camera = cameraCreate;
+camera = cameraSet(camera,'sensor',sensorCreateQuad);
+
+l3d.camera = camera;
+
 %% Get the raw data
 [rawTotal, tgtTotal, pTypeTotal] = l3d.dataGet();
 

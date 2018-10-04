@@ -25,7 +25,7 @@ l3d = l3DataISET();
 
 % Set up parameters for boosting the training data. The variations in the
 % scene illuminant level and SPD are established here.
-l3d.illuminantLev = [50 10 80];
+l3d.illuminantLev = [50 10 80 100 110 120 150 160 170 180];
 l3d.inIlluminantSPD = {'D65'};
 l3d.outIlluminantSPD = {'D65'};
 
@@ -76,7 +76,7 @@ l3t.fillEmptyKernels;
 l3r = l3Render();
 
 % Obtain the sensor mosaic response to a scene.  Could be any scene
-scene = l3d.get('scenes', 1);
+scene = l3d.get('scenes', 6);
 
 vcNewGraphWin([], 'wide');
 subplot(1,3,1); 
