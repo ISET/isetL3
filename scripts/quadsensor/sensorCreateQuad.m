@@ -6,17 +6,20 @@ function sensor = sensorCreateQuad
 % Wandell
 
 %%
+
 sensor = sensorCreate;
 
 quadPattern = ...
-    [3 3 2 2; ...
-    3 3 2 2; ...
-    2 2 1 1; ...
-    2 2 1 1];
+    [1 1 2 2; ...
+    1 1 2 2; ...
+    2 2 3 3; ...
+    2 2 3 3];
 
 sensor = sensorSet(sensor,'pattern',quadPattern);
-% sensor = sensorSetSizeToFOV(sensor,sceneGet(scene,'fov'));
 sensor = sensorSet(sensor,'pixel size constant fill factor',1.4e-6);
+
+% sensor = sensorSetSizeToFOV(sensor,sceneGet(scene,'fov'));
+
 % sensor = sensorCompute(sensor,oi);
 
 end

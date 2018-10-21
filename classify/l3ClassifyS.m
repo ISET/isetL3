@@ -20,6 +20,7 @@ classdef l3ClassifyS < hiddenHandle
         name @char;           % name used for the object
         patchSize @double;    % size of each patch
         p_max @double scalar; % max number of patches in each class
+        satClassOption @char;
     end
     
     methods (Access = public)

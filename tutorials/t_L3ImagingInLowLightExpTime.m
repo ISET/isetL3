@@ -11,13 +11,13 @@ ieInit;
 % Define the path to the image. An image from isetcam data folder was given 
 % as an example.
 
-fname = fullfile(isetRootPath,'data','images','multispectral','Feng_Office-hdrs.mat');
+%fname = fullfile(isetRootPath,'data','images','multispectral','Feng_Office-hdrs.mat');
 % fname = fullfile(isetRootPath,'data','images','multispectral','CaucasianMale.mat');
-% fname = fullfile(isetRootPath,'data','images','multispectral','StuffedAnimals_tungsten-hdrs.mat');
+fname = fullfile(isetRootPath,'data','images','multispectral','StuffedAnimals_tungsten-hdrs.mat');
 scene = sceneFromFile(fname, 'multispectral');
 
-scene = sceneSet(scene, 'hfov', 30);
-scene = sceneAdjustLuminance(scene, 1);  % 1 cd/m2 and 10 fov = 0.1 lux (?)
+%scene = sceneSet(scene, 'hfov', 30);
+%scene = sceneAdjustLuminance(scene, 1);  % 1 cd/m2 and 10 fov = 0.1 lux (?)
 ieAddObject(scene); sceneWindow;
 
 %% Use the camera to generate the raw and sRGB image in low light.

@@ -48,6 +48,7 @@ classdef l3TrainOLS < l3TrainS
             p.addParameter('verbose', true);
             p.addParameter('outChannelNames', {'red', 'green', 'blue'});
             
+            
             % Parse input
             p.parse(varargin{:});
             
@@ -57,6 +58,7 @@ classdef l3TrainOLS < l3TrainS
             obj.name = p.Results.name;
             obj.p_min = p.Results.pmin;
             obj.outChannelNames = p.Results.outChannelNames;
+            
         end
         
         function obj = train(obj, l3d, varargin)
@@ -72,6 +74,7 @@ classdef l3TrainOLS < l3TrainS
             %   obj - l3 training class with kernels learned and stored in
             %         the .kernels property
             %
+            % 
             % See also:
             %   l3TrainRidge.train
             %
@@ -79,6 +82,9 @@ classdef l3TrainOLS < l3TrainS
             
             % Check inputs
             l3c = obj.l3c;    % A method that classifies data
+            
+            
+
             if exist('l3d', 'var') && ~isempty(l3d)
                 % Compute labels
                 assert(isa(l3d, 'l3DataS'), 'Unsupported l3d type');

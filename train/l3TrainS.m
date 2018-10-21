@@ -22,6 +22,7 @@ classdef l3TrainS < hiddenHandle
         
         kernels @cell;         % cell array of linear kernals
         outChannelNames @cell; % name of output channels
+        
     end
     
     properties (Dependent)

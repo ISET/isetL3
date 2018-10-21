@@ -82,6 +82,8 @@ classdef l3ClassifyStats < l3ClassifyS
             val = {};
             p.addParameter('statFuncParam', val);
             
+            p.addParameter('satClassOption', 'individual');
+            
             % Parse inputs
             p.parse(varargin{:});
             
@@ -94,7 +96,7 @@ classdef l3ClassifyStats < l3ClassifyS
             obj.statNames = p.Results.statNames;
             obj.statFunc = p.Results.statFunc;
             obj.statFuncParam = p.Results.statFuncParam;
-            
+            obj.satClassOption = p.Results.satClassOption;
             % if data class is provided, do classification
             if ~isempty(p.Results.l3d), obj.classify(p.Results.l3d); end
         end
@@ -131,7 +133,23 @@ classdef l3ClassifyStats < l3ClassifyS
             % Check inputs and get the raw data and pType
             if notDefined('l3d'), error('data class required'); end
             if notDefined('isNew'), isNew = false; end
+            % Check if the varargin define how to classify saturate pixels
+            % (For bayer and quadra)
+            
+%             if ~isempty(varargin)
+%                 satClassOption = varargin{1};
+%                 if length(varargin) > 1
+%                     varargin = varargin{2:end};
+%                 else
+%                     varargin = {};
+%                 end
+%             else
+%                 satClassOption = 'individual'; 
+%             end
+            satClassOption = obj.satClassOption;
+            
             assert(isa(l3d, 'l3DataS'), 'l3d should be of class l3DataS');
+            
             
             % Get data
             if ~isempty(length(varargin))
@@ -168,7 +186,9 @@ classdef l3ClassifyStats < l3ClassifyS
             % allocate spaces
             nc = length(unique(pType)); % number of channels
             satChannel = zeros(1, length(obj.cutPoints));
-            satChannel(1) = power(2, nc) - 1;
+%             satChannel(1) = satClassNumber(pType(1:size(l3d.cfa, 1),...
+%                             1:size(l3d.cfa, 2)), satClassOption);
+            [satChannel(1), satType] = satClassNumber(l3d.cfa, satClassOption);
             obj.satChannels = satChannel;
             n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1 + satChannel);
             
@@ -176,6 +196,11 @@ classdef l3ClassifyStats < l3ClassifyS
                 obj.p_data = cell(n_lvls, 1);
                 obj.p_out  = cell(n_lvls, 1);
             end
+            
+            % Create pType for saturated pixels
+            scaling = sqrt(nc/satType); 
+            scaleFactor = [scaling, scaling];
+            pTypeSat = cfa2ptype(size(l3d.cfa), size(l3d.inImg{1}), scaleFactor);
             
             % Loop for each image
             for ii = 1:nImg
@@ -186,7 +211,7 @@ classdef l3ClassifyStats < l3ClassifyS
                 
                 % Compute the statistics
                 [pData, pTypeCol] = im2patch(raw{ii},obj.patchSize,pType);
-                
+                [~, pTypeSatCol] = im2patch(raw{ii},obj.patchSize,pTypeSat);
                 stat = obj.statFunc(pData, pTypeCol, obj.statFuncParam{:});
                 
                 if obj.verbose
@@ -209,7 +234,7 @@ classdef l3ClassifyStats < l3ClassifyS
                 else
                     thresh = obj.satVolt;
                 end
-                p_sat = patchSaturation(pData, pTypeCol, thresh);
+                p_sat = patchSaturation(pData, pTypeSatCol, thresh);
                 labelCol = obj.computeLabels(stat, pTypeCol, p_sat, satChannel);
                 
                 % compute overall label values
@@ -261,35 +286,35 @@ classdef l3ClassifyStats < l3ClassifyS
                         newSz = sum(indx);
                         newData = pData(:, indx);
                         
-                        obj.p_data{lv} = [obj.p_data{lv} newData];
-                        
-                        if ~isempty(tgt)
-                            tgtD = RGB2XWFormat(tgt{ii});
-                            tgtD = tgtD';
-                            obj.p_out{lv} = [obj.p_out{lv} tgtD(:, indx)];
-                        end
-                        
-%                         % Randomly resample the patches, but don't keep
-%                         % more than the maximum allowable.  We want the
-%                         % retention policy to keep the likelihood of
-%                         % retaining a recent or older sample as about the
-%                         % same.
-%                         n = round(curSz/(curSz+newSz)*obj.p_max);
-%                         idx1 = randperm(curSz, min(n, curSz));
-%                         curData = obj.p_data{lv}(:, idx1);
-%                         idx2 = randperm(newSz, min(obj.p_max-n, newSz));
-%                         newData = newData(:, idx2);
+%                         obj.p_data{lv} = [obj.p_data{lv} newData];
 %                         
-%                         obj.p_data{lv} = [curData newData];
-%                         
-%                         % store target patches in the output slot.  We use
-%                         % these to solve for the transform.
 %                         if ~isempty(tgt)
 %                             tgtD = RGB2XWFormat(tgt{ii});
-%                             tgtData = tgtD(indx, :)';
-%                             obj.p_out{lv} = [obj.p_out{lv}(:, idx1) ...
-%                                 tgtData(:, idx2)];
+%                             tgtD = tgtD';
+%                             obj.p_out{lv} = [obj.p_out{lv} tgtD(:, indx)];
 %                         end
+                        
+                        % Randomly resample the patches, but don't keep
+                        % more than the maximum allowable.  We want the
+                        % retention policy to keep the likelihood of
+                        % retaining a recent or older sample as about the
+                        % same.
+                        n = round(curSz/(curSz+newSz)*obj.p_max);
+                        idx1 = randperm(curSz, min(n, curSz));
+                        curData = obj.p_data{lv}(:, idx1);
+                        idx2 = randperm(newSz, min(obj.p_max-n, newSz));
+                        newData = newData(:, idx2);
+                        
+                        obj.p_data{lv} = [curData newData];
+                        
+                        % store target patches in the output slot.  We use
+                        % these to solve for the transform.
+                        if ~isempty(tgt)
+                            tgtD = RGB2XWFormat(tgt{ii});
+                            tgtData = tgtD(indx, :)';
+                            obj.p_out{lv} = [obj.p_out{lv}(:, idx1) ...
+                                tgtData(:, idx2)];
+                        end
                     end
                     
                     if obj.verbose

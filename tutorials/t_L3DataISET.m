@@ -25,7 +25,7 @@ l3d = l3DataISET();
 
 % Set up parameters for boosting the training data. The variations in the
 % scene illuminant level and SPD are established here.
-l3d.illuminantLev = [50 10 80 100 110 120 150 160 170 180];
+l3d.illuminantLev = [50 10 80]; %[50 10 80 100 110 120 150 160 170 180];
 l3d.inIlluminantSPD = {'D65'};
 l3d.outIlluminantSPD = {'D65'};
 
@@ -46,12 +46,12 @@ l3t.train(l3d);
 %% Exam the training result
 %{
     % Exam the linearity of the kernels
-    thisClass = 130;
+    thisClass = 115;
     
     [X, y_true]  = l3t.l3c.getClassData(thisClass);
     X = padarray(X, [0 1], 1, 'pre');
     y_pred = X * l3t.kernels{thisClass};
-    thisChannel = 3;
+    thisChannel = 1;
     vcNewGraphWin; plot(y_true(:,thisChannel), y_pred(:,thisChannel), 'o');
     axis square;
     identityLine;
@@ -60,11 +60,8 @@ l3t.train(l3d);
             [5, 5]));  colormap(gray); colorbar;
 %}
 
-
-
-
 % If the data set is small, we interpolate the missing kernels
-l3t.fillEmptyKernels;
+% l3t.fillEmptyKernels;
 
 %% Render
 
@@ -90,7 +87,7 @@ cmosaic = cameraGet(camera, 'sensor volts');
 % Show the raw data, before processing
 subplot(1, 3, 2); 
 imagesc(cmosaic); axis image; colormap(gray);
-axis off; title('Camera Raw Data');
+axis off; title('Camera Raw Data with Bayer Pattern');
 
 % Compute L3 rendered image
 % The L3 rendered image is blurry compared to the
