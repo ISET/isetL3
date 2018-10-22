@@ -11,7 +11,7 @@ ieInit
 
 % Init the class we use for data simulation
 l3d = l3DataISET();
-l3d.illuminantLev = [70 75 50 10 80 85 90 100 105 110 120 130 140 150 160 170 180 190 200 230 250 300];
+l3d.illuminantLev = [50 80 10];%[70 75 50 10 80 85 90 100 105 110 120 130 140 150 160 170 180 190 200 230 250 300];
 l3d.inIlluminantSPD = {'D65'};
 l3d.outIlluminantSPD = {'D65'};
 
@@ -33,9 +33,9 @@ l3t.l3c.cutPoints = {logspace(-1.7, -0.12, 30), []};
 l3t.l3c.patchSize = [9 9];
 %l3t.l3c.channelName = ["g1", "r", "b", "g2", "w"];
 % Invoke the training algorithm
-l3t.l3c.satClassOption = 'compress';
+l3t.l3c.satClassOption = 'individual';
 l3t.train(l3d);
-
+save('indNoSatClassModel.mat','l3t', '-v7.3');
 % If the data set is small, we interpolate the missing kernels
 % l3t.fillEmptyKernels;
 
@@ -43,12 +43,12 @@ l3t.train(l3d);
 %% Exam the training result
 %{
     % Exam the linearity of the kernels
-    thisClass = 477; % 500, 624, 700
+    thisClass = 1048492; % 500, 624, 700
     
     [X, y_true]  = l3t.l3c.getClassData(thisClass);
     X = padarray(X, [0 1], 1, 'pre');
     y_pred = X * l3t.kernels{thisClass};
-    thisChannel = 2;
+    thisChannel = 3;
     vcNewGraphWin; plot(y_true(:,thisChannel), y_pred(:,thisChannel), 'o');
     xlabel('Target value (ground truth)', 'FontSize', 15, 'FontWeight', 'bold');
     ylabel('Predicted value', 'FontSize', 15,'FontWeight', 'bold');
@@ -70,7 +70,7 @@ l3t.train(l3d);
 l3r = l3Render();
 
 % Obtain the sensor mosaic response to a scene.  Could be any scene
-scene = l3d.get('scenes', 6);
+scene = l3d.get('scenes', 5);
 
 vcNewGraphWin([], 'wide');
 subplot(1,3,1); 
