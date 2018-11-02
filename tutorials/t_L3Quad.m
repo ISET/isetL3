@@ -35,7 +35,7 @@ l3t.l3c.patchSize = [9 9];
 % Invoke the training algorithm
 l3t.l3c.satClassOption = 'individual';
 l3t.train(l3d);
-save('indNoSatClassModel.mat','l3t', '-v7.3');
+% save('indNoSatClassModel.mat','l3t', '-v7.3');
 % If the data set is small, we interpolate the missing kernels
 % l3t.fillEmptyKernels;
 
