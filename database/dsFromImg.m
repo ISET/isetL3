@@ -10,7 +10,7 @@ filesToLoad = dir(format);
 targetFormat = strcat('*.mat');
 % number of the scene
 %%
-for ii = 1 : length(filesToLoad)
+for ii = 1 : 2%length(filesToLoad)
     
     % Image file name
     imgName = filesToLoad(ii).name;
@@ -18,7 +18,8 @@ for ii = 1 : length(filesToLoad)
     % Transfer image to scene
     
     cd(dsPath);
-    scene = sceneFromFile(imgName, 'rgb', 110, 'LCD-Apple');
+    wList = [400:10:700];
+    scene = sceneFromFile(imgName, 'rgb', 110, 'LCD-Apple', wList);
     scene = sceneSet(scene, 'fov', 20);
     
     % Save the iamge
@@ -27,7 +28,7 @@ for ii = 1 : length(filesToLoad)
     sceneExisted =dir(targetFormat);
     numScene = length(sceneExisted); saveIdx = int2str(numScene + 1);
     saveName = strcat(saveIdx, '.mat');
-    sceneToFile(saveName, scene, 10);
+    sceneToFile(saveName, scene);
     
 end
 

@@ -22,6 +22,9 @@ function [inImg, outImg, pType] = dataGet(obj, nScenes, varargin)
 %   l3DataCamera.dataGet
 %
 % QT/HJ/BW (c) Stanford VISTA Team 2015
+%
+% Update/Todo: Change the illuminant level to two sets: input illuminant
+% and target illuminant. This is used for HDR application. (ZL, 2018)
 
 %% Check inputs
 if notDefined('nScenes')
@@ -73,6 +76,10 @@ c = cameraSet(c, 'sensor', sensor);
 %  luminance levels and number of illuminants
 levels = obj.get('illuminant levels');
 nIllum = obj.get('n illuminants');
+if obj.hdrMode
+    refLevs = obj.get('ref illuminant levels');
+end
+
 
 % camera noise-free sensor
 sensorNF = sensorSet(cameraGet(c,'sensor'), 'noise flag', -1);
@@ -133,7 +140,11 @@ for ii = 1 : nScenes
 
             % store raw image and desired output
             obj.inImg{indx} = cameraGet(c, 'sensor volts');
-            obj.outImg{indx} = outImg * levels(kk);
+            if ~obj.hdrMode
+                obj.outImg{indx} = outImg * levels(kk);
+            else
+                obj.outImg{indx} = outImg * refLevs(kk);
+            end
         end
     end
 end

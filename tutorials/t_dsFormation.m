@@ -12,8 +12,8 @@ ieInit;
 % Specify the path to the images and the path to the scene. Also specify
 % the format of the image. In the future we need to modify it to read all
 % format of the inages
-imgPath = '/Users/zhenglyu/Graduate/research/isetL3/local/dataSet/l3DemoDS';
-scenePath = '/Users/zhenglyu/Graduate/research/isetL3/local/dataSet/sceneDsDemo';
+imgPath = '/scratch/ZhengLyu/Autonomous Driving/BaiduDS/img/';
+scenePath = '/scratch/ZhengLyu/Autonomous Driving/BaiduDS/scene/';
 imgFormat = 'jpg';
 
 dsFormat = 'mat';

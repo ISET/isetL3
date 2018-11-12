@@ -41,6 +41,7 @@ l3t.l3c.cutPoints = {logspace(-1.7, -0.12, 30), []};
 l3t.l3c.patchSize = [5 5];
 %l3t.l3c.channelName = ["g1", "r", "b", "g2", "w"];
 % Invoke the training algorithm
+l3t.l3c.satClassOption = 'none';
 l3t.train(l3d);
 
 %% Exam the training result
@@ -73,7 +74,7 @@ l3t.train(l3d);
 l3r = l3Render();
 
 % Obtain the sensor mosaic response to a scene.  Could be any scene
-scene = l3d.get('scenes', 6);
+scene = l3d.get('scenes', 1);
 
 vcNewGraphWin([], 'wide');
 subplot(1,3,1); 
