@@ -1,19 +1,21 @@
-function scenes = loadScenes(scenePath, format, nScenes,varargin)
+function scenes = loadScenes(scenePath, format, idxScene, varargin)
 %% loadScenes
 
 %% 
-if ~isempty(varargin) nScenes = varargin{1}; end
+curPath = pwd;
 cd(scenePath);
 fileName = strcat('*.', format);
 filesToLoad = dir(fileName);
 nFiles = length(filesToLoad);
 
-if exist('nScenes') nFiles = min(nFiles, nScenes); end
-scenes = cell(nFiles, 1);
 
-for ii = 1 : nFiles
-    
-    sceneName = filesToLoad(ii).name;
+scenes = cell(length(idxScene), 1);
+
+for ii = 1 : length(idxScene)
+
+    sceneName = filesToLoad(idxScene(ii)).name;
     scenes{ii} = load(sceneName);
 end
+
+cd(curPath);
 end

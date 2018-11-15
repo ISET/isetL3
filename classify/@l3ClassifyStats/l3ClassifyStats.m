@@ -154,6 +154,7 @@ classdef l3ClassifyStats < l3ClassifyS
             % Get data
             if ~isempty(length(varargin))
                 [raw, tgt, pType] = l3d.dataGet(varargin{:});
+                
             else
                 [raw, tgt, pType] = l3d.dataGet();
             end
@@ -178,13 +179,10 @@ classdef l3ClassifyStats < l3ClassifyS
                 end
             end
             
-            % Compute size of images accounting for the fact that the
-            % patches must stay inside the image data.
-            imgSz = size(pType); % input image size
-            outSz = imgSz - obj.patchSize + 1; % output size
+
             
             % allocate spaces
-            nc = length(unique(pType)); % number of channels
+            nc = length(unique(pType{1})); % number of channels
             if satClassOption == 'none'
                 satChannel = 0;
             else
@@ -208,13 +206,29 @@ classdef l3ClassifyStats < l3ClassifyS
             
             % Loop for each image
             for ii = 1:nImg
+                
+                % Compute size of images accounting for the fact that the
+                % patches must stay inside the image data.
+                imgSz = size(pType{ii}); % input image size
+                outSz = imgSz - obj.patchSize + 1; % output size
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 if obj.verbose
                     fprintf('  Processing Image %d/%d\n', ii, nImg);
                     fprintf('\tComputing Statistics...');
                 end
                 
                 % Compute the statistics
-                [pData, pTypeCol] = im2patch(raw{ii},obj.patchSize,pType);
+                [pData, pTypeCol] = im2patch(raw{ii},obj.patchSize,pType{ii});
                 
                 if ~(satClassOption == 'none')
                     [~, pTypeSatCol] = im2patch(raw{ii},obj.patchSize,pTypeSat);

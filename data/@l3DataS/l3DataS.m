@@ -57,7 +57,10 @@ classdef l3DataS < hiddenHandle
     methods
         function val = get.pType(obj)
             if ~isempty(obj.inImg)
-                val = cfa2ptype(size(obj.cfa), size(obj.inImg{1}));
+                val = cell(1, length(obj.inImg));
+                for ii = 1 : length(obj.inImg)
+                    val{ii} = cfa2ptype(size(obj.cfa), size(obj.inImg{ii}));
+                end
             else
                 val = [];
             end

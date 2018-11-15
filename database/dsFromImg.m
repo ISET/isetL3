@@ -10,7 +10,7 @@ filesToLoad = dir(format);
 targetFormat = strcat('*.mat');
 % number of the scene
 %%
-for ii = 1 : 2%length(filesToLoad)
+for ii = 1 : length(filesToLoad)
     
     % Image file name
     imgName = filesToLoad(ii).name;
@@ -20,7 +20,7 @@ for ii = 1 : 2%length(filesToLoad)
     cd(dsPath);
     wList = [400:10:700];
     scene = sceneFromFile(imgName, 'rgb', 110, 'LCD-Apple', wList);
-    scene = sceneSet(scene, 'fov', 20);
+    scene = sceneSet(scene, 'fov', 5);
     
     % Save the iamge
     cd(savePath);

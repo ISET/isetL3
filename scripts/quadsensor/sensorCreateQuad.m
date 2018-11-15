@@ -31,7 +31,7 @@ sensor = sensorSet(sensor,'pattern',quadPattern);
 %% Set up the other parameters - To be done
 
 % sensor = sensorSetSizeToFOV(sensor,sceneGet(scene,'fov'));
-sensor = sensorSet(sensor,'pixel size constant fill factor',1.4e-6);
+% sensor = sensorSet(sensor,'pixel size constant fill factor',1.4e-6);
 % sensor = sensorCompute(sensor,oi);
 
 end

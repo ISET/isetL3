@@ -76,10 +76,6 @@ c = cameraSet(c, 'sensor', sensor);
 %  luminance levels and number of illuminants
 levels = obj.get('illuminant levels');
 nIllum = obj.get('n illuminants');
-if obj.hdrMode
-    refLevs = obj.get('ref illuminant levels');
-end
-
 
 % camera noise-free sensor
 sensorNF = sensorSet(cameraGet(c,'sensor'), 'noise flag', -1);
@@ -140,11 +136,8 @@ for ii = 1 : nScenes
 
             % store raw image and desired output
             obj.inImg{indx} = cameraGet(c, 'sensor volts');
-            if ~obj.hdrMode
-                obj.outImg{indx} = outImg * levels(kk);
-            else
-                obj.outImg{indx} = outImg * refLevs(kk);
-            end
+            
+            obj.outImg{indx} = outImg * levels(kk);
         end
     end
 end

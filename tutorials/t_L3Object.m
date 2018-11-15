@@ -31,6 +31,7 @@ rgb = im2double(rd.readArtifact(s(trainFile).artifactId, 'type', 'jpg'));
 % create training class instance
 l3t = l3TrainRidge();
 l3t.l3c.patchSize = patch_sz;
+l3t.l3c.satClassOption = 'none';
 
 % Invoke the training algorithm
 l3t.train(l3DataCamera({raw}, {rgb}, cfa));
