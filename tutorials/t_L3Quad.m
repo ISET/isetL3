@@ -56,7 +56,6 @@ save('indCompSatClassModel.mat','l3t', '-v7.3');
 %                         ' channel ' num2str(thisChannel)], 'FontWeight', 'bold');
     axis square;
     identityLine;
-
     vcNewGraphWin; imagesc(reshape(l3t.kernels{thisClass}(2:82,thisChannel),...
             [9, 9]));  colormap(gray);axis off %colorbar;
 %}
@@ -121,7 +120,6 @@ imshow(img_noSat(:,:,1) - img_Sat(:,:,1));
 temp = img_noSat(:,:,1) - img_Sat(:,:,1);
 
 %% 
-
 satModel = load('indCompSatClassModel.mat');
 l3tsat = satModel.l3t;
 %%

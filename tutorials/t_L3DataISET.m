@@ -41,12 +41,13 @@ l3t.l3c.cutPoints = {logspace(-1.7, -0.12, 30), []};
 l3t.l3c.patchSize = [5 5];
 %l3t.l3c.channelName = ["g1", "r", "b", "g2", "w"];
 % Invoke the training algorithm
+l3t.l3c.satClassOption = 'none';
 l3t.train(l3d);
 
 %% Exam the training result
 %{
     % Exam the linearity of the kernels
-    thisClass = 1;
+    thisClass = 115;
     
     [X, y_true]  = l3t.l3c.getClassData(thisClass);
     X = padarray(X, [0 1], 1, 'pre');
@@ -55,7 +56,6 @@ l3t.train(l3d);
     vcNewGraphWin; plot(y_true(:,thisChannel), y_pred(:,thisChannel), 'o');
     axis square;
     identityLine;
-
     vcNewGraphWin; imagesc(reshape(l3t.kernels{thisClass}(2:26,thisChannel),...
             [5, 5]));  colormap(gray); colorbar;
 %}
@@ -73,8 +73,8 @@ l3t.train(l3d);
 l3r = l3Render();
 
 % Obtain the sensor mosaic response to a scene.  Could be any scene
-scene = l3d.get('scenes', 6);
-scene = sceneSet(scene, 'fov', 45);
+scene = l3d.get('scenes', 1);
+
 vcNewGraphWin([], 'wide');
 subplot(1,3,1); 
 imshow(sceneGet(scene, 'rgb')); title('Scene Image');
@@ -113,19 +113,4 @@ outImg = l3r.render(cmosaic, cfa, l3t);
 outImg = outImg / max(max(outImg(:,:,2)));
 subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('L3 Rendered Image');
 
-% %%
-% scene = load('pbrt_rendered.mat');
-% sceneTest = scene.scene_corrected{1};
-% sceneTest = sceneSet(sceneTest, 'fov', 45);
-% vcNewGraphWin([], 'wide');
-% subplot(1, 3, 1); imshow(sceneGet(sceneTest, 'rgb')); title('Scene Image');
-% 
-% camera = cameraCompute(l3d.camera, sceneTest);
-% cmosaic = cameraGet(camera, 'sensor volts');
-% 
-% subplot(1, 3, 2); imagesc(cmosaic); axis image; colormap(gray);
-% axis off; title('Camera Raw Data');
-% 
-% outImg = l3r.render(cmosaic, cfa, l3t);
-% outImg = outImg / max(max(max(outImg)));
-% subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('L3 Rendered Image');
+%%

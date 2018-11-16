@@ -22,6 +22,9 @@ function [inImg, outImg, pType] = dataGet(obj, nScenes, varargin)
 %   l3DataCamera.dataGet
 %
 % QT/HJ/BW (c) Stanford VISTA Team 2015
+%
+% Update/Todo: Change the illuminant level to two sets: input illuminant
+% and target illuminant. This is used for HDR application. (ZL, 2018)
 
 %% Check inputs
 if notDefined('nScenes')
@@ -134,6 +137,7 @@ for ii = 1 : nScenes
 
             % store raw image and desired output
             obj.inImg{indx} = cameraGet(c, 'sensor volts');
+            
             obj.outImg{indx} = outImg * levels(kk);
         end
     end

@@ -103,7 +103,7 @@ classdef l3DataCamera < l3DataS
                 assert(~ieNotDefined('pType'), 'pType required');
                 if any(size(pType) ~= size(inImg{1}))
                     % input pType is actually cfa
-                    obj.pType = cfa2ptype(size(pType), size(inImg{1}));
+                    obj.pType = cfa2ptype(size(ptype), size(inImg{1}));
                 else
                     obj.pType = pType;
                 end

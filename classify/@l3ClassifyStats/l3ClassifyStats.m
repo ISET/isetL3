@@ -154,6 +154,7 @@ classdef l3ClassifyStats < l3ClassifyS
             % Get data
             if ~isempty(length(varargin))
                 [raw, tgt, pType] = l3d.dataGet(varargin{:});
+                
             else
                 [raw, tgt, pType] = l3d.dataGet();
             end
@@ -178,17 +179,21 @@ classdef l3ClassifyStats < l3ClassifyS
                 end
             end
             
-            % Compute size of images accounting for the fact that the
-            % patches must stay inside the image data.
-            imgSz = size(pType); % input image size
-            outSz = imgSz - obj.patchSize + 1; % output size
+
             
             % allocate spaces
-            nc = length(unique(pType)); % number of channels
-            satChannel = zeros(1, length(obj.cutPoints));
-%             satChannel(1) = satClassNumber(pType(1:size(l3d.cfa, 1),...
-%                             1:size(l3d.cfa, 2)), satClassOption);
-            [satChannel(1), satType] = satClassNumber(l3d.cfa, satClassOption);
+            nc = length(unique(pType{1})); % number of channels
+            if satClassOption == 'none'
+                satChannel = 0;
+            else
+                satChannel = zeros(1, length(obj.cutPoints));
+
+                [satChannel(1), satType] = satClassNumber(l3d.cfa, satClassOption);
+                % Create pType for saturated pixels
+                scaling = sqrt(nc/satType); 
+                scaleFactor = [scaling, scaling];
+                pTypeSat = cfa2ptype(size(l3d.cfa), size(l3d.inImg{1}), scaleFactor);
+            end
             obj.satChannels = satChannel;
             n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1 + satChannel);
             
@@ -197,21 +202,38 @@ classdef l3ClassifyStats < l3ClassifyS
                 obj.p_out  = cell(n_lvls, 1);
             end
             
-            % Create pType for saturated pixels
-            scaling = sqrt(nc/satType); 
-            scaleFactor = [scaling, scaling];
-            pTypeSat = cfa2ptype(size(l3d.cfa), size(l3d.inImg{1}), scaleFactor);
+
             
             % Loop for each image
             for ii = 1:nImg
+                
+                % Compute size of images accounting for the fact that the
+                % patches must stay inside the image data.
+                imgSz = size(pType{ii}); % input image size
+                outSz = imgSz - obj.patchSize + 1; % output size
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 if obj.verbose
                     fprintf('  Processing Image %d/%d\n', ii, nImg);
                     fprintf('\tComputing Statistics...');
                 end
                 
                 % Compute the statistics
-                [pData, pTypeCol] = im2patch(raw{ii},obj.patchSize,pType);
-                [~, pTypeSatCol] = im2patch(raw{ii},obj.patchSize,pTypeSat);
+                [pData, pTypeCol] = im2patch(raw{ii},obj.patchSize,pType{ii});
+                
+                if ~(satClassOption == 'none')
+                    [~, pTypeSatCol] = im2patch(raw{ii},obj.patchSize,pTypeSat);
+                end
+                
                 stat = obj.statFunc(pData, pTypeCol, obj.statFuncParam{:});
                 
                 if obj.verbose
@@ -228,13 +250,19 @@ classdef l3ClassifyStats < l3ClassifyS
                 
                 % We use the threshold saturate voltage to find for each
                 % patch, and label them as which type.
-                if isempty(obj.satVolt)
-                    thresh = cameraGet(l3d.camera, 'sensor voltage swing') - 0.05;
-                    obj.satVolt = thresh;
+                if ~(satClassOption == 'none')
+                    if isempty(obj.satVolt)
+                        thresh = cameraGet(l3d.camera, 'sensor voltage swing') - 0.05;
+                        obj.satVolt = thresh;
+                    else
+                        thresh = obj.satVolt;
+                    end
+                    p_sat = patchSaturation(pData, pTypeSatCol, thresh);
                 else
-                    thresh = obj.satVolt;
+                    p_sat = ones(1, size(pData, 2));
                 end
-                p_sat = patchSaturation(pData, pTypeSatCol, thresh);
+                
+                
                 labelCol = obj.computeLabels(stat, pTypeCol, p_sat, satChannel);
                 
                 % compute overall label values

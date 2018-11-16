@@ -88,4 +88,3 @@ outImg = l3r.render(cmosaic, cfa, l3t);
 outImg = outImg / max(max(outImg(:)));
 subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('L3 Rendered Image');
 
-%%

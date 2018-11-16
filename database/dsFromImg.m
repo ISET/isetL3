@@ -18,8 +18,9 @@ for ii = 1 : length(filesToLoad)
     % Transfer image to scene
     
     cd(dsPath);
-    scene = sceneFromFile(imgName, 'rgb', 110, 'LCD-Apple');
-    scene = sceneSet(scene, 'fov', 20);
+    wList = [400:10:700];
+    scene = sceneFromFile(imgName, 'rgb', 110, 'LCD-Apple', wList);
+    scene = sceneSet(scene, 'fov', 5);
     
     % Save the iamge
     cd(savePath);
@@ -27,7 +28,7 @@ for ii = 1 : length(filesToLoad)
     sceneExisted =dir(targetFormat);
     numScene = length(sceneExisted); saveIdx = int2str(numScene + 1);
     saveName = strcat(saveIdx, '.mat');
-    sceneToFile(saveName, scene, 10);
+    sceneToFile(saveName, scene);
     
 end
 
