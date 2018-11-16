@@ -57,7 +57,7 @@ l3t = l3TrainRidge();
 l3t.l3c.cutPoints = {logspace(-1.3, -1.1, 30), []};
 l3t.l3c.patchSize = [5 5];
 
-l3t.l3c.satClassOption = 'none';
+l3t.l3c.satClassOption = 'compress';
 % Invoke the training algorithm
 l3t.train(l3dHuawei);
 

@@ -81,7 +81,7 @@ nIllum = obj.get('n illuminants');
 % camera noise-free sensor
 sensorNF = sensorSet(cameraGet(c,'sensor'), 'noise flag', -1);
 sensorNF = sensorSet(sensorNF, 'exp time', 1);
-
+sensorNF = sensorSet(sensorNF, 'sensor analog Offset', 0);
 %% Compute sensor images
 % print progress info
 if obj.verbose

@@ -183,7 +183,7 @@ classdef l3ClassifyStats < l3ClassifyS
             
             % allocate spaces
             nc = length(unique(pType{1})); % number of channels
-            if satClassOption == 'none'
+            if strcmp(satClassOption, 'none')
                 satChannel = 0;
             else
                 satChannel = zeros(1, length(obj.cutPoints));
@@ -230,7 +230,7 @@ classdef l3ClassifyStats < l3ClassifyS
                 % Compute the statistics
                 [pData, pTypeCol] = im2patch(raw{ii},obj.patchSize,pType{ii});
                 
-                if ~(satClassOption == 'none')
+                if ~strcmp(satClassOption, 'none')
                     [~, pTypeSatCol] = im2patch(raw{ii},obj.patchSize,pTypeSat);
                 end
                 
@@ -250,7 +250,7 @@ classdef l3ClassifyStats < l3ClassifyS
                 
                 % We use the threshold saturate voltage to find for each
                 % patch, and label them as which type.
-                if ~(satClassOption == 'none')
+                if ~strcmp(satClassOption, 'none')
                     if isempty(obj.satVolt)
                         thresh = cameraGet(l3d.camera, 'sensor voltage swing') - 0.05;
                         obj.satVolt = thresh;
