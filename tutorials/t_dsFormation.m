@@ -12,8 +12,8 @@ ieInit;
 % Specify the path to the images and the path to the scene. Also specify
 % the format of the image. In the future we need to modify it to read all
 % format of the inages
-imgPath = '/Users/zhenglyu/Graduate/research/isetL3/local/dataSet/l3DemoDS';
-scenePath = '/Users/zhenglyu/Graduate/research/isetL3/local/dataSet/sceneDsDemo';
+imgPath = '/scratch/ZhengLyu/sampleDataSet/img';
+scenePath = '/scratch/ZhengLyu/sampleDataSet/scene';
 imgFormat = 'jpg';
 
 dsFormat = 'mat';
@@ -26,8 +26,7 @@ format = strcat('*.', dsFormat);
 filesToLoad = dir(format);
 
 % Get the first scene data
-firstSceneName = filesToLoad(1).name;
+firstSceneName = filesToLoad(3).name;
 scene = sceneFromFile(firstSceneName, 'multispectral');
 
 ieAddObject(scene); sceneWindow;
-

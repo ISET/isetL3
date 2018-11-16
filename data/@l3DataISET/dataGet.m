@@ -60,6 +60,7 @@ oi = cameraGet(c, 'oi');
 
 sensor = cameraGet(c, 'sensor');
 sensor = sensorSetSizeToFOV(sensor, sceneGet(scene, 'fov'), scene, oi); 
+% sensor = sensorSetSizeToFOV(sensor, 45, scene, oi);
 
 % make sure sensor size is a multiple of cfa size
 sz = sensorGet(sensor, 'size');

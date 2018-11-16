@@ -21,11 +21,10 @@ classdef l3DataISET < l3DataS
         camera;           % ISET camera structure
         scenes;           % ISET scene structure (cell array)
         nScenes;          % Number of training scenes (scalar)
-        illuminantLev;    % Illuminants levels (vector)
+        illuminantLev;    % Input illuminants levels (vector)
         inIlluminantSPD;  % Raw image illuminant SPD (string or vector)
         outIlluminantSPD; % Target image illuminant SPD (string or vector)
         idealCMF;         % Target color space (string or vector)
-        
         verbose;          % Print progress information or not;
     end
     

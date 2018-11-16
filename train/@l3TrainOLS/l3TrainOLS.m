@@ -40,7 +40,7 @@ classdef l3TrainOLS < l3TrainS
                 'l3c must be of class l3ClassifyS (or its descendants');
             % Changed the function used instead of l3ClassifyFast to
             % l3Classifystats.
-            p.addParameter('l3c', l3ClassifyStats, vFunc);  
+            p.addParameter('l3c', l3ClassifyFast, vFunc);  
             
             vFunc = @(x) validateattributes(x, {'numeric'}, ...
                          {'scalar', '>', 0});
