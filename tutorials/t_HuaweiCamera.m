@@ -26,8 +26,8 @@ camera = huaWeiSetup(camera, cameraData);
 
 %% Check the parameter
 sampleScene = scenes{2};
-sampleScene = sceneAdjustLuminance(sampleScene, 0.05);
-sampleScene = sceneSet(sampleScene, 'fov', 15);
+sampleScene = sceneAdjustLuminance(sampleScene, 10);
+sampleScene = sceneSet(sampleScene, 'fov', 5);
 sampleScene = sceneSet(sampleScene, 'distance', 1);
 ieAddObject(sampleScene);
 sceneWindow();

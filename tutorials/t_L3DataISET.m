@@ -47,12 +47,12 @@ l3t.train(l3d);
 %% Exam the training result
 %{
     % Exam the linearity of the kernels
-    thisClass = 115;
+    thisClass = 100;
     
     [X, y_true]  = l3t.l3c.getClassData(thisClass);
     X = padarray(X, [0 1], 1, 'pre');
     y_pred = X * l3t.kernels{thisClass};
-    thisChannel = 1;
+    thisChannel = 2;
     vcNewGraphWin; plot(y_true(:,thisChannel), y_pred(:,thisChannel), 'o');
     axis square;
     identityLine;
