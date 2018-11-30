@@ -80,7 +80,7 @@ nIllum = obj.get('n illuminants');
 
 % camera noise-free sensor
 sensorNF = sensorSet(cameraGet(c,'sensor'), 'noise flag', -1);
-sensorNF = sensorSet(sensorNF, 'exp time', 1);
+sensorNF = sensorSet(sensorNF, 'exp time', 0.28);
 sensorNF = sensorSet(sensorNF, 'sensor analog Offset', 0);
 %% Compute sensor images
 % print progress info
@@ -104,8 +104,15 @@ for ii = 1 : nScenes
 
         % Compute desired output
         oi = oiCompute(outScene, oi);
+%         Get rid of the xyz, and use the same sensor to get the srgb image
         outImg = sensorComputeFullArray(sensorNF, oi,obj.get('ideal cmf'));
-
+        outImg = xyz2srgb(outImg / max(max(max(outImg))));
+%         outImg = sensorComputeFullArray(sensorNF, oi, ieReadSpectra('RGB.mat', obj.get('scene wave')) );
+%         sensorData = sensorCompute(sensorNF, oi);
+%         ip = ipCreate;
+%         ip = ipCompute(ip, sensorData);
+%         outImg = ipGet(ip, 'srgb');
+       
         % Adjust scene for input illuminant spd
         inScene = sceneAdjustIlluminant(scene, inIl);
 
@@ -139,6 +146,7 @@ for ii = 1 : nScenes
             obj.inImg{indx} = cameraGet(c, 'sensor volts');
             
             obj.outImg{indx} = outImg * levels(kk);
+%             obj.outImg{indx} = outImg;
         end
     end
 end

@@ -13,7 +13,7 @@ cameraData = load(strcat(dataPath, dataName));
 scenePath = '/scratch/ZhengLyu/sampleDataSet/scene';
 format = 'mat';
 
-scenes = loadScenes(scenePath, format, [1, 3]);
+scenes = loadScenes(scenePath, format, 5);
 %% Set the camera with the Huawei parameter
 camera = cameraCreate;
 
@@ -25,7 +25,7 @@ camera = cameraSet(camera, 'sensor name', 'Quadra pattern default');
 camera = huaWeiSetup(camera, cameraData);
 
 %% Check the parameter
-sampleScene = scenes{2};
+sampleScene = scenes{1};
 sampleScene = sceneAdjustLuminance(sampleScene, 10);
 sampleScene = sceneSet(sampleScene, 'fov', 5);
 sampleScene = sceneSet(sampleScene, 'distance', 1);
@@ -54,7 +54,7 @@ l3dHuawei.set('camera', camera);
 %% Create the training dataset
 l3t = l3TrainRidge();
 
-l3t.l3c.cutPoints = {logspace(-1.3, -1.1, 30), []};
+l3t.l3c.cutPoints = {logspace(-1.2, -0.8, 30), []};
 l3t.l3c.patchSize = [5 5];
 
 l3t.l3c.satClassOption = 'compress';
@@ -64,7 +64,7 @@ l3t.train(l3dHuawei);
 %% Exam the training result
 %{
     % Exam the linearity of the kernels
-    thisClass = 160; 
+    thisClass = 45; 
     
     [X, y_true]  = l3t.l3c.getClassData(thisClass);
     X = padarray(X, [0 1], 1, 'pre');
@@ -84,7 +84,7 @@ l3t.train(l3dHuawei);
 %% try the rendered img
 l3r = l3Render();
 
-sampleScene = l3dHuawei.get('scenes', 2);
+sampleScene = l3dHuawei.get('scenes', 1);
 sampleScene = sceneAdjustLuminance(sampleScene, l3dHuawei.illuminantLev(1));
 sampleScene = sceneSet(sampleScene, 'fov', 15);
 sampleScene = sceneSet(sampleScene, 'distance', 0.5);

@@ -43,7 +43,7 @@ camera = cameraSet(camera, 'pixel voltageswing', cameraData.voltageSwing);
 % conversion gain (NOTICE: we take the 48M mode for now)
 camera = cameraSet(camera, 'pixel conversiongain', cameraData.conversionGain48M);
 % 
-% % analog offset
+% analog offset
 camera = cameraSet(camera, 'sensor analog offset', cameraData.analogOffset);
 
 % dark voltage

@@ -12,13 +12,13 @@ ieInit;
 % Specify the path to the images and the path to the scene. Also specify
 % the format of the image. In the future we need to modify it to read all
 % format of the inages
-imgPath = '/scratch/ZhengLyu/sampleDataSet/img';
-scenePath = '/scratch/ZhengLyu/sampleDataSet/scene';
+imgPath = '/scratch/ZhengLyu/darkScene/img';
+scenePath = '/scratch/ZhengLyu/darkScene/scene';
 imgFormat = 'jpg';
 
 dsFormat = 'mat';
 %% Generate the scene database
-dsPath = dsFromImg(imgPath, scenePath,imgFormat);
+dsPath = dsFromImg(imgPath, scenePath,imgFormat, 'D65');
 
 %% Some demostration of the scene
 cd(dsPath);

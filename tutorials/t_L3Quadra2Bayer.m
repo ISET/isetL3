@@ -16,7 +16,7 @@ cameraData = load(strcat(dataPath, dataName));
 scenePath = '/scratch/ZhengLyu/sampleDataSet/scene';
 format = 'mat';
 
-scenes = loadScenes(scenePath, format, [3 5 6]);
+scenes = loadScenes(scenePath, format, [2 3 5 6]);
 
 %% Create the camera with bayer pattern
 cameraBayer = cameraCreate;
@@ -26,7 +26,7 @@ cameraBayer = cameraSet(cameraBayer, 'sensor name', 'Bayer pattern Huawei');
 cameraBayer = huaWeiSetup(cameraBayer, cameraData);
 
 %% Exam if the parameter works properly with the huawei sensor properties
-sampleScene = scenes{2};
+sampleScene = scenes{3};
 sampleScene = sceneAdjustLuminance(sampleScene, 20);
 sampleScene = sceneSet(sampleScene, 'fov', 5);
 sampleScene = sceneSet(sampleScene, 'distance', 1);
@@ -55,7 +55,7 @@ cameraQuad = cameraSet(cameraQuad, 'sensor name', 'Quadra pattern Huawei');
 cameraQuad = huaWeiSetup(cameraQuad, cameraData);
 
 %% Exam if the parameter works properly with the huawei sensor properties
-sampleScene = scenes{2};
+sampleScene = scenes{3};
 sampleScene = sceneAdjustLuminance(sampleScene, 20);
 sampleScene = sceneSet(sampleScene, 'fov', 5);
 sampleScene = sceneSet(sampleScene, 'distance', 1);
@@ -79,7 +79,7 @@ rawDataQuad  = cell(1, length(scenes));
 ilv = [10 20 15 25 5 40 50 80];
 for ii = 1 : length(ilv)
 % Adjust the scene parameter
-curScene = scenes{2};
+curScene = scenes{3};
 curScene = sceneAdjustLuminance(curScene, ilv(ii));
 curScene = sceneSet(curScene, 'fov', 5.1);
 curScene = sceneSet(curScene, 'distance', 1);
@@ -113,7 +113,7 @@ sensorWindow;
 l3t = l3TrainRidge();
 l3t.l3c.patchSize = patch_sz;
 l3t.l3c.satClassOption = 'none';
-l3t.l3c.cutPoints = {logspace(-1.1, -1.0, 25), []};
+l3t.l3c.cutPoints = {logspace(-1.1, 0, 20), []};
 % l3dRaw = l3DataCamera(rawDataQuad, rawDataBayer,...
 %                       cameraGet(cameraQuad, 'sensor cfa pattern'));
 l3dRaw = l3DataCamera(rawDataQuad, rawDataBayer,...
@@ -123,23 +123,24 @@ l3dRaw = l3DataCamera(rawDataQuad, rawDataBayer,...
 l3t.train(l3dRaw);
 
 %% Now check the linearity of the trained class
-thisClass = 90;
+thisClass = 160;
 thisChannel = 1;
 
 checkLinearFit(l3t, thisClass, thisChannel, patch_sz);
 %% 
 l3r = l3Render();
+curScene = scenes{3};
 
-rawBayerRender = l3r.render(rawDataQuad{2}, cameraGet(cameraQuad, 'sensor cfa pattern'), l3t);
+rawBayerRender = l3r.render(rawDataQuad{3}, cameraGet(cameraQuad, 'sensor cfa pattern'), l3t);
 
-curSensor = sensorCreate;
+curSensor = cameraGet(cameraBayer, 'sensor');
 curSensor = sensorSet(curSensor, 'volts', rawBayerRender);
 curSensor = sensorSet(curSensor, 'name', 'L3 rendered sensor data');
 ieAddObject(curSensor);
 sensorWindow;
 
-curSensor = sensorCreate;
-curSensor = sensorSet(curSensor, 'volts', rawDataBayer{1});
+curSensor = cameraGet(cameraBayer, 'sensor');
+curSensor = sensorSet(curSensor, 'volts', rawDataBayer{3});
 curSensor = sensorSet(curSensor, 'name', 'Bayer sensor data');
 ieAddObject(curSensor);
 sensorWindow;
@@ -148,20 +149,34 @@ sensorWindow;
 
 %% Render a new image:
 curScene = scenes{1};
-curScene = sceneAdjustLuminance(curScene, 80);
+ieAddObject(curScene);
+sceneWindow;
+curScene = sceneAdjustLuminance(curScene, 50);
 curScene = sceneSet(curScene, 'fov', 5.1);
 curScene = sceneSet(curScene, 'distance', 1);
 rawDataBayerTest  = cameraGet(cameraCompute(cameraBayer, curScene),...
                                                         'sensor volts');
+% curSensor = cameraGet(cameraCompute(cameraBayer, curScene),...
+%                                                         'sensor');
+% curSensor2 = curSensor;
+% curSensor2 = sensorSet(curSensor, 'volts', rawDataBayerTest);
+% ieAddObject(curSensor2);
+% sensorWindow;
 rawBayerRenderTest = l3r.render(rawDataBayerTest, cameraGet(cameraQuad,...
                                             'sensor cfa pattern'), l3t); 
-curSensor = sensorCreate;
-curSensor = sensorSet(curSensor, 'volts', rawBayerRenderTest);
-curSensor = sensorSet(curSensor, 'name', 'L3 rendered sensor test data');
-ieAddObject(curSensor);
+
+curSensor1 = cameraGet(cameraCompute(cameraBayer, curScene), 'sensor');
+
+rr = padarray(rawBayerRenderTest, [3, 3], 0, 'both');
+curSensor1 = sensorSet(curSensor1, 'volts', rr);
+curSensor1 = sensorSet(curSensor1, 'digital value', analog2digital(curSensor1, 'linear'));
+
+curSensor1 = sensorSet(curSensor1, 'name', 'L3 rendered sensor test data');
+ieAddObject(curSensor1);
 sensorWindow;
 
-curSensor = sensorCreate;
+
+curSensor = cameraGet(cameraCompute(cameraBayer, curScene), 'sensor');
 curSensor = sensorSet(curSensor, 'volts', rawDataBayerTest);
 curSensor = sensorSet(curSensor, 'name', 'Bayer sensor test data');
 ieAddObject(curSensor);

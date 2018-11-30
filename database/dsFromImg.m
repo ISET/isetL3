@@ -1,4 +1,4 @@
-function savePath = dsFromImg(dsPath, savePath, imgFormat)
+function savePath = dsFromImg(dsPath, savePath, imgFormat, ilSpectra)
 %% dsFromImg(dsPath, savePath, imgFormat)
 % Create scene from images
 
@@ -20,7 +20,10 @@ for ii = 1 : length(filesToLoad)
     cd(dsPath);
     wList = [400:10:700];
     scene = sceneFromFile(imgName, 'rgb', 110, 'LCD-Apple', wList);
-    scene = sceneSet(scene, 'fov', 5);
+    scene = sceneSet(scene, 'fov', 1);
+    scene = sceneSet(scene, 'distance', 1);
+    illmnt = ieReadSpectra(ilSpectra, wList);
+    scene = sceneAdjustIlluminant(scene, illmnt);
     
     % Save the iamge
     cd(savePath);

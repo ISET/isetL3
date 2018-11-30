@@ -81,7 +81,7 @@ classdef l3Render < hiddenHandle
                 % Get unique labels
                 labelV = unique(labels);
                 
-                imgSz = size(pType);
+                imgSz = size(pType{1});
                 outImgSz = imgSz - l3c.patchSize + 1;
                 outImg = zeros([prod(outImgSz) l3t.nChannelOut]);
                 for ii = 1 : length(labelV)
