@@ -80,7 +80,7 @@ nIllum = obj.get('n illuminants');
 
 % camera noise-free sensor
 sensorNF = sensorSet(cameraGet(c,'sensor'), 'noise flag', -1);
-
+% sensorNF = sensorSet(sensorNF, 'exp time', 0.28);
 sensorNF = sensorSet(sensorNF, 'sensor analog Offset', 0);
 %% Compute sensor images
 % print progress info
@@ -100,7 +100,7 @@ for ii = 1 : nScenes
 
         % Adjust scene for output illluminant
         outScene = sceneAdjustIlluminant(scene, outIl);
-        outScene = sceneAdjustLuminance(outScene, 1);
+        outScene = sceneAdjustLuminance(outScene, 10);
 
         % Compute desired output
         oi = oiCompute(outScene, oi);

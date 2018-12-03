@@ -5,7 +5,7 @@
 ieInit;
 
 %% Load scenes
-scenePath = '/scratch/ZhengLyu/darkScene/scene';
+scenePath = fullfile(L3rootpath,'dataSet/scene/');
 format = 'mat';
 
 scenes = loadScenes(scenePath, format, [1, 2, 3, 4, 5, 6, 7]);
