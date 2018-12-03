@@ -34,7 +34,7 @@ camera = cameraSet(camera, 'sensor exposure time', 0.03);
 %% Check the parameter
 sampleScene = scenes{7};
 sampleScene = sceneAdjustLuminance(sampleScene, 0.07);
-sampleScene = sceneSet(sampleScene, 'fov', 10);
+sampleScene = sceneSet(sampleScene, 'fov', 5);
 % sampleScene = sceneSet(sampleScene, 'distance', 1);
 
 ieAddObject(sampleScene);

@@ -17,7 +17,7 @@ l2= 0; selection_number = 8; l3= 2.7;
 for channel = 1:3
     img = padarray(org_img(:,:,channel),[search_width search_width], ...
         'symmetric','both');
-    noisy_image = img;0cgnoptu
+    noisy_image = img;
     noisy_img(:,:,channel) = noisy_image;
     basic_result(:,:,channel) = first_step(noisy_image, sigma, ...
         window_size, search_width, l2, l3, selection_number);
@@ -32,5 +32,5 @@ noisy_img = noisy_img(search_width+1:end-search_width, ...
     search_width+1:end-search_width,:);
 
 imwrite(noisy_img,'results/noisy_image.jpg');
-imwrite(uint8(basic_result),'results/res_phase1.jpg');
+imwrite(uint8(basic_result),'results/res_phase1.jpg');h
 imwrite(uint8(final_result),'results/res_phase2.jpg');
