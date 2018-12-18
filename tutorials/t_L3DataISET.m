@@ -43,6 +43,10 @@ l3t.l3c.patchSize = [5 5];
 % Invoke the training algorithm
 l3t.l3c.satClassOption = 'none';
 l3t.train(l3d);
+%% Check for single channel
+thisClass = 90;
+thisChannel = 2;
+[X, y_pred, y_true] = checkLinearFit(l3t, thisClass, thisChannel, l3t.l3c.patchSize);
 
 %% Exam the training result
 %{
@@ -52,7 +56,7 @@ l3t.train(l3d);
     [X, y_true]  = l3t.l3c.getClassData(thisClass);
     X = padarray(X, [0 1], 1, 'pre');
     y_pred = X * l3t.kernels{thisClass};
-    thisChannel = 2;
+    thisChannel = 3;
     vcNewGraphWin; plot(y_true(:,thisChannel), y_pred(:,thisChannel), 'o');
     axis square;
     identityLine;

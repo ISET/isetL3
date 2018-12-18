@@ -1,4 +1,4 @@
-function checkLinearFit(l3t, thisClass, thisChannel, patchSz)
+function [X, y_pred, y_true] = checkLinearFit(l3t, thisClass, thisChannel, patchSz)
 %{
     % Exam the linearity of the kernels
     thisClass = 400; 
@@ -30,9 +30,12 @@ function checkLinearFit(l3t, thisClass, thisChannel, patchSz)
 %                         ' channel ' num2str(thisChannel)], 'FontWeight', 'bold');
     axis square;
     identityLine;
+    [class, channel] = l3t.l3c.getClassChannelPType(thisClass);
+    % title(['Signal level: ', num2str(class), '. Sensor type: ', num2str(channel)]);
 %     vcNewGraphWin; imagesc(reshape(l3t.kernels{thisClass}(end - prod(patchSz) + 1:end,thisChannel),...
 %             patchSz));  colormap(gray);axis off %colorbar;
     vcNewGraphWin; imagesc(reshape(l3t.kernels{thisClass}(2:end,thisChannel),...
             patchSz));  colormap(gray);axis off %colorbar;
-
+    
+    
 end

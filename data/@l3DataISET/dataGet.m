@@ -80,8 +80,9 @@ nIllum = obj.get('n illuminants');
 
 % camera noise-free sensor
 sensorNF = sensorSet(cameraGet(c,'sensor'), 'noise flag', -1);
-% sensorNF = sensorSet(sensorNF, 'exp time', 0.28);
+sensorNF = sensorSet(sensorNF, 'exp time', 0.008);
 sensorNF = sensorSet(sensorNF, 'sensor analog Offset', 0);
+% sensorNF = sensorSetSizeToFOV(sensorNF, sceneGet(scene, 'fov'), scene, oi);
 %% Compute sensor images
 % print progress info
 if obj.verbose
@@ -100,18 +101,35 @@ for ii = 1 : nScenes
 
         % Adjust scene for output illluminant
         outScene = sceneAdjustIlluminant(scene, outIl);
-        outScene = sceneAdjustLuminance(outScene, 10);
+        outScene = sceneAdjustLuminance(outScene, 1);
 
         % Compute desired output
         oi = oiCompute(outScene, oi);
+        
 %         Get rid of the xyz, and use the same sensor to get the srgb image
-        outImg = sensorComputeFullArray(sensorNF, oi,obj.get('ideal cmf'));
-        outImg = xyz2srgb(outImg / max(max(max(outImg))));
+%         outImg = sensorComputeFullArray(sensorNF, oi, obj.get('ideal cmf'));
+%         outImg = sensorComputeFullArray(sensorNF, oi);
+
 %         outImg = sensorComputeFullArray(sensorNF, oi, ieReadSpectra('RGB.mat', obj.get('scene wave')) );
-%         sensorData = sensorCompute(sensorNF, oi);
-%         ip = ipCreate;
-%         ip = ipCompute(ip, sensorData);
-%         outImg = ipGet(ip, 'srgb');
+        sensorData = sensorCompute(sensorNF, oi, 0);
+        ip = ipCreate;
+        ip = ipCompute(ip, sensorData);
+%         outImg = ipGet(ip, 'data sRGB');
+        outImg = ip.data.sensorspace;
+        % some detailed function in ipCompute to check where the
+        % nonlinearity happens.
+        [outImg,ip] = imageSensorCorrection(outImg,ip,sensorNF);
+        %{
+            vcNewGraphWin;
+            imshow(xyz2srgb(outImg));
+        
+        %}
+
+        %{
+            volt = sensorGet(sensorData, 'volts');
+            voltRGB = plane2rgb(volt, sensorNF, 0);
+            tmp = outImg - voltRGB;
+        %}
        
         % Adjust scene for input illuminant spd
         inScene = sceneAdjustIlluminant(scene, inIl);

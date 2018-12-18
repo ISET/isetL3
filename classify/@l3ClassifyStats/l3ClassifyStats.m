@@ -365,6 +365,12 @@ classdef l3ClassifyStats < l3ClassifyS
             p_out = obj.p_out{label}';
         end
         
+        function [channel, pType] = getClassChannelPType(obj, label, varargin)
+            nChannel = obj.nPixelTypes;
+            channel = floor(label / nChannel);
+            pType = mod(label, nChannel); if (pType == 0) pType = nChannel; end
+        end
+        
         function [c_data, c_grndTruth] = concatenateClassData(obj, idx, varargin)
             assert(max(idx) <= obj.nLabels, 'Index exceeds number of classes.');
             assert(min(idx) >= 1, 'Index should be equal or larger than 1.');

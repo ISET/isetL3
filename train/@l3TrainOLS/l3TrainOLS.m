@@ -168,6 +168,18 @@ classdef l3TrainOLS < l3TrainS
                     warning('error occured, might missing stat toolbox');
                 end
             end
+            
+            %{
+                % Exam the linearity of the kernels
+                y_pred  = X * kernels;
+                thisChannel = 1;
+                vcNewGraphWin; plot(y(:,thisChannel), y_pred(:,thisChannel), 'o');
+                axis square;
+                identityLine;
+                vcNewGraphWin; 
+                crop = reshape(kernels(2:end,...
+                thisChannel),[5, 5]); imagesc(crop); colormap(gray);axis off
+            %}
         end
     end
 end

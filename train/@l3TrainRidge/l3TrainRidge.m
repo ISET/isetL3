@@ -71,6 +71,7 @@ classdef l3TrainRidge < l3TrainOLS
             %   lambdaGCV for more details.
             % 
             % HJ, Stanford Vista Team, 2015
+
             
             % Get regularization parameter (lambda) for current class
             if size(obj.lambda, 1) == 1
@@ -92,21 +93,38 @@ classdef l3TrainRidge < l3TrainOLS
                     obj.lambda(label, c) = l(c);
                 end
             end
-            
+%             l = [0, 0, 0];
             % Learn kernel
             for c = 1 : size(y, 2)
                 % process for each channel
                 kernels(:, c) =  V * diag(d./(d.^2 + l(c)))*(U'*y(:, c));
+                
             end
-            
+            %{
+                kernel = inv(X'*X)*X'*y;
+                
+                XX = X;
+                XX(:,2:end) = X(:,2:end) * 1000;
+                kernels = inv(XX'*XX)*XX'*y;
+                kernels(2:end,:) = kernels(2:end,:) *1000*5;
+            %}
             %{
                 % Exam the linearity of the kernels
                 y_pred  = X * kernels;
-                thisChannel = 2;
+                thisChannel = 3;
                 vcNewGraphWin; plot(y(:,thisChannel), y_pred(:,thisChannel), 'o');
                 axis square;
                 identityLine;
+                vcNewGraphWin; 
+                crop = reshape(kernels(2:end,...
+                thisChannel),[5, 5]); imagesc(crop); colormap(gray);axis off
             %}
+            %{
+                tmpXX = X' * X;
+                temp = tmpXX * inv(tmpXX);
+            %}
+            
+
             
             p_val = nan(size(kernels));
         end
@@ -140,7 +158,7 @@ classdef l3TrainRidge < l3TrainOLS
             % HJ, VISTA TEAM, 2015
             
             % Check inputs
-            if notDefined('lList'), lList = [0 logspace(-3, -1, 20)]; end
+            if notDefined('lList'), lList = [0 logspace(-6, -1.5, 20)]; end
             
             % SVD of X
             [U, D, ~] = svd(X, 0); d = diag(D);
