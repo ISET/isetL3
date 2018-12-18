@@ -80,7 +80,8 @@ nIllum = obj.get('n illuminants');
 
 % camera noise-free sensor
 sensorNF = sensorSet(cameraGet(c,'sensor'), 'noise flag', -1);
-sensorNF = sensorSet(sensorNF, 'exp time', 0.008);
+% sensorNF = sensorSet(sensorNF, 'exp time', 0.008);
+sensorNF = sensorSet(sensorNF, 'exp time', 1);
 sensorNF = sensorSet(sensorNF, 'sensor analog Offset', 0);
 % sensorNF = sensorSetSizeToFOV(sensorNF, sceneGet(scene, 'fov'), scene, oi);
 %% Compute sensor images
@@ -107,18 +108,18 @@ for ii = 1 : nScenes
         oi = oiCompute(outScene, oi);
         
 %         Get rid of the xyz, and use the same sensor to get the srgb image
-%         outImg = sensorComputeFullArray(sensorNF, oi, obj.get('ideal cmf'));
+        outImg = sensorComputeFullArray(sensorNF, oi, obj.get('ideal cmf'));
 %         outImg = sensorComputeFullArray(sensorNF, oi);
 
 %         outImg = sensorComputeFullArray(sensorNF, oi, ieReadSpectra('RGB.mat', obj.get('scene wave')) );
-        sensorData = sensorCompute(sensorNF, oi, 0);
-        ip = ipCreate;
-        ip = ipCompute(ip, sensorData);
+%         sensorData = sensorCompute(sensorNF, oi, 0);
+%         ip = ipCreate;
+%         ip = ipCompute(ip, sensorData);
 %         outImg = ipGet(ip, 'data sRGB');
-        outImg = ip.data.sensorspace;
+%         outImg = ip.data.sensorspace;
         % some detailed function in ipCompute to check where the
         % nonlinearity happens.
-        [outImg,ip] = imageSensorCorrection(outImg,ip,sensorNF);
+%         [outImg,ip] = imageSensorCorrection(outImg,ip,sensorNF);
         %{
             vcNewGraphWin;
             imshow(xyz2srgb(outImg));
