@@ -4,9 +4,9 @@ function mse = u_kernelEvaluation(l3t)
 % groundtruth pixel value.
 %% Get the kernels, input data and the ground truth pixel values.
 kernels = l3t.kernels;
-kernels = cell(1, 4);
-kernels{1} = l3t.kernels{5}; kernels{2} = l3t.kernels{6};
-kernels{3} = l3t.kernels{7}; kernels{4} = l3t.kernels{8};
+% kernels = cell(1, 4);
+% kernels{1} = l3t.kernels{5}; kernels{2} = l3t.kernels{6};
+% kernels{3} = l3t.kernels{7}; kernels{4} = l3t.kernels{8};
 l3c = l3t.l3c;
 patchSz = l3c.patchSize;
 nClass = numel(kernels);
@@ -36,7 +36,7 @@ for rr = 1 : numel(rowPlot)
         
         thisClass = (rowPlot(rr) - 1) * col + colPlot(cc);
         thisPlot = (rr - 1) * numel(colPlot) + cc;
-        [X, y_true]  = l3c.getClassData(thisClass+4);
+        [X, y_true]  = l3c.getClassData(thisClass);
         X = padarray(X, [0 1], 1, 'pre');
         y_pred = double(X * kernels{thisClass});
         

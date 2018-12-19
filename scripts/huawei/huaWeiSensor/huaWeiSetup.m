@@ -44,7 +44,7 @@ camera = cameraSet(camera, 'pixel voltageswing', cameraData.voltageSwing);
 camera = cameraSet(camera, 'pixel conversiongain', cameraData.conversionGain48M);
 % 
 % analog offset
-camera = cameraSet(camera, 'sensor analog offset', cameraData.analogOffset);
+% camera = cameraSet(camera, 'sensor analog offset', cameraData.analogOffset);
 
 % dark voltage
 camera = cameraSet(camera, 'pixel dark voltage', cameraData.darkVoltage48M);
@@ -53,5 +53,5 @@ camera = cameraSet(camera, 'pixel dark voltage', cameraData.darkVoltage48M);
 camera = cameraSet(camera, 'pixel read noise volts', cameraData.readNoise48M);
 
 % % set the exposure time
-% camera = cameraSet(camera, 'sensor exp time', 0.015);
+camera = cameraSet(camera, 'sensor exp time', 0.001);
 end
