@@ -108,7 +108,9 @@ for ii = 1 : nScenes
         oi = oiCompute(outScene, oi);
         
 %         Get rid of the xyz, and use the same sensor to get the srgb image
-        outImg = sensorComputeFullArray(sensorNF, oi, obj.get('ideal cmf'));
+        cf = obj.get('ideal cmf');
+        cf = cf ./ max(max(max(cf)));
+        outImg = sensorComputeFullArray(sensorNF, oi, cf);
 %         outImg = sensorComputeFullArray(sensorNF, oi);
 
 %         outImg = sensorComputeFullArray(sensorNF, oi, ieReadSpectra('RGB.mat', obj.get('scene wave')) );
