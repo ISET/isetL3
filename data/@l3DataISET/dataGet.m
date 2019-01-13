@@ -107,7 +107,6 @@ for ii = 1 : nScenes
         % Compute desired output
         oi = oiCompute(outScene, oi);
         
-%         Get rid of the xyz, and use the same sensor to get the srgb image
         cf = obj.get('ideal cmf');
         cf = cf ./ max(max(max(cf)));
         outImg = sensorComputeFullArray(sensorNF, oi, cf);
