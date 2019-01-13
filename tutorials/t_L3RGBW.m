@@ -97,7 +97,7 @@ l3tRGBW2.train(l3dRGBW2);
 %% Now check the linearity of the trained class
 
 % Pick a class and channel
-thisClass = 50;
+thisClass = 30;
 thisChannel = 1;
 
 % Make the plot
@@ -107,12 +107,12 @@ thisChannel = 1;
 
 %% Let's check a few more
 l3rRGBW = l3Render();
-outImg  = l3rRGBW.render(voltMosaic3, cfa, l3tRGBW2, false);
+outImg  = l3rRGBW.render(voltMosaic1, cfa, l3tRGBW2, false);
 outImg  = xyz2srgb(outImg);
 
 ip = ipCreate;
 ip = ipSet(ip,'result',outImg);
-ip = ipSet(ip,'name','Mosaic 3');
+ip = ipSet(ip,'name','Mosaic 1');
 ipWindow(ip);
 
 %%
