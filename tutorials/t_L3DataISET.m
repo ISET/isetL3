@@ -44,8 +44,8 @@ l3t.l3c.patchSize = [5 5];
 l3t.l3c.satClassOption = 'none';
 l3t.train(l3d);
 %% Check for single channel
-thisClass = 5;
-thisChannel = 1;
+thisClass = 1;
+thisChannel = 2;
 [X, y_pred, y_true] = checkLinearFit(l3t, thisClass, thisChannel, l3t.l3c.patchSize);
 
 %% Exam the training result
