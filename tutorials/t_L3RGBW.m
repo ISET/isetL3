@@ -1,4 +1,10 @@
-%% Function to demonstrate the RGBW sensor ip
+%% Demonstrate L3 using an RGBW sensor, all the way to the IP window
+%
+% Dependencies:
+%   To run this script you must download the data ZL prepared. We assume
+%   you have placed the code in fullfile(L3rootpath,'local');
+%
+% Zheng Lyu, SCIEN Team, 2019
 
 %% initialization
 ieInit;
@@ -7,13 +13,24 @@ ieInit;
 patch_sz = [5 5];
 
 %% Load RGBW sensor
-data = load('rgbw1_sensor.mat'); sensor = data.sensor;
+fname = fullfile(L3rootpath,'local','isetl3','RGBW_sensor','rgbw1_sensor');
+load(fname,'sensor'); 
 
-%% read oi
-data = load('suburb_v7.5_oi1.mat'); oi1 = data.ieObject;
-data = load('suburb_v13.5_oi2.mat'); oi2 = data.ieObject;
+%% Load oi data
+fname = fullfile(L3rootpath,'local','isetl3','RGBW_ois','suburb_v7.5_oi1.mat');
+load(fname,'ieObject'); 
+oi1 = ieObject;
 
-data = load('city4_v6.0_oi2.mat'); oi3 = data.ieObject;
+fname = fullfile(L3rootpath,'local','isetl3','RGBW_ois','suburb_v13.5_oi2.mat');
+load(fname,'ieObject'); 
+oi2 = ieObject;
+
+fname = fullfile(L3rootpath,'local','isetl3','RGBW_ois','city4_v6.0_oi2.mat');
+load(fname,'ieObject'); 
+oi3 = ieObject;
+
+% oiWindow(oi3); oiSet(oi3,'gamma',0.5);
+
 %% change the illuminance
 oi1 = oiSet(oi1, 'mean illuminance', 20);
 oi2 = oiSet(oi2, 'mean illuminance', 20);
@@ -54,7 +71,8 @@ xyzFilter = xyzValue / max(max(max(xyzValue)));
 %% This is another option but I think more lines of code are needed
 % sensorNF = sensorCreateIdeal('matchxyz', sensor1);
 
-%%
+%%  These are the ideal XYZ images
+
 outImg1 = sensorComputeFullArray(sensorNF, oi1, xyzFilter);
 outImg2 = sensorComputeFullArray(sensorNF, oi2, xyzFilter);
 outImg3 = sensorComputeFullArray(sensorNF, oi3, xyzFilter);
@@ -63,10 +81,13 @@ outImg3 = sensorComputeFullArray(sensorNF, oi3, xyzFilter);
     vcNewGraphWin; srgbImg2 = xyz2srgb(outImg2); imagesc(srgbImg2);
     vcNewGraphWin; srgbImg3 = xyz2srgb(outImg3); imagesc(srgbImg3);
 %}
-%%
-l3dRGBW2 = l3DataCamera({voltMosaic1, voltMosaic2, voltMosaic3}, {outImg1, outImg2, outImg3},...
-                      cfa); 
-%%
+%% Create the L3 camera
+
+l3dRGBW2 = l3DataCamera({voltMosaic1, voltMosaic2, voltMosaic3}, ...
+    {outImg1, outImg2, outImg3},...
+    cfa);
+%% Train
+
 l3tRGBW2 = l3TrainRidge();
 l3tRGBW2.l3c.patchSize = patch_sz;
 l3tRGBW2.l3c.satClassOption = 'none';
@@ -74,19 +95,27 @@ l3tRGBW2.l3c.satClassOption = 'none';
 l3tRGBW2.l3c.cutPoints = {logspace(min_cut, max_cut, 40), []};                  
 l3tRGBW2.train(l3dRGBW2);
 %% Now check the linearity of the trained class
+
+% Pick a class and channel
 thisClass = 50;
 thisChannel = 1;
 
-[X, y_pred, y_true] = checkLinearFit(l3tRGBW2, thisClass, thisChannel, l3tRGBW2.l3c.patchSize);
+% Make the plot
+[X, y_pred, y_true] = checkLinearFit(l3tRGBW2, ...
+    thisClass, thisChannel, ...
+    l3tRGBW2.l3c.patchSize);
 
-
-%%
+%% Let's check a few more
 l3rRGBW = l3Render();
-outImg = l3rRGBW.render(voltMosaic1, cfa, l3tRGBW2, false);
-outImg = xyz2srgb(outImg);
+outImg  = l3rRGBW.render(voltMosaic3, cfa, l3tRGBW2, false);
+outImg  = xyz2srgb(outImg);
 
-vcNewGraphWin;
-imshow(outImg); title('L3 Rendered Image');
+ip = ipCreate;
+ip = ipSet(ip,'result',outImg);
+ip = ipSet(ip,'name','Mosaic 3');
+ipWindow(ip);
 
 %%
 imwrite(outImg, 'rgbw.png');
+
+%% END
