@@ -1,4 +1,4 @@
-function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass, thisChannel, patchSz)
+function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass, thisCenterPixel , thisChannel, inCfa, varargin)
 % Examine the accuracy of the kernel in its class, and show the kernel weights
 %
 % Syntax:
@@ -37,10 +37,24 @@ function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass, thisChannel, 
 %% Parse arguments
 
 %%
+if ~isempty(varargin) outCfa = varargin{1}; end
+[rInCfa, cInCfa] = size(inCfa);
+nInPType = numel(inCfa); 
+inPixelPat = reshape([1:nInPType], size(inCfa));
+if exist('outCfa', 'var')
+    nOutPType = numel(outCfa);
+    [rOutCfa, cOutCfa] = size(outCfa);
+    outPixelPat = reshape([1:nOutPType], size(outCfa));
+end
 
-[X, y_true]  = l3t.l3c.getClassData(thisClass);
+%%
+patchSz = l3t.l3c.patchSize; rPatch = patchSz(1); cPatch = patchSz(2);
+trainClass = (thisClass-1) * l3t.l3c.nPixelTypes + thisCenterPixel;
+
+%%
+[X, y_true]  = l3t.l3c.getClassData(trainClass);
 X = padarray(X, [0 1], 1, 'pre');
-y_pred = X * l3t.kernels{thisClass};
+y_pred = X * l3t.kernels{trainClass};
 
 fig = vcNewGraphWin([],'tall');
 
@@ -51,12 +65,7 @@ xlabel('Target value (ground truth)', 'FontSize', 15, 'FontWeight', 'bold');
 ylabel('Predicted value', 'FontSize', 15,'FontWeight', 'bold');
 axis square;
 identityLine;
-title(sprintf('Accuracy: class %d, channel %d',thisClass,thisChannel));
-
-% Why is this here?  Is it an error that these variables are not used
-% below?  Should these be thisClass and thisChannel? Or since they are sent
-% in, is that all we need? For now, I commented it out.(BW) 
-% [class, channel] = l3t.l3c.getClassChannelPType(thisClass);
+title(sprintf('Accuracy: class %d, channel %d',trainClass,thisChannel));
 
 % The kernel weights
 subplot(2,1,2);
@@ -66,4 +75,36 @@ imagesc(...
 colormap(gray); axis off %colorbar;
 title(sprintf('Kernel weights: class %d, channel %d',thisClass,thisChannel));
 
+%% working on plot the pattern with the specified center and patch size
+
+% Create the pixel type matrix
+inPatchPattern = fitPatchPattern(patchSz, thisCenterPixel, inCfa);
+inCFAPattern = zeros(size(inPatchPattern));
+for rr = 1:rPatch
+    for cc = 1:cPatch
+        inCFAPattern(rr, cc) = inCfa(inPixelPat == inPatchPattern(rr, cc));
+    end
+end
+%% working on the same thing for output pattern if exist
+if exist('outCfa', 'var')
+    
+    usOutCfa = repmat(outPixelPat, rInCfa/rOutCfa, cInCfa/cOutCfa);
+    outCenterPixel = usOutCfa(inPixelPat == thisCenterPixel);
+    outPatchPattern = fitPatchPattern(patchSz, outCenterPixel, outCfa);
+    outCFAPattern = zeros(size(inPatchPattern));
+    for rr = 1:rPatch
+        for cc = 1:cPatch
+            outCFAPattern(rr, cc) = outCfa(outPixelPat == outPatchPattern(rr, cc));
+        end
+    end
+end
+
+%% Plot the pattern
+% Plot the quad pattern patch
+sensor = sensorCreate; sensor = sensorSet(sensor, 'cfa Pattern', inCFAPattern);
+sensorShowCFA(sensor);
+
+% Pllt the bayer pattern patch
+sensor = sensorSet(sensor, 'cfa Pattern',outCFAPattern);
+sensorShowCFA(sensor);
 end
