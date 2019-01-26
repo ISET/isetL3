@@ -65,7 +65,7 @@ xlabel('Target value (ground truth)', 'FontSize', 15, 'FontWeight', 'bold');
 ylabel('Predicted value', 'FontSize', 15,'FontWeight', 'bold');
 axis square;
 identityLine;
-title(sprintf('Accuracy: class %d, channel %d',trainClass,thisChannel));
+title(sprintf('Accuracy: class %d, channel %d',thisClass,thisChannel));
 
 % The kernel weights
 subplot(2,1,2);
