@@ -21,6 +21,7 @@ classdef l3DataCamera < l3DataS
         % outImg; % Cell array of target output
         
         cfa;      % cfa pattern
+        camera;
     end
     
     methods (Access = public)

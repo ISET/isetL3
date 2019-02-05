@@ -11,7 +11,7 @@ ieInit;
 %% Specification
 % Specify the path to the images and the path to the scene. Also specify
 % the format of the image. In the future we need to modify it to read all
-% format of the inages
+% format of the images
 imgPath = '/scratch/ZhengLyu/darkScene/img';
 scenePath = '/scratch/ZhengLyu/darkScene/scene';
 imgFormat = 'jpg';

@@ -23,7 +23,7 @@ scenes = cell(nFiles, 1);
 for ii = 1:nFiles
     sceneName  = fullfile(scenePath,filesToLoad(idxScene(ii)).name);
     scenes{ii} = load(sceneName);
-    scenes{ii} = sceneSet(scenes{ii}, 'fov', 10);
+%     scenes{ii} = sceneSet(scenes{ii}, 'fov', 10);
 end
 
 end

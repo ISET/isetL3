@@ -192,11 +192,12 @@ classdef l3ClassifyStats < l3ClassifyS
                 % Create pType for saturated pixels
                 scaling = sqrt(nc/satType); 
                 scaleFactor = [scaling, scaling];
-                pTypeSat = cfa2ptype(size(l3d.cfa), size(l3d.inImg{1}), scaleFactor);
+                
             end
+
             obj.satChannels = satChannel;
             n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1 + satChannel);
-            
+
             if isNew || isempty(obj.p_data)
                 obj.p_data = cell(n_lvls, 1);
                 obj.p_out  = cell(n_lvls, 1);
@@ -215,12 +216,10 @@ classdef l3ClassifyStats < l3ClassifyS
                 
                 
                 
+
+            
                 
-                
-                
-                
-                
-                
+               
                 
                 if obj.verbose
                     fprintf('  Processing Image %d/%d\n', ii, nImg);
@@ -231,6 +230,7 @@ classdef l3ClassifyStats < l3ClassifyS
                 [pData, pTypeCol] = im2patch(raw{ii},obj.patchSize,pType{ii});
                 
                 if ~strcmp(satClassOption, 'none')
+                    pTypeSat = cfa2ptype(size(l3d.cfa), size(l3d.inImg{ii}), scaleFactor);
                     [~, pTypeSatCol] = im2patch(raw{ii},obj.patchSize,pTypeSat);
                 end
                 

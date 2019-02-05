@@ -158,7 +158,7 @@ classdef l3TrainRidge < l3TrainOLS
             % HJ, VISTA TEAM, 2015
             
             % Check inputs
-            if notDefined('lList'), lList = [0 logspace(-6, -1.5, 20)]; end
+            if notDefined('lList'), lList = [0 logspace(-6, -1, 30)]; end
             
             % SVD of X
             [U, D, ~] = svd(X, 0); d = diag(D);

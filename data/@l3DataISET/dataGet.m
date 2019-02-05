@@ -107,12 +107,13 @@ for ii = 1 : nScenes
         % Compute desired output
         oi = oiCompute(outScene, oi);
         
-        cf = obj.get('ideal cmf');
+%         cf = obj.get('ideal cmf');
+%         cf = cf ./ max(max(max(cf)));
+%         outImg = sensorComputeFullArray(sensorNF, oi, cf);
+%         outImg = sensorComputeFullArray(sensorNF, oi);
+        cf = ieReadSpectra('XYZQuanta.mat', obj.get('scene wave'));
         cf = cf ./ max(max(max(cf)));
         outImg = sensorComputeFullArray(sensorNF, oi, cf);
-%         outImg = sensorComputeFullArray(sensorNF, oi);
-
-%         outImg = sensorComputeFullArray(sensorNF, oi, ieReadSpectra('RGB.mat', obj.get('scene wave')) );
 %         sensorData = sensorCompute(sensorNF, oi, 0);
 %         ip = ipCreate;
 %         ip = ipCompute(ip, sensorData);
@@ -123,7 +124,7 @@ for ii = 1 : nScenes
 %         [outImg,ip] = imageSensorCorrection(outImg,ip,sensorNF);
         %{
             vcNewGraphWin;
-            imshow(xyz2srgb(outImg));
+            imshow(xyz2srgb(outImg*10));
         
         %}
 

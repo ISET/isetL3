@@ -38,6 +38,7 @@ function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass, thisCenterPix
 
 %%
 if ~isempty(varargin) outCfa = varargin{1}; end
+if length(varargin) >=2 trainClass = varargin{2}; end
 [rInCfa, cInCfa] = size(inCfa);
 nInPType = numel(inCfa); 
 inPixelPat = reshape([1:nInPType], size(inCfa));
@@ -49,7 +50,9 @@ end
 
 %%
 patchSz = l3t.l3c.patchSize; rPatch = patchSz(1); cPatch = patchSz(2);
-trainClass = (thisClass-1) * l3t.l3c.nPixelTypes + thisCenterPixel;
+if ~exist('trainClass', 'var')
+    trainClass = (thisClass-1) * l3t.l3c.nPixelTypes + thisCenterPixel;
+end
 
 %%
 [X, y_true]  = l3t.l3c.getClassData(trainClass);
