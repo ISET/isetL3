@@ -13,9 +13,14 @@ fitPatch(rCenter, cCenter) = thisCenterPixel;
 for cc = 1 : col
     fitPatch(rCenter, cc) = thisCenterPixel + (cc-cCenter)*cCfa;
     if fitPatch(rCenter, cc) <= 0
-        fitPatch(rCenter, cc) = fitPatch(rCenter, cc) + nPType;
+        while fitPatch(rCenter, cc) <= 0
+            fitPatch(rCenter, cc) = fitPatch(rCenter, cc) + nPType;
+        end
     elseif fitPatch(rCenter, cc) > nPType
-        fitPatch(rCenter, cc) = fitPatch(rCenter, cc) - nPType;    
+        fitPatch(rCenter, cc) = mod(fitPatch(rCenter, cc), nPType);
+        if fitPatch(rCenter, cc) == 0
+           fitPatch(rCenter, cc) = fitPatch(rCenter, cc) + nPType;
+        end
     end
 end
 
