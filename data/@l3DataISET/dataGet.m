@@ -23,8 +23,7 @@ function [inImg, outImg, pType] = dataGet(obj, nScenes, varargin)
 %
 % QT/HJ/BW (c) Stanford VISTA Team 2015
 %
-% Update/Todo: Change the illuminant level to two sets: input illuminant
-% and target illuminant. This is used for HDR application. (ZL, 2018)
+
 
 %% Check inputs
 if notDefined('nScenes')
@@ -63,7 +62,6 @@ oi = cameraGet(c, 'oi');
 
 sensor = cameraGet(c, 'sensor');
 sensor = sensorSetSizeToFOV(sensor, sceneGet(scene, 'fov'), scene, oi); 
-% sensor = sensorSetSizeToFOV(sensor, 45, scene, oi);
 
 % make sure sensor size is a multiple of cfa size
 sz = sensorGet(sensor, 'size');
@@ -107,13 +105,13 @@ for ii = 1 : nScenes
         % Compute desired output
         oi = oiCompute(outScene, oi);
         
-%         cf = obj.get('ideal cmf');
-%         cf = cf ./ max(max(max(cf)));
-%         outImg = sensorComputeFullArray(sensorNF, oi, cf);
-%         outImg = sensorComputeFullArray(sensorNF, oi);
-        cf = ieReadSpectra('XYZQuanta.mat', obj.get('scene wave'));
+        cf = obj.get('ideal cmf');
         cf = cf ./ max(max(max(cf)));
         outImg = sensorComputeFullArray(sensorNF, oi, cf);
+%         outImg = sensorComputeFullArray(sensorNF, oi);
+%         cf = ieReadSpectra('XYZQuanta.mat', obj.get('scene wave'));
+%         cf = cf ./ max(max(max(cf)));
+%         outImg = sensorComputeFullArray(sensorNF, oi, cf);
 %         sensorData = sensorCompute(sensorNF, oi, 0);
 %         ip = ipCreate;
 %         ip = ipCompute(ip, sensorData);

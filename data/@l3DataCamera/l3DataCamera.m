@@ -22,6 +22,7 @@ classdef l3DataCamera < l3DataS
         
         cfa;      % cfa pattern
         camera;
+        upscaleFactor; % The upsampling factor
     end
     
     methods (Access = public)
@@ -40,6 +41,9 @@ classdef l3DataCamera < l3DataS
             vFunc = @(x) validateattributes(x, {'char'}, {'nonempty'});
             p.addParameter('name', 'l3 Camera Data Class Instance', vFunc);
             
+            vFunc = @(x) assert(isscalar(x), 'Upscale factor must be a number');
+            p.addParameter('upscaleFactor', 1, vFunc);
+            
             % Parse inputs
             p.parse(inImg, outImg, cfa, varargin{:});
             
@@ -48,6 +52,7 @@ classdef l3DataCamera < l3DataS
             obj.inImg = inImg;
             obj.outImg = outImg;
             obj.name = p.Results.name;
+            obj.upscaleFactor = p.Results.upscaleFactor;
         end
         
         function [inImg, outImg, pType] = dataGet(obj, nImg, varargin)

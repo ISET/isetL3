@@ -19,14 +19,9 @@ classdef l3ClassifyFast < l3ClassifyS
         verbose@logical scalar;     % print progress information or not
         storeData@logical scalar;   % whether or not to store p_data
         dataKernel@function_handle; % data kernel function
-        
-%         channelName;                % Define the "channel name"
+
         p_data;                     % patch data
         p_out;                      % patch target output
-%         p_channelTypes;               % patch pixel types "channel"
-%         p_lowerCut;                 % the lower cut point of the patch
-%         p_upperCut;                 % the upper cut point of the patch
-%         p_center;                   % (r, c) for each patch 
     end
     
     properties (Dependent)
@@ -232,12 +227,12 @@ classdef l3ClassifyFast < l3ClassifyS
                 % the list of levels and contrast. Then we find the
                 % largest index that the mean is less than and store it.
                 pdSz = (obj.patchSize-1)/2;
-                pTypeC = pType(pdSz(1)+1:end-pdSz(1), ...
+                pTypeC = pType{ii}(pdSz(1)+1:end-pdSz(1), ...
                                pdSz(2)+1:end-pdSz(2));
                 curLabel = patchLabels(obj.cutPoints, stat, pTypeC(:), nc);
                 
                 % compute overall label values
-                labels{ii} = reshape(curLabel,size(pType)-obj.patchSize+1);
+                labels{ii} = reshape(curLabel,size(pType{ii})-obj.patchSize+1);
                 
                 if obj.verbose, fprintf('Done\n'); end
                 
