@@ -26,7 +26,7 @@ classdef l3RenderSR < hiddenHandle
             end
         end
         
-        function outImg = render(~, rawData, pType, l3t, l3dSR, varargin)
+        function outImgRGB = render(~, rawData, pType, l3t, l3dSR, varargin)
             % Render method for l3RenderSR class
             % Inputs:
             %   rawData     - camera raw image data (2D matrix)
@@ -80,10 +80,10 @@ classdef l3RenderSR < hiddenHandle
                 labelU = unique(labels);
                 
                 % Define the size of the out image
-                imgSz = size(pType{1});
-                imgCrpedSz = imgSz - l3c.patchSize + 1;
-                outImgSz = imgCrpedSz * upscaleFactor;
-                outImg = zeros([prod(outImgSz) l3t.nChannelOut]);
+                inImgSz = size(pType{1});
+                inImgSzCrped = inImgSz - l3c.patchSize + 1;
+%                 outImgSz = inImgSz * upscaleFactor;
+                outImg = zeros([prod(inImgSzCrped) l3t.nChannelOut]);
                 
                 % 
                 for ii = 1: length(labelU)
@@ -99,17 +99,15 @@ classdef l3RenderSR < hiddenHandle
                     
                     % compute output values
                     indx = (labels(:) == labelU(ii));
-                    effPos = find(indx == 1);
-                    indxStart = (effPos - 1) * upscaleFactor^2 + 1;
-                    indxEnd = effPos * upscaleFactor^2;
-                    for jj = 1 : length(effPos)
-                        outImg(indxStart(jj):indxEnd(jj),:) = classData(jj,:) * kernel;
-                    end
+%                     effPos = find(indx == 1);
+%                     indxStart = (effPos - 1) * upscaleFactor^2 + 1;
+%                     indxEnd = indxStart + upscaleFactor^2 - 1;
+                    outImg(indx,:) = classData * kernel;
                     
                 end
                 
                 % rearrange to output image size
-                outImg = XWSR2RGBFormat(outImg, outImgSz(1), outImgSz(2), upscaleFactor);
+                outImgRGB = XWSR2RGBFormat(outImg, inImgSzCrped(1), inImgSzCrped(2), upscaleFactor);
             end
         end
     end

@@ -157,7 +157,11 @@ classdef l3ClassifySR < l3ClassifyS
             
             % Get data
             [raw, tgt, pType] = l3d.dataGet(varargin{:})
-            
+            %{
+                thisImg = 1;
+                vcNewGraphWin; imshow(raw{thisImg});
+                vcNewGraphWin; imshow(xyz2srgb(tgt{thisImg}));
+            %}
             % Set the cfa pattern
             cfa = l3d.cfa;
             
@@ -231,6 +235,7 @@ classdef l3ClassifySR < l3ClassifyS
                 % Some comments here.
                 pTypeC = pType{ii}(padSzRaw(1)+1:end-padSzRaw(1), ...
                                    padSzRaw(2)+1:end-padSzRaw(2));
+                % ALWAYS remember: curLabel is labeled as column -> row
                 curLabel = patchLabels(obj.cutPoints, stat, pTypeC(:),...
                                         nc, obj.satClassOption);
                                     
@@ -277,7 +282,7 @@ classdef l3ClassifySR < l3ClassifyS
                     
                     % If we have target output, add data to obj.p_out
                     if ~isempty(tgt)
-                        tData = imagePatchTgt(tgt{ii}, l3d.upscaleFactor); % THIS IS THE FUNCTION THAT NEED TO BE DONE
+                        tData = imagePatchTgt(tgt{ii}, l3d.upscaleFactor); 
                         tData = tData(indx, :)';
                         obj.p_out{lv} = [obj.p_out{lv} tData(:, indx_d)];
                     end
