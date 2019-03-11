@@ -8,46 +8,61 @@ ieInit;
 
 dFolder = fullfile(L3rootpath,'local','scenes');
 %% Download the scene from RDT
-rdt = RdtClient('scien');
-rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
+% rdt = RdtClient('scien');
+% rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
 
 %% load the scenes
 format = 'mat';
-scenes = loadScenes(dFolder, format, [1:20]);
+scenes = loadScenes(dFolder, format, [1:30]);
+
 %% Use l3DataSimulation to generate raw and desired RGB image
 l3dSR = l3DataSuperResolution();
 % sceneSampleOne = sceneSet(sceneCreate, 'fov', 12);
 % sceneSampleTwo = sceneSet(sceneCreate('sweep'))
 
-l3dSR.sources = scenes(1:5);
-l3dSR.upscaleFactor = 1;
+l3dSR.sources = scenes(1:20);
+l3dSR.upscaleFactor = 8;
+%% Adjust the settings of the camera
+camera = l3dSR.camera;
+camera = cameraSet(camera, 'pixel pdXpos', 0);
+camera = cameraSet(camera, 'pixel pdYpos', 0);
+% set the fill factor to be 1
+pixelSize  = cameraGet(camera, 'pixel size');
+camera = cameraSet(camera, 'pixel pdWidth', pixelSize(1));
+camera = cameraSet(camera, 'pixel pdHeight', pixelSize(2));
+
+l3dSR.camera = camera;
 %%
 l3tSuperResolution = l3TrainRidge('l3c', l3ClassifySR);
 
 %%
+nSatSituation = [1:2^numel(l3dSR.cfa)-1];
+
 l3tSuperResolution.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
-                                        [], [1:2^numel(l3dSR.cfa)-1]};
-l3tSuperResolution.l3c.patchSize = [5 5];
+                                        [], nSatSituation};
+l3tSuperResolution.l3c.patchSize = [7 7];
 
 % Invoke the training algorithm
-l3tSuperResolution.l3c.satClassOption = 'none';
+% l3tSuperResolution.l3c.satClassOption = 'none';
 l3tSuperResolution.train(l3dSR);
 
 %%
-thisKernel = 1106;
+thisKernel = 100;
 kernel  = l3tSuperResolution.kernels{thisKernel};
 [X, y] =l3tSuperResolution.l3c.getClassData(thisKernel); 
 X = padarray(X, [0 1], 1, 'pre');
 y_fit = X * kernel;
-thisChannel = 4;
+thisChannel = 10;
 plot(y_fit(:,thisChannel), y(:,thisChannel), 'o');
 axis square; 
 identityLine;
 %% Render
 l3rSR = l3RenderSR();
 
-% Obtain the sensor mosaic response to a scene.  Could be any scene
-source = l3dSR.sources{5};
+% Set a test scene0ahiwx
+thisScene = 17;
+source = scenes{thisScene};
+% sceneWindow(source);
 % source = scenes{4};
 % source = sceneCreate('rings rays');
 % source = sceneCreate('sweep frequency');
@@ -102,4 +117,4 @@ hrImg = ipGet(ipHR, 'data srgb');
 vcNewGraphWin;
 subplot(1, 3, 1); imshow(lrImg); % title('low resolution img');
 subplot(1, 3, 2); imshow(hrImg); % btitle('high resolution img');
-subplot(1, 3, 3); imshow(xyz2srgb(outImg*5)); % title('l3 rendered img');
+subplot(1, 3, 3); imshow(xyz2srgb(outImg)); % title('l3 rendered img');

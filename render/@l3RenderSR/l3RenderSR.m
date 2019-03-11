@@ -83,7 +83,7 @@ classdef l3RenderSR < hiddenHandle
                 imgSz = size(pType{1});
                 imgCrpedSz = imgSz - l3c.patchSize + 1;
                 outImgSz = imgCrpedSz * upscaleFactor;
-                outImg = zeros([prod(outImgSz) l3t.nChannelOut]);
+                outImg = zeros([prod(imgCrpedSz) l3t.nChannelOut]);
                 
                 % 
                 for ii = 1: length(labelU)
@@ -100,10 +100,10 @@ classdef l3RenderSR < hiddenHandle
                     % compute output values
                     indx = (labels(:) == labelU(ii));
                     effPos = find(indx == 1);
-                    indxStart = (effPos - 1) * upscaleFactor^2 + 1;
-                    indxEnd = effPos * upscaleFactor^2;
+%                     indxStart = (effPos - 1) * upscaleFactor^2 + 1;
+%                     indxEnd = effPos * upscaleFactor^2;
                     for jj = 1 : length(effPos)
-                        outImg(indxStart(jj):indxEnd(jj),:) = classData(jj,:) * kernel;
+                        outImg(effPos(jj),:) = classData(jj,:) * kernel;
                     end
                     
                 end

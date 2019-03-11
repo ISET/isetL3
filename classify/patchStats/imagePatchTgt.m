@@ -16,11 +16,12 @@ cIndx = [1:upscaleFactor:col];
 
 tgtData = zeros(row * col / upscaleFactor^2, upscaleFactor^2 * channel);
 idx = 1;
-for ii = 1 : length(rIndx)
-    for jj = 1 : length(cIndx)
-        curPatch = tgtImg(rIndx(ii):rIndx(ii)+upscaleFactor-1,...
-                            cIndx(jj):cIndx(jj)+upscaleFactor-1,:);
-        tgtData(idx, :) = curPatch(:);  
+for ii = 1 : length(cIndx)
+    for jj = 1 : length(rIndx)
+        curPatch = tgtImg(rIndx(jj):rIndx(jj)+upscaleFactor-1,...
+                            cIndx(ii):cIndx(ii)+upscaleFactor-1,:);
+        % This function flatened the patch in R, G and B channel.                
+        tgtData(idx, :) = curPatch(:); 
         idx = idx + 1;
     end
 end

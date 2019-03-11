@@ -84,9 +84,16 @@ for ii = 1 : nImg
     
     % Set the noise free sensor
     sensorNF = sensorSet(sensor, 'noise flag', -1);
+    sensorNF = sensorSet(sensorNF, 'exp time', 1);
     sensorNF = sensorSet(sensorNF, 'pixel size',...
                     sensorGet(sensor, 'pixel size')/upscaleFactor); % Change the pixel size
-    sensorNF = sensorSetSizeToFOV(sensorNF, oiGet(oi, 'fov')); % Set the pixel size with respect to the upscaleFactor
+    sensorNF = sensorSet(sensorNF, 'pixel pdWidth',...
+                    sensorGet(sensor, 'pixel pdWidth')/upscaleFactor);
+                
+    sensorNF = sensorSet(sensorNF, 'pixel pdHeight',...
+                    sensorGet(sensor, 'pixel pdHeight')/upscaleFactor);
+                
+    sensorNF = sensorSet(sensorNF, 'size', sensorGet(sensor, 'size') * upscaleFactor);
     outImg{ii} = sensorComputeFullArray(sensorNF, oi, idealCF);
     %{
         % Compare the image processed from the sensor and the outImg

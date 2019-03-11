@@ -118,7 +118,7 @@ classdef l3ClassifySR < l3ClassifyS
             obj.statFuncParam = p.Results.statFuncParam;
             obj.storeData = p.Results.storeData;
             obj.dataKernel = p.Results.dataKernel;
-            obj.satClassOption = p.Results.satClassOption;
+%             obj.satClassOption = p.Results.satClassOption;
             obj.satThreshold = p.Results.satThreshold;
             
             % if data class is provided, do classification
@@ -156,7 +156,7 @@ classdef l3ClassifySR < l3ClassifyS
             assert(isa(l3d, 'l3DataS'), 'l3d should be of class l3DataS');
             
             % Get data
-            [raw, tgt, pType] = l3d.dataGet(varargin{:})
+            [raw, tgt, pType] = l3d.dataGet(varargin{:});
             
             % Set the cfa pattern
             cfa = l3d.cfa;
