@@ -107,7 +107,9 @@ end
 sensor = sensorCreate; sensor = sensorSet(sensor, 'cfa Pattern', inCFAPattern);
 sensorShowCFA(sensor);
 
-% Pllt the bayer pattern patch
-sensor = sensorSet(sensor, 'cfa Pattern',outCFAPattern);
-sensorShowCFA(sensor);
+% Plot the bayer pattern patch
+if exist('outCfa', 'var')
+    sensor = sensorSet(sensor, 'cfa Pattern',outCFAPattern);
+    sensorShowCFA(sensor);
+end
 end
