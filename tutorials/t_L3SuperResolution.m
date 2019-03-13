@@ -11,12 +11,12 @@ ieInit;
 
 dFolder = fullfile(L3rootpath,'local','scenes');
 %% Download the scene from RDT
-rdt = RdtClient('scien');
-rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
+% rdt = RdtClient('scien');
+% rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
 
 %% Load the scenes. Here we have 22 scenes
 format = 'mat';
-scenes = loadScenes(dFolder, format, [1:22]);
+scenes = loadScenes(dFolder, format, [1:2]);
 
 %% Use l3DataSimulation to generate raw and desired RGB image
 l3dSR = l3DataSuperResolution();
@@ -26,10 +26,10 @@ l3dSR = l3DataSuperResolution();
 % sceneSampleTwo = sceneSet(sceneCreate('sweep'))
 
 % Take the first scene for training.
-l3dSR.sources = scenes(1:15);
+l3dSR.sources = scenes(1:2);
 
 % Set the upscale factor to be 8
-l3dSR.upscaleFactor = 8;
+l3dSR.upscaleFactor = 4;
 %% Adjust the settings of the camera
 camera = l3dSR.camera;
 camera = cameraSet(camera, 'pixel pdXpos', 0);
@@ -55,12 +55,14 @@ l3tSuperResolution.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
                                         [], nSatSituation};
                                     
 % Set the size of the patch                                    
-l3tSuperResolution.l3c.patchSize = [7 7];
+l3tSuperResolution.l3c.patchSize = [5 5];
 
 %% Invoke the training algorithm
 l3tSuperResolution.train(l3dSR);
 
 %% Evaluation process. TO BE IMPLEMENTED INTO THE checklinearfit function.
+
+%{
 thisKernel = 100;
 kernel  = l3tSuperResolution.kernels{thisKernel};
 [X, y] =l3tSuperResolution.l3c.getClassData(thisKernel); 
@@ -70,6 +72,13 @@ thisChannel = 10;
 plot(y_fit(:,thisChannel), y(:,thisChannel), 'o');
 axis square; 
 identityLine;
+%}
+
+thisClass = 20; thisCenterPixel = 3; thisSatCondition = 1; 
+thisChannel = 1;
+[X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisClass,...
+ thisCenterPixel, thisSatCondition, thisChannel, l3dSR.cfa,...
+                                        l3dSR.upscaleFactor);
 
 %% Render a scene to evaluate the training result
 l3rSR = l3RenderSR();

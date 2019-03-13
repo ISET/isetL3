@@ -48,6 +48,8 @@ aSize = [nc, cellfun(@(x) length(x), cutPoints) + 1];
 %  [channel, statClasses1, statClasses2 ...]
 %  centerPixelTypes, Number of Levels for each statistic.  Matlab expands
 %  lvl{:} to a list of dimension values.
+% The correct way is that 1234 for the first sigmean, and after all
+% sigmeans it will consider the saturate conditions.
 labels = sub2ind(aSize, p_type, lvl{:});
 
 end

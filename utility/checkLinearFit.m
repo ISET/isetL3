@@ -1,44 +1,27 @@
-function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass, thisCenterPixel , thisChannel, inCfa, varargin)
-% Examine the accuracy of the kernel in its class, and show the kernel weights
+function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass,...
+                         thisCenterPixel , thisSatCondition,thisChannel,...
+                                            inCfa, upscaleFactor, varargin)
+% Examine the accuracy of the kernel in its class, show the kernel weights
+% and show what kind of the patches we are checking.
 %
 % Syntax:
+%   [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass,...
+%                    thisCenterPixel , thisChannel, inCfa, varargin)
 %
 % Brief description:
-%
+%   
 % Inputs:
 %
 % Outputs:
 %
-% Zheng Lyu, SCIEN Team, 2019
+% Zheng Lyu, Brian Wandell, Stanford SCIEN Team, 2019
 %
 % See also:
 %
 
-% Examples:
-%{
-    % Exam the linearity of the kernels
-    thisClass = 400; 
-    
-    [X, y_true]  = l3t.l3c.getClassData(thisClass);
-    X = padarray(X, [0 1], 1, 'pre');
-    y_pred = X * l3t.kernels{thisClass};
-    thisChannel = 1;
-    vcNewGraphWin; plot(y_true(:,thisChannel), y_pred(:,thisChannel), 'o');
-    xlabel('Target value (ground truth)', 'FontSize', 15, 'FontWeight', 'bold');
-    ylabel('Predicted value', 'FontSize', 15,'FontWeight', 'bold');
-%     title(['Target value vs Predicted value for: class ', num2str(thisClass),...
-%                         ' channel ' num2str(thisChannel)], 'FontWeight', 'bold');
-    axis square;
-    identityLine;
-    vcNewGraphWin; imagesc(reshape(l3t.kernels{thisClass}(2:26,thisChannel),...
-            [5, 5]));  colormap(gray);axis off %colorbar;
-%}
-
-%% Parse arguments
-
 %%
-if ~isempty(varargin) outCfa = varargin{1}; end
-if length(varargin) >=2 trainClass = varargin{2}; end
+if ~isempty(varargin), outCfa = varargin{1}; end
+if length(varargin) >=2, trainClass = varargin{2}; end
 [rInCfa, cInCfa] = size(inCfa);
 nInPType = numel(inCfa); 
 inPixelPat = reshape([1:nInPType], size(inCfa));
@@ -50,8 +33,14 @@ end
 
 %%
 patchSz = l3t.l3c.patchSize; rPatch = patchSz(1); cPatch = patchSz(2);
+
 if ~exist('trainClass', 'var')
-    trainClass = (thisClass-1) * l3t.l3c.nPixelTypes + thisCenterPixel;
+
+    nPixelTypes = l3t.l3c.nPixelTypes; 
+    allSignalMean = length(l3t.l3c.cutPoints{1}) + 1;
+    trainClass = (thisSatCondition-1)*nPixelTypes*allSignalMean+...
+                    (thisClass - 1)*nPixelTypes+...
+                                                thisCenterPixel;
 end
 
 %%
@@ -75,10 +64,12 @@ subplot(2,1,2);
 imagesc(...
     reshape(l3t.kernels{trainClass}(2:end,thisChannel),...
     patchSz));
+xlabel('hi')
 colormap(gray); axis off %colorbar;
 title(sprintf('Kernel weights: class %d, channel %d',thisClass,thisChannel));
 
-%% working on plot the pattern with the specified center and patch size
+
+%% Working on plot the pattern with the specified center and patch size
 
 % Create the pixel type matrix
 inPatchPattern = fitPatchPattern(patchSz, thisCenterPixel, inCfa);
@@ -88,7 +79,7 @@ for rr = 1:rPatch
         inCFAPattern(rr, cc) = inCfa(inPixelPat == inPatchPattern(rr, cc));
     end
 end
-%% working on the same thing for output pattern if exist
+%% Working on the same thing for output pattern if exist
 if exist('outCfa', 'var')
     
     usOutCfa = repmat(outPixelPat, rInCfa/rOutCfa, cInCfa/cOutCfa);
@@ -112,4 +103,21 @@ if exist('outCfa', 'var')
     sensor = sensorSet(sensor, 'cfa Pattern',outCFAPattern);
     sensorShowCFA(sensor);
 end
+
+%% upscaling position & color channel plot
+if upscaleFactor > 1,
+    A = reshape([1:power(upscaleFactor,2)], [upscaleFactor, upscaleFactor]);
+    fprintf('Reference of the position order of upscaled block: \n');
+    fprintf([repmat(' %d ', 1, upscaleFactor) '\n'], A')
+    
+    thisPosition = mod(thisChannel, power(upscaleFactor,2)); 
+    if thisPosition==0, thisPosition = thisPosition + power(upscaleFactor,2); end
+    fprintf('The position being checked is: %d.\n', thisPosition);
+    
+    thisColorChannel = ceil(thisChannel / power(upscaleFactor,2));
+    colorList = sensorColorOrder;
+    fprintf('The color channel being looked at is: %c.\n',...
+                                    colorList{thisColorChannel});
+end
+
 end

@@ -6,8 +6,10 @@ function imRGB = XWSR2RGBFormat(imXWSR, row, col, upscaleFactor)
 % Description:
 %   Convert XW super resolution format to RGB image. The difference between
 %   XWSR2RGBFormat and XW2RGBFormat is the function first reshape the
-%   patches into [USF, USF, :], and then fit them into the correct position
-%   in the output image.
+%   patches into [USF, USF, imRGBChannel], and then fit them into the 
+%   correct position in the output image.
+%
+%   Zheng Lyu, Brian Wandell, STANFORD VISTA TEAM, 2019
 
 if notDefined('imXWSR'), error('No image data.'); end
 if notDefined('row'), error('No row size.'); end

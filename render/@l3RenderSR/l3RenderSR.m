@@ -1,8 +1,12 @@
 classdef l3RenderSR < hiddenHandle
     % Constructor for the l3Render class for super resolution.
     %
-    % This class holds the L3 rendering process for super resolution.
-    %
+    % This class holds the L3 rendering process for super resolution. The
+    % process for the rendering: a) classify the input data (supposed to 
+    % be the sensor data), b) for each classified patch, extract the kernel
+    % for this patch, multiply it and c) transfer the image matrix from the
+    % multi-channel format (varies based on different upscale factor) into
+    % the final RGB image format.
     %
     % ZL/BW (c) Stanford VISTA Team 2019
     
@@ -100,8 +104,7 @@ classdef l3RenderSR < hiddenHandle
                     % compute output values
                     indx = (labels(:) == labelU(ii));
                     effPos = find(indx == 1);
-%                     indxStart = (effPos - 1) * upscaleFactor^2 + 1;
-%                     indxEnd = effPos * upscaleFactor^2;
+
                     for jj = 1 : length(effPos)
                         outImg(effPos(jj),:) = classData(jj,:) * kernel;
                     end

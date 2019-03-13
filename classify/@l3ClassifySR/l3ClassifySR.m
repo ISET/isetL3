@@ -118,7 +118,6 @@ classdef l3ClassifySR < l3ClassifyS
             obj.statFuncParam = p.Results.statFuncParam;
             obj.storeData = p.Results.storeData;
             obj.dataKernel = p.Results.dataKernel;
-%             obj.satClassOption = p.Results.satClassOption;
             obj.satThreshold = p.Results.satThreshold;
             
             % if data class is provided, do classification
@@ -195,7 +194,6 @@ classdef l3ClassifySR < l3ClassifyS
             % That means we will give saturated classes for cutPoints
             % and an additional one without any saturated pixels.
             
-            % n_lvls = computeLvlNumbers(obj.cutPoints, nc);
             n_lvls = nc * prod(cellfun(@(x) length(x), obj.cutPoints) + 1);
             
             % allocate spaces for the p_center
@@ -302,9 +300,6 @@ classdef l3ClassifySR < l3ClassifyS
             if isempty(obj.p_data), error('No data stored in object'); end
             p_in  = obj.p_data{label}';
             p_out = obj.p_out{label}';
-        end
-        
-        function [c_data, c_grndTruth] = concatenateClassData(obj, varargin)
         end
     end
     
