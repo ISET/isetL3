@@ -1,25 +1,25 @@
 classdef l3DataSuperResolution < l3DataS
-    % Class for super resolution data generation
+    % Class for super resolution data generation.  Subclass of l3DataS
     % 
     %  l3d = l3DataSuperResolution()
     % 
-    % The class will load either scene or optical image as the start point
-    % of the lower resolution sensor(with noise) and higher noise free higher
-    % resolution ideal (XYZ) data generation with a certain upscale factor.
+    % The class loads either a set of scenes or optical images.  These
+    % are then used to generate the higher and lower resolution sensor
+    % data for training.
     % 
     % ZL/BW, 2019
     
     properties (Access = public)
-        % The commented out properties do actually exist. They are defined
-        % in the parent class l3DataS. We put them in the comments here
-        % hoping to make the users' life easier.
         
+        % The commented out properties are defined in the parent class
+        % l3DataS.  We list them here to be helpful.
+        %
         % name;   % name of the instance
         % inImg;  % Cell array of sensor raw data
         % outImg; % Cell array of target output
         
-        camera;             % ISET camera model
-        sources;             % cell array of scenes and/or optical images
+        camera;             % ISETCam camera model
+        sources;            % cell array of scenes and/or optical images
         idealCMF;           % Target color space (string or vector)
         upscaleFactor;      % The upscaleFactor for the images
         verbose;            % Print progress information or not
@@ -28,9 +28,11 @@ classdef l3DataSuperResolution < l3DataS
     
     
     properties (Dependent)
+        % Why this cfa and the camera/sensor cfa?
         cfa;
     end
     
+    % Public methods
     methods (Access = public)
         function obj = l3DataSuperResolution(varargin)
             % Init input parser
@@ -111,6 +113,7 @@ classdef l3DataSuperResolution < l3DataS
     end
     
     methods
+        % Required Matlab format
         function val = get.cfa(obj)
             val = cameraGet(obj.camera, 'sensor cfa pattern');
         end
