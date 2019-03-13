@@ -110,7 +110,7 @@ thisChannel = 1;
 l3rSR = l3RenderSR();
 
 % Set a test scene
-thisScene = 17;
+thisScene = 3;
 source = scenes{thisScene};
 % sceneWindow(source);
 
@@ -143,6 +143,9 @@ lrImg = ipGet(ipLR, 'data srgb');
 
 % Compute L3 rendered image
 outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
+
+% ieNewGraphWin; imtool(xyz2srgb(outImg));
+
 %% Set the HR camera
 
 sensorHR = sensorSet(sensor,'pixel size', ...
@@ -161,9 +164,12 @@ end
 ipHR = cameraGet(l3dSR.camera, 'ip');
 ipHR = ipCompute(ipHR, sensorHR);
 hrImg = ipGet(ipHR, 'data srgb');
+% ieNewGraphWin; imtool(hrImg);
 
 %% Plot the result
-vcNewGraphWin;
+ieNewGraphWin;
 subplot(1, 3, 1); imshow(lrImg); % title('low resolution img');
 subplot(1, 3, 2); imshow(hrImg); % btitle('high resolution img');
 subplot(1, 3, 3); imshow(xyz2srgb(outImg)); % title('l3 rendered img');
+
+%% END
