@@ -18,7 +18,7 @@ dFolder = fullfile(L3rootpath,'local','scenes');
 % Common objects in context.
 
 format = 'mat';
-scenes = loadScenes(dFolder, format, (1:5));
+scenes = loadScenes(dFolder, format, 1:2);
 
 %% Use l3DataSimulation to generate raw and desired RGB image
 
@@ -30,9 +30,9 @@ l3dSR = l3DataSuperResolution();
 % sceneSampleTwo = sceneSet(sceneCreate('sweep'))
 
 % Take the first scene for training.
-l3dSR.sources = scenes(1:2);
+l3dSR.sources = scenes(:);
 
-% Set the upscale factor to be 8
+% Set the upscale factor to be 4
 l3dSR.upscaleFactor = 4;
 %% Adjust the settings of the camera
 camera = l3dSR.camera;
@@ -79,6 +79,10 @@ l3tSuperResolution.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
                                     
 % Set the size of the patch                                    
 l3tSuperResolution.l3c.patchSize = [5 5];
+l3tSuperResolution.l3c.numMethod = 2;
+
+% Add this line to change the size of the SR target patches
+l3tSuperResolution.l3c.srPatchSize = [3 3] * l3dSR.upscaleFactor;
 
 %% Invoke the training algorithm
 
@@ -110,11 +114,12 @@ thisChannel = 1;
 l3rSR = l3RenderSR();
 
 % Set a test scene
-thisScene = 3;
-source = scenes{thisScene};
+thisScene = 1;
+% source = scenes{thisScene};
 % sceneWindow(source);
 
 % Other options for evaluation
+source = sceneCreate;
 % source = sceneCreate('rings rays');
 % source = sceneCreate('sweep frequency');
 
@@ -143,9 +148,18 @@ lrImg = ipGet(ipLR, 'data srgb');
 
 % Compute L3 rendered image
 outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
+% ieNewGraphWin; imshow(xyz2srgb(outImg));
 
-% ieNewGraphWin; imtool(xyz2srgb(outImg));
-
+%{
+    sensorSR = sensorSet(sensor, 'pixel size same fill factor',...
+        sensorGet(sensor, 'pixel size')/l3dSR.upscaleFactor); % Change the pixel size
+    sensorSR = sensorSet(sensorSR, 'volts', outImg);
+    sensorSR = sensorSet(sensorSR, 'digital value',...
+                    analog2digital(sensorSR, 'linear'));
+    ipSR = ipCreate;
+    ipSR = ipCompute(ipSR, sensorSR);
+    ipWindow(ipSR)
+%}
 %% Set the HR camera
 
 sensorHR = sensorSet(sensor,'pixel size', ...
@@ -164,12 +178,12 @@ end
 ipHR = cameraGet(l3dSR.camera, 'ip');
 ipHR = ipCompute(ipHR, sensorHR);
 hrImg = ipGet(ipHR, 'data srgb');
-% ieNewGraphWin; imtool(hrImg);
+% ieNewGraphWin; imshow(hrImg);
 
 %% Plot the result
 ieNewGraphWin;
-subplot(1, 3, 1); imshow(lrImg); % title('low resolution img');
-subplot(1, 3, 2); imshow(hrImg); % btitle('high resolution img');
-subplot(1, 3, 3); imshow(xyz2srgb(outImg)); % title('l3 rendered img');
+subplot(1, 3, 1); imshow(lrImg); title('low resolution img');
+subplot(1, 3, 2); imshow(hrImg); title('high resolution img');
+subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('l3 rendered img');
 
 %% END

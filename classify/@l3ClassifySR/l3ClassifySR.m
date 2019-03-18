@@ -22,7 +22,10 @@ classdef l3ClassifySR < l3ClassifyS
         p_data;                     % patch data
         p_out;                      % patch target output 
         
-        satThreshold                % saturation porpotion of voltage swing
+        satThreshold;               % saturation porpotion of voltage swing
+        
+        srPatchSize;
+        numMethod;
     end
     
     properties (Dependent)
@@ -166,7 +169,13 @@ classdef l3ClassifySR < l3ClassifyS
             % Check the raw and target data size
             nImg = length(raw);
             padSzRaw = (obj.patchSize-1)/2;
-            padSzTgt = padSzRaw * upscaleFactor;
+            %{
+                % Temporarily comment this line out
+                padSzTgt = padSzRaw * upscaleFactor;
+            %}
+            padSzTgt = (obj.patchSize - obj.srPatchSize/upscaleFactor)...
+                                  /2 * upscaleFactor;
+            if padSzTgt < 0, padSzTgt = [0 0]; end
             if ~isempty(tgt)
                 for ii = 1 : nImg
                     target_sz = [size(tgt{ii}, 1), size(tgt{ii}, 2)];
@@ -275,7 +284,7 @@ classdef l3ClassifySR < l3ClassifyS
                     
                     % If we have target output, add data to obj.p_out
                     if ~isempty(tgt)
-                        tData = imagePatchTgt(tgt{ii}, l3d.upscaleFactor); % THIS IS THE FUNCTION THAT NEED TO BE DONE
+                        tData = imagePatchTgt(tgt{ii}, l3d.upscaleFactor, obj.numMethod, obj.srPatchSize); % THIS IS THE FUNCTION THAT NEED TO BE DONE
                         tData = tData(indx, :)';
                         obj.p_out{lv} = [obj.p_out{lv} tData(:, indx_d)];
                     end

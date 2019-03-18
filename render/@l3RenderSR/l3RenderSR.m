@@ -112,7 +112,7 @@ classdef l3RenderSR < hiddenHandle
                 end
                 
                 % rearrange to output image size
-                outImg = XWSR2RGBFormat(outImg, outImgSz(1), outImgSz(2), upscaleFactor);
+                outImg = XWSR2RGBFormat(outImg, outImgSz(1), outImgSz(2), upscaleFactor, l3t.l3c.numMethod, l3t.l3c.srPatchSize);
             end
         end
     end

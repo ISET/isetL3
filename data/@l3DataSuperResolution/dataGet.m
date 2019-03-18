@@ -105,7 +105,12 @@ for ii = 1 : nImg
     % This keeps the sensor dye size constant
     sensorNF = sensorSet(sensorNF, 'size', sensorGet(sensor, 'size') * upscaleFactor);
     
-    outImg{ii} = sensorComputeFullArray(sensorNF, oi, idealCF);
+    %{
+        % Comments this line out since we want to use the voltage
+        outImg{ii} = sensorComputeFullArray(sensorNF, oi, idealCF);
+    %}
+    
+    outImg{ii} = sensorGet(sensorCompute(sensorNF, oi), 'volts');
     %{
         % Compare the image processed from the sensor and the outImg
         ip = ipCreate;
