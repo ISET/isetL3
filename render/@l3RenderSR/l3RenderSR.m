@@ -85,7 +85,7 @@ classdef l3RenderSR < hiddenHandle
                 
                 % Define the size of the out image
                 imgSz = size(pType{1});
-                imgCrpedSz = imgSz - l3c.patchSize + 1;
+                imgCrpedSz = imgSz - l3c.patchSize + l3c.srPatchSize / upscaleFactor;
                 outImgSz = imgCrpedSz * upscaleFactor;
                 outImg = zeros([prod(imgCrpedSz) l3t.nChannelOut]);
                 

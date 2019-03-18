@@ -33,7 +33,7 @@ l3dSR = l3DataSuperResolution();
 l3dSR.sources = scenes(:);
 
 % Set the upscale factor to be 4
-l3dSR.upscaleFactor = 4;
+l3dSR.upscaleFactor = 2;
 %% Adjust the settings of the camera
 camera = l3dSR.camera;
 
@@ -43,16 +43,17 @@ camera = l3dSR.camera;
 %   fillFactor = 1;
 %   sensor = pixelCenterFillPD(sensor,fillFactor)
 %   camera = cameraSet(camera,'sensor',sensor);
-
+data = load('NikonD100Sensor.mat', 'isa'); sensor = data.isa;
+camera = cameraSet(camera, 'sensor', sensor);
 % The default photodetector position has an offset.  We should look
 % into this generally for ISETCam.
-camera = cameraSet(camera, 'pixel pdXpos', 0);
-camera = cameraSet(camera, 'pixel pdYpos', 0);
-
-% set the fill factor to be 1
-pixelSize  = cameraGet(camera, 'pixel size');
-camera = cameraSet(camera, 'pixel pdWidth', pixelSize(1));
-camera = cameraSet(camera, 'pixel pdHeight', pixelSize(2));
+% camera = cameraSet(camera, 'pixel pdXpos', 0);
+% camera = cameraSet(camera, 'pixel pdYpos', 0);
+% 
+% % set the fill factor to be 1
+% pixelSize  = cameraGet(camera, 'pixel size');
+% camera = cameraSet(camera, 'pixel pdWidth', pixelSize(1));
+% camera = cameraSet(camera, 'pixel pdHeight', pixelSize(2));
 
 % Give the camera back to the L3 data instance.
 l3dSR.camera = camera;
@@ -78,11 +79,11 @@ l3tSuperResolution.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
                                         [], nSatSituation};
                                     
 % Set the size of the patch                                    
-l3tSuperResolution.l3c.patchSize = [5 5];
+l3tSuperResolution.l3c.patchSize = [9 9];
 l3tSuperResolution.l3c.numMethod = 2;
 
 % Add this line to change the size of the SR target patches
-l3tSuperResolution.l3c.srPatchSize = [3 3] * l3dSR.upscaleFactor;
+l3tSuperResolution.l3c.srPatchSize = [5 5] * l3dSR.upscaleFactor;
 
 %% Invoke the training algorithm
 
@@ -104,7 +105,7 @@ axis square;
 identityLine;
 %}
 
-thisClass = 20; thisCenterPixel = 3; thisSatCondition = 1; 
+thisClass = 8; thisCenterPixel = 3; thisSatCondition = 1; 
 thisChannel = 1;
 [X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisClass,...
  thisCenterPixel, thisSatCondition, thisChannel, l3dSR.cfa,...
@@ -114,18 +115,19 @@ thisChannel = 1;
 l3rSR = l3RenderSR();
 
 % Set a test scene
-thisScene = 1;
+% thisScene = 1;
 % source = scenes{thisScene};
 % sceneWindow(source);
 
 % Other options for evaluation
-source = sceneCreate;
+% source = sceneCreate;
+source = sceneCreate('uniform');
 % source = sceneCreate('rings rays');
 % source = sceneCreate('sweep frequency');
 
 % Use isetcam to compute the camera data.
 sensor = cameraGet(l3dSR.camera, 'sensor');
-
+% sensor = sensorSet(sensor, 'noise flag', -1);
 % Converte the source to optical image if input is a scene.
 switch source.type
     case 'scene'
@@ -181,9 +183,18 @@ hrImg = ipGet(ipHR, 'data srgb');
 % ieNewGraphWin; imshow(hrImg);
 
 %% Plot the result
-ieNewGraphWin;
-subplot(1, 3, 1); imshow(lrImg); title('low resolution img');
-subplot(1, 3, 2); imshow(hrImg); title('high resolution img');
-subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('l3 rendered img');
-
+% ieNewGraphWin;
+% subplot(1, 3, 1); imshow(lrImg); title('low resolution img');
+% subplot(1, 3, 2); imshow(hrImg); title('high resolution img');
+% subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('l3 rendered img');
+%% Others
+% scene = sceneCreate; scene = sceneSet(scene, 'fov', 30);
+% oi = oiCreate;
+% % oi = oiSet(oi, 'optics model', 'skip');
+% oi = oiSet(oi, 'diffusermethod', 'skip'); optics = oiGet(oi,'optics');
+% optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', optics);
+% oi = oiCompute(oi, scene);
+% sensor = sensorCreate; sensor = sensorSetSizeToFOV(sensor, oiGet(oi, 'fov'));
+% sensor = sensorCompute(sensor, oi);
+% ip = ipCreate; ip = ipCompute(ip, sensor); ipWindow(ip)
 %% END

@@ -62,7 +62,10 @@ for ii = 1 : nImg
     switch curSource.type
         case 'scene'
             oi = cameraGet(c, 'oi');
+            oi = oiSet(oi, 'diffusermethod', 'skip'); optics = oiGet(oi,'optics');
+optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', optics);
             oi = oiCompute(oi, curSource);
+            % oiWindow(oi);
         case 'opticalimage'
             oi = curSource;
     end
@@ -110,7 +113,7 @@ for ii = 1 : nImg
         outImg{ii} = sensorComputeFullArray(sensorNF, oi, idealCF);
     %}
     
-    outImg{ii} = sensorGet(sensorCompute(sensorNF, oi), 'volts');
+%     outImg{ii} = sensorGet(sensorCompute(sensorNF, oi), 'volts');
     %{
         % Compare the image processed from the sensor and the outImg
         ip = ipCreate;
