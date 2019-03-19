@@ -1,46 +1,83 @@
-function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass,...
-                         thisCenterPixel , thisSatCondition,thisChannel,...
-                                            inCfa, upscaleFactor, varargin)
-% Examine the accuracy of the kernel in its class, show the kernel weights
+function [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisLevel,...
+    thisCenterPixel , thisSatCondition,thisChannel,...
+    inCfa, upscaleFactor, varargin)
+% Examine the accuracy of the kernel in its class
+%
+% Shows the kernel weights
 % and show what kind of the patches we are checking.
 %
 % Syntax:
-%   [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisClass,...
+%   [X, y_pred, y_true, fig] = checkLinearFit(l3t, thisLevel,...
 %                    thisCenterPixel , thisChannel, inCfa, varargin)
 %
 % Brief description:
 %   
 % Inputs:
+%  l3t:   The training object that contains the relevant information
+%  thisLevel:         The mean signal level of the patch
+%  thisCenterPixel:   Which of the input CFA pixel types
+%  thisSatCondition:  Which of the pixels are saturated in the patch
+%  thisChannel:       Output channel.  By default, we expect the
+%                     output and input channels to be the same.  But
+%                     the outCFA might differ (see varargin, below).
+%  inCfa
+%  upScaleFactor
+%
+%  Optional varargin:
+%     outCfa:     Defines the output CFA pattern.  Only used if the
+%                 output CFA differs from the input.
+%     trainClass: The kernel number (synonym for training class)  
 %
 % Outputs:
-%
+%   X:        The patch data for this class
+%   y_pred    The prediction of the output
+%   y_true    The ground truth (desired) output
+%   fig:      The figure handle of the plot
+% 
 % Zheng Lyu, Brian Wandell, Stanford SCIEN Team, 2019
 %
 % See also:
 %
 
-%%
-if ~isempty(varargin), outCfa = varargin{1}; end
+%% Parse input parameters
+
+if ~isempty(varargin),   outCfa     = varargin{1}; end
 if length(varargin) >=2, trainClass = varargin{2}; end
-[rInCfa, cInCfa] = size(inCfa);
-nInPType = numel(inCfa); 
-inPixelPat = reshape([1:nInPType], size(inCfa));
+
+% Converting the input CFA pattern numbers so that every position has
+% a unique number.
+[rInCfa, cInCfa] = size(inCfa);  % Used later
+inPixelPat = reshape(1:numel(inCfa), size(inCfa));
+
 if exist('outCfa', 'var')
     nOutPType = numel(outCfa);
     [rOutCfa, cOutCfa] = size(outCfa);
     outPixelPat = reshape([1:nOutPType], size(outCfa));
 end
 
-%%
-patchSz = l3t.l3c.patchSize; rPatch = patchSz(1); cPatch = patchSz(2);
+%% 
+patchSz = l3t.l3c.patchSize; 
+rPatch = patchSz(1); cPatch = patchSz(2);
 
 if ~exist('trainClass', 'var')
-
-    nPixelTypes = l3t.l3c.nPixelTypes; 
+    % trainClass is also called the kernel number in other places
+    nPixelTypes = l3t.l3c.nPixelTypes;
     allSignalMean = length(l3t.l3c.cutPoints{1}) + 1;
-    trainClass = (thisSatCondition-1)*nPixelTypes*allSignalMean+...
-                    (thisClass - 1)*nPixelTypes+...
-                                                thisCenterPixel;
+    % We want a function that computes
+    %   kernelNumber = l3t.nTrainClass(thisCenterPixel,thisLevel,thisSatCondition);
+    %   [thisCenterPixel, thisLevel, thisSatCondition] =
+    %           l3t.propertiesTrainClass(kernelNumber);
+    %
+    %  The calculation to get the 3-values from the kernel number is
+    %  like this
+    %     thisCenterPixel = mod(kernelNumber,nPixelTypes)
+    %     remaining = kernelNumber - thisCenterPixel
+    %     thisLevel = mod(remaining/nPixelTypes,allSignalMean) + 1;
+    %     remaining = remaining - (thisLevel -1)*nPixelTypes;
+    %     thisSatCondition = remaining/(pixelTypes*allSignalMean) + 1; 
+    trainClass = (thisSatCondition-1)*nPixelTypes*allSignalMean + ...
+        (thisLevel - 1)*nPixelTypes + ...
+        thisCenterPixel;
 end
 
 %%
@@ -57,7 +94,7 @@ xlabel('Target value (ground truth)', 'FontSize', 15, 'FontWeight', 'bold');
 ylabel('Predicted value', 'FontSize', 15,'FontWeight', 'bold');
 axis square;
 identityLine;
-title(sprintf('Accuracy: class %d, channel %d',thisClass,thisChannel));
+title(sprintf('Accuracy: class %d, channel %d',thisLevel,thisChannel));
 
 % The kernel weights
 subplot(2,1,2);
@@ -66,7 +103,7 @@ imagesc(...
     patchSz));
 xlabel('hi')
 colormap(gray); axis off %colorbar;
-title(sprintf('Kernel weights: class %d, channel %d',thisClass,thisChannel));
+title(sprintf('Kernel weights: class %d, channel %d',thisLevel,thisChannel));
 
 
 %% Working on plot the pattern with the specified center and patch size
@@ -105,7 +142,7 @@ if exist('outCfa', 'var')
 end
 
 %% upscaling position & color channel plot
-if upscaleFactor > 1,
+if upscaleFactor > 1
     A = reshape([1:power(upscaleFactor,2)], [upscaleFactor, upscaleFactor]);
     fprintf('Reference of the position order of upscaled block: \n');
     fprintf([repmat(' %d ', 1, upscaleFactor) '\n'], A')

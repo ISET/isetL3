@@ -1,7 +1,10 @@
 %% t_L3SuperResolution
+%
 % Explore the super resolution based on L3 approach. The idea is change the
 % pixel size according to the upscale factor. In this way, we can adjust
 % the resolution of the sensor and thus the resolution of the final image.
+%
+% SR:  Super resolution
 %
 % Zheng Lyu, BW 2019
 
@@ -18,7 +21,7 @@ dFolder = fullfile(L3rootpath,'local','scenes');
 % Common objects in context.
 
 format = 'mat';
-scenes = cw(dFolder, format, 1:2);
+scenes = loadScenes(dFolder, format, 1:2);
 scenes{1} = sceneSet(scenes{1}, 'fov', 15);
 scenes{2} = sceneSet(scenes{2}, 'fov', 15);
 
@@ -107,11 +110,34 @@ axis square;
 identityLine;
 %}
 
-thisClass = 8; thisCenterPixel = 3; thisSatCondition = 1; 
-thisChannel = 1;
-[X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisClass,...
- thisCenterPixel, thisSatCondition, thisChannel, l3dSR.cfa,...
-                                        l3dSR.upscaleFactor);
+cList = 10:20:100
+% How many classes have fewer than 10 examples?
+% How many kernels are empty?
+kernels = l3tSuperResolution.kernels;
+emptyKernels  = cellfun(@(x)(isempty(x)),kernels);
+filledKernels = 1 - emptyKernels;
+fprintf('Empty kernels: %d\nFilled kernels %d\n',sum(emptyKernels), sum(filledKernels));
+
+% The kernel number is calculated from
+%
+%     trainClass = (thisSatCondition-1)*nPixelTypes*allSignalMean + ...
+%        (thisLevel - 1)*nPixelTypes + ...
+%        thisCenterPixel;
+%
+%   
+% From a kernel number, can we figure out the class, center pixel,
+% saturation condition? Look at some of the filledKernels
+%
+% Show the empty classes
+% ieNewGraphWin; plot(1:length(validClass),validClass)
+
+% Choose a level less than this
+%   nLevels = numel(l3tSuperResolution.l3c.cutPoints{1})
+thisLevel = 15; thisCenterPixel = 3; thisSatCondition = 1;
+thisOutChannel = 1;
+[X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisLevel,...
+    thisCenterPixel, thisSatCondition, thisOutChannel, l3dSR.cfa,...
+    l3dSR.upscaleFactor);
 
 %% Render a scene to evaluate the training result
 l3rSR = l3RenderSR();
@@ -129,7 +155,7 @@ source = sceneCreate('uniform');
 
 % Use isetcam to compute the camera data.
 sensor = cameraGet(l3dSR.camera, 'sensor');
-% sensor = sensorSet(sensor, 'noise flag', -1);
+sensor = sensorSet(sensor, 'noise flag', -1);
 % Converte the source to optical image if input is a scene.
 switch source.type
     case 'scene'
@@ -139,6 +165,7 @@ switch source.type
     case 'opticalimage'
         oiSource = source;
 end
+% oiWindow(oi);
 
 sensor = sensorSetSizeToFOV(sensor, oiGet(oiSource, 'fov'));
 sensor = sensorCompute(sensor, oiSource);
