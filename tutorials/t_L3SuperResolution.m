@@ -18,7 +18,9 @@ dFolder = fullfile(L3rootpath,'local','scenes');
 % Common objects in context.
 
 format = 'mat';
-scenes = loadScenes(dFolder, format, 1:2);
+scenes = cw(dFolder, format, 1:2);
+scenes{1} = sceneSet(scenes{1}, 'fov', 15);
+scenes{2} = sceneSet(scenes{2}, 'fov', 15);
 
 %% Use l3DataSimulation to generate raw and desired RGB image
 
@@ -33,7 +35,7 @@ l3dSR = l3DataSuperResolution();
 l3dSR.sources = scenes(:);
 
 % Set the upscale factor to be 4
-l3dSR.upscaleFactor = 2;
+l3dSR.upscaleFactor = 4;
 %% Adjust the settings of the camera
 camera = l3dSR.camera;
 
@@ -79,7 +81,7 @@ l3tSuperResolution.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
                                         [], nSatSituation};
                                     
 % Set the size of the patch                                    
-l3tSuperResolution.l3c.patchSize = [9 9];
+l3tSuperResolution.l3c.patchSize = [5 5];
 l3tSuperResolution.l3c.numMethod = 2;
 
 % Add this line to change the size of the SR target patches
@@ -161,6 +163,7 @@ outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
     ipSR = ipCreate;
     ipSR = ipCompute(ipSR, sensorSR);
     ipWindow(ipSR)
+    l3SR = ipGet(ipSR, 'data srgb');
 %}
 %% Set the HR camera
 
@@ -183,9 +186,9 @@ hrImg = ipGet(ipHR, 'data srgb');
 % ieNewGraphWin; imshow(hrImg);
 
 %% Plot the result
-% ieNewGraphWin;
-% subplot(1, 3, 1); imshow(lrImg); title('low resolution img');
-% subplot(1, 3, 2); imshow(hrImg); title('high resolution img');
+ieNewGraphWin;
+subplot(1, 3, 1); imshow(lrImg); title('low resolution img');
+subplot(1, 3, 2); imshow(hrImg); title('high resolution img');
 % subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('l3 rendered img');
 %% Others
 % scene = sceneCreate; scene = sceneSet(scene, 'fov', 30);

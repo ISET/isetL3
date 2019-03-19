@@ -113,7 +113,7 @@ optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', o
         outImg{ii} = sensorComputeFullArray(sensorNF, oi, idealCF);
     %}
     
-%     outImg{ii} = sensorGet(sensorCompute(sensorNF, oi), 'volts');
+    outImg{ii} = sensorGet(sensorCompute(sensorNF, oi), 'volts');
     %{
         % Compare the image processed from the sensor and the outImg
         ip = ipCreate;
