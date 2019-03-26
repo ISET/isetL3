@@ -22,8 +22,8 @@ dFolder = fullfile(L3rootpath,'local','scenes');
 
 format = 'mat';
 scenes = loadScenes(dFolder, format, 1:2);
-scenes{1} = sceneSet(scenes{1}, 'fov', 15);
-scenes{2} = sceneSet(scenes{2}, 'fov', 15);
+% scenes{1} = sceneSet(scenes{1}, 'fov', 15);
+% scenes{2} = sceneSet(scenes{2}, 'fov', 15);
 
 %% Use l3DataSimulation to generate raw and desired RGB image
 
@@ -43,13 +43,14 @@ l3dSR.upscaleFactor = 4;
 camera = l3dSR.camera;
 
 % Let's try to use this instead:
-%
-%   sensor = cameraGet(camera,'sensor');
-%   fillFactor = 1;
-%   sensor = pixelCenterFillPD(sensor,fillFactor)
-%   camera = cameraSet(camera,'sensor',sensor);
-data = load('NikonD100Sensor.mat', 'isa'); sensor = data.isa;
-camera = cameraSet(camera, 'sensor', sensor);
+% 
+sensor = cameraGet(camera,'sensor');
+fillFactor = 1;
+sensor = pixelCenterFillPD(sensor,fillFactor);
+camera = cameraSet(camera,'sensor',sensor);
+
+% data = load('NikonD100Sensor.mat', 'isa'); sensor = data.isa;
+% camera = cameraSet(camera, 'sensor', sensor);
 % The default photodetector position has an offset.  We should look
 % into this generally for ISETCam.
 % camera = cameraSet(camera, 'pixel pdXpos', 0);
@@ -88,7 +89,7 @@ l3tSuperResolution.l3c.patchSize = [5 5];
 l3tSuperResolution.l3c.numMethod = 2;
 
 % Add this line to change the size of the SR target patches
-l3tSuperResolution.l3c.srPatchSize = [5 5] * l3dSR.upscaleFactor;
+l3tSuperResolution.l3c.srPatchSize = [1 1] * l3dSR.upscaleFactor;
 
 %% Invoke the training algorithm
 
@@ -169,6 +170,8 @@ end
 
 sensor = sensorSetSizeToFOV(sensor, oiGet(oiSource, 'fov'));
 sensor = sensorCompute(sensor, oiSource);
+
+% sensorWindow(sensor);
 cfa     = cameraGet(l3dSR.camera, 'sensor cfa pattern');
 cmosaic = sensorGet(sensor, 'volts');
 
@@ -176,6 +179,7 @@ cmosaic = sensorGet(sensor, 'volts');
 ipLR = cameraGet(l3dSR.camera, 'ip');
 ipLR = ipCompute(ipLR, sensor);
 lrImg = ipGet(ipLR, 'data srgb');
+% ipWindow(ipLR);
 
 % Compute L3 rendered image
 outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
