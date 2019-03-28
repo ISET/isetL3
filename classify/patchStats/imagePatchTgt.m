@@ -23,7 +23,7 @@ switch numMethod
             for jj = 1 : length(rIndx)
                 curPatch = tgtImg(rIndx(jj):rIndx(jj)+upscaleFactor-1,...
                                     cIndx(ii):cIndx(ii)+upscaleFactor-1,:);
-                This function flatened the patch in R, G and B channel.                
+                % This function flatened the patch in R, G and B channel.                
                 tgtData(idx, :) = curPatch(:); 
                 idx = idx + 1;
             end

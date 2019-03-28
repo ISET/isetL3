@@ -21,7 +21,8 @@ dFolder = fullfile(L3rootpath,'local','scenes');
 % Common objects in context.
 
 format = 'mat';
-scenes = loadScenes(dFolder, format, 1:2);
+scenes = loadScenes(dFolder, format, 1:3);
+% scenes{3} = sceneCreate('uniform'); 
 % scenes{1} = sceneSet(scenes{1}, 'fov', 15);
 % scenes{2} = sceneSet(scenes{2}, 'fov', 15);
 
@@ -35,16 +36,17 @@ l3dSR = l3DataSuperResolution();
 % sceneSampleTwo = sceneSet(sceneCreate('sweep'))
 
 % Take the first scene for training.
-l3dSR.sources = scenes(:);
+l3dSR.sources = scenes(1:3);
 
 % Set the upscale factor to be 4
-l3dSR.upscaleFactor = 4;
+l3dSR.upscaleFactor = 2;
 %% Adjust the settings of the camera
 camera = l3dSR.camera;
 
 % Let's try to use this instead:
 % 
 sensor = cameraGet(camera,'sensor');
+% sensor = sensorSet(sensor, 'pixel size', 1.5e-6);
 fillFactor = 1;
 sensor = pixelCenterFillPD(sensor,fillFactor);
 camera = cameraSet(camera,'sensor',sensor);
@@ -85,11 +87,11 @@ l3tSuperResolution.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
                                         [], nSatSituation};
                                     
 % Set the size of the patch                                    
-l3tSuperResolution.l3c.patchSize = [5 5];
+l3tSuperResolution.l3c.patchSize = [9 9];
 l3tSuperResolution.l3c.numMethod = 2;
 
 % Add this line to change the size of the SR target patches
-l3tSuperResolution.l3c.srPatchSize = [1 1] * l3dSR.upscaleFactor;
+l3tSuperResolution.l3c.srPatchSize = [7 7] * l3dSR.upscaleFactor;
 
 %% Invoke the training algorithm
 
@@ -134,7 +136,7 @@ fprintf('Empty kernels: %d\nFilled kernels %d\n',sum(emptyKernels), sum(filledKe
 
 % Choose a level less than this
 %   nLevels = numel(l3tSuperResolution.l3c.cutPoints{1})
-thisLevel = 15; thisCenterPixel = 3; thisSatCondition = 1;
+thisLevel = 21; thisCenterPixel = 4; thisSatCondition = 1;
 thisOutChannel = 1;
 [X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisLevel,...
     thisCenterPixel, thisSatCondition, thisOutChannel, l3dSR.cfa,...
@@ -144,7 +146,7 @@ thisOutChannel = 1;
 l3rSR = l3RenderSR();
 
 % Set a test scene
-% thisScene = 1;
+% thisScene = 3;
 % source = scenes{thisScene};
 % sceneWindow(source);
 
@@ -183,7 +185,7 @@ lrImg = ipGet(ipLR, 'data srgb');
 
 % Compute L3 rendered image
 outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
-% ieNewGraphWin; imshow(xyz2srgb(outImg));
+% ieNewGraphWin; imshow(xyz2srgb(outImg*100));
 
 %{
     sensorSR = sensorSet(sensor, 'pixel size same fill factor',...
@@ -220,7 +222,7 @@ hrImg = ipGet(ipHR, 'data srgb');
 ieNewGraphWin;
 subplot(1, 3, 1); imshow(lrImg); title('low resolution img');
 subplot(1, 3, 2); imshow(hrImg); title('high resolution img');
-% subplot(1, 3, 3); imshow(xyz2srgb(outImg)); title('l3 rendered img');
+subplot(1, 3, 3); imshow(l3SR); title('l3 rendered img');
 %% Others
 % scene = sceneCreate; scene = sceneSet(scene, 'fov', 30);
 % oi = oiCreate;

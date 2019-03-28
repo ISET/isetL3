@@ -42,6 +42,9 @@ outImg = cell(1, nImg);
 
 % Get the upscale factor
 upscaleFactor = obj.upscaleFactor;
+
+% Set the noise free exposure time
+NFExpTime = 0;
 %% Set camera parameters
 % Check wavelength consistency
 c = obj.get('camera');
@@ -53,6 +56,7 @@ if obj.verbose
     cprintf('Keywords*', 'Generating data by simulation:');
     str = [];
 end
+
 
 
 for ii = 1 : nImg
@@ -87,7 +91,7 @@ optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', o
     
     % Set the noise free sensor
     sensorNF = sensorSet(sensor, 'noise flag', -1);
-    sensorNF = sensorSet(sensorNF, 'exp time', 1);
+    
     
     % 
     % Adjust the pixel size, but keep the same fill factor
@@ -107,6 +111,12 @@ optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', o
     
     % This keeps the sensor dye size constant
     sensorNF = sensorSet(sensorNF, 'size', sensorGet(sensor, 'size') * upscaleFactor);
+    
+    % Set the exposure time for the NF sensor
+    if NFExpTime == 0
+        NFExpTime = autoExposure(oi, sensorNF);
+    end
+    sensorNF = sensorSet(sensorNF, 'exp time', NFExpTime);
     
     %{
         % Comments this line out since we want to use the voltage

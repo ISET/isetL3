@@ -53,7 +53,7 @@ switch numMethod
         for ii = 1:length(cIndx)
             for jj =1:length(rIndx)
                 thisBlock = imXWSR(nBlocks,:);
-%                 thisBlock = reassemble(thisBlock, srPatchSize, upscaleFactor,imRGBChannel);
+
                 thisBlock = reshape(thisBlock, [srPatchSize(1) srPatchSize(2) imRGBChannel]);
                
                 % Decide the correct position to fit the block in output
@@ -66,7 +66,7 @@ switch numMethod
             end
         end
         
-        imRGB = imRGB / prod(srPatchSize);
+        imRGB = imRGB / prod(srPatchSize/upscaleFactor);
 end
 end
 % 
