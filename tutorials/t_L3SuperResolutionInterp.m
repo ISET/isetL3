@@ -7,9 +7,9 @@ ieInit;
 
 dFolder = fullfile(L3rootpath,'local','scenes');
 
-%% Download the scene from RDT
-rdt = RdtClient('scien');
-rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
+% %% Download the scene from RDT
+% rdt = RdtClient('scien');
+% rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
 
 %% Load the scenes. Here we have 22 scenes from the COCO dataset.
 % Common objects in context.
@@ -27,10 +27,10 @@ l3dSR = l3DataSuperResolution();
 % sceneSampleTwo = sceneSet(sceneCreate('sweep'))
 
 % Take the first scene for training.
-l3dSR.sources = scenes(1:3);
+l3dSR.sources = {sceneCreate};
 
 % Set the upscale factor to be 4
-l3dSR.upscaleFactor = 4;
+l3dSR.upscaleFactor = 2;
 
 %% Adjust the settings of the camera
 camera = l3dSR.camera;
@@ -61,14 +61,23 @@ l3dSR.camera = camera;
 %%
 [raw, tgt, pType] = l3dSR.dataGet();
 
-[rawInterp, pTypeInterp] = sensorInterpolation(raw, tgt, pType, l3dSR);
+[rawInterp, pTypeInterp] = sensorInterpolation(raw, pType, l3dSR);
+%{
+
+    sensorSR = sensorSet(sensor, 'pixel size same fill factor',...
+        sensorGet(sensor, 'pixel size')/l3dSR.upscaleFactor); % Change the pixel size
+    sensorSR = sensorSet(sensorSR, 'volts', rawInterp{1});
+    sensorSR = sensorSet(sensorSR, 'digital value',...
+                    analog2digital(sensorSR, 'linear'));
+    sensorWindow(sensorSR);
+%}
 %%
 l3dInterp = l3DataSuperResolution();
 l3dInterp.sources = l3dSR.sources;
 l3dInterp.upscaleFactor = 1;
 l3dInterp.inImg = rawInterp;
 l3dInterp.outImg = tgt;
-l3dInterp.pTytpe = pTypeInterp;
+
 
 %% Invoke the training instance
 l3tSuperResolution = l3TrainRidge('l3c', l3ClassifySR);
@@ -95,7 +104,7 @@ l3tSuperResolution.l3c.patchSize = [5 5];
 l3tSuperResolution.l3c.numMethod = 2;
 
 % Add this line to change the size of the SR target patches
-l3tSuperResolution.l3c.srPatchSize = [1 1];
+l3tSuperResolution.l3c.srPatchSize = [1 1] * l3dSR.upscaleFactor;
 
 %%
 l3tSuperResolution.train(l3dInterp);
@@ -137,7 +146,7 @@ fprintf('Empty kernels: %d\nFilled kernels %d\n',sum(emptyKernels), sum(filledKe
 
 % Choose a level less than this
 %   nLevels = numel(l3tSuperResolution.l3c.cutPoints{1})
-thisLevel = 21; thisCenterPixel = 4; thisSatCondition = 1;
+thisLevel = 21; thisCenterPixel = 2; thisSatCondition = 1;
 thisOutChannel = 1;
 [X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisLevel,...
     thisCenterPixel, thisSatCondition, thisOutChannel, l3dSR.cfa,...
@@ -152,8 +161,8 @@ l3rSR = l3RenderSR();
 % sceneWindow(source);
 
 % Other options for evaluation
-% source = sceneCreate;
-source = sceneCreate('uniform');
+source = sceneCreate;
+% source = sceneCreate('uniform');
 % source = sceneCreate('rings rays');
 % source = sceneCreate('sweep frequency');
 
@@ -178,9 +187,9 @@ sensor = sensorCompute(sensor, oiSource);
 cfa     = cameraGet(l3dSR.camera, 'sensor cfa pattern');
 cmosaic = sensorGet(sensor, 'volts');
 
-thisPType = cfa2ptype(size(cfa), size(cmosaic)*l3dSR.upscaleFactor);
+thisPType = cfa2ptype(size(cfa), size(cmosaic));
 
-cmosaicInterp = sensorInterpolation(raw, thisPType, l3dSR);
+cmosaicInterp = sensorInterpolation({cmosaic}, {thisPType}, l3dSR);
 
 % Get the ip for the low resolution
 ipLR = cameraGet(l3dSR.camera, 'ip');
@@ -189,7 +198,7 @@ lrImg = ipGet(ipLR, 'data srgb');
 % ipWindow(ipLR);
 
 % Compute L3 rendered image
-outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
+outImg = l3rSR.render(cmosaicInterp{1}, cfa, l3tSuperResolution, l3dInterp);
 % ieNewGraphWin; imshow(xyz2srgb(outImg*100));
 
 %{
@@ -198,6 +207,7 @@ outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
     sensorSR = sensorSet(sensorSR, 'volts', outImg);
     sensorSR = sensorSet(sensorSR, 'digital value',...
                     analog2digital(sensorSR, 'linear'));
+   %  sensorWindow(sensorSR);
     ipSR = ipCreate;
     ipSR = ipCompute(ipSR, sensorSR);
     ipWindow(ipSR)
