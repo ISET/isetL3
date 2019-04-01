@@ -7,7 +7,7 @@ ieInit;
 
 dFolder = fullfile(L3rootpath,'local','scenes');
 
-% %% Download the scene from RDT
+%% Download the scene from RDT
 % rdt = RdtClient('scien');
 % rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
 
@@ -15,7 +15,7 @@ dFolder = fullfile(L3rootpath,'local','scenes');
 % Common objects in context.
 
 format = 'mat';
-scenes = loadScenes(dFolder, format, 1:3);
+scenes = loadScenes(dFolder, format, 1:22);
 
 %% Use l3DataSimulation to generate raw and desired RGB image
 
@@ -27,9 +27,9 @@ l3dSR = l3DataSuperResolution();
 % sceneSampleTwo = sceneSet(sceneCreate('sweep'))
 
 % Take the first scene for training.
-l3dSR.sources = {sceneCreate};
+l3dSR.sources = scenes(1:17);
 
-% Set the upscale factor to be 4
+% Set the upscale factor to be 2
 l3dSR.upscaleFactor = 2;
 
 %% Adjust the settings of the camera
@@ -146,8 +146,8 @@ fprintf('Empty kernels: %d\nFilled kernels %d\n',sum(emptyKernels), sum(filledKe
 
 % Choose a level less than this
 %   nLevels = numel(l3tSuperResolution.l3c.cutPoints{1})
-thisLevel = 21; thisCenterPixel = 2; thisSatCondition = 1;
-thisOutChannel = 1;
+thisLevel = 6; thisCenterPixel = 2; thisSatCondition = 1;
+thisOutChannel = 2;
 [X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisLevel,...
     thisCenterPixel, thisSatCondition, thisOutChannel, l3dSR.cfa,...
     l3dSR.upscaleFactor);
@@ -156,15 +156,15 @@ thisOutChannel = 1;
 l3rSR = l3RenderSR();
 
 % Set a test scene
-% thisScene = 3;
+% thisScene = 5;
 % source = scenes{thisScene};
 % sceneWindow(source);
 
 % Other options for evaluation
-source = sceneCreate;
+% source = sceneCreate;
 % source = sceneCreate('uniform');
 % source = sceneCreate('rings rays');
-% source = sceneCreate('sweep frequency');
+source = sceneCreate('sweep frequency');
 
 % Use isetcam to compute the camera data.
 sensor = cameraGet(l3dSR.camera, 'sensor');
@@ -239,3 +239,6 @@ ieNewGraphWin;
 subplot(1, 3, 1); imshow(lrImg); title('low resolution img');
 subplot(1, 3, 2); imshow(hrImg); title('high resolution img');
 subplot(1, 3, 3); imshow(l3SR); title('l3 rendered img');
+
+%% save the model
+save(fullfile(L3rootpath, 'local', 'saved_model', 'interp_20190401.mat'), 'l3tSuperResolution', 'l3dSR', '-v7.3');
