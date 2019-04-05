@@ -1,4 +1,4 @@
-function [inImg, outImg, pType] = dataGet(obj, nImg, varargin)
+function [inImg, outImg, pType, expTime] = dataGet(obj, nImg, varargin)
 % Compute the corresponding sensor and target images for L3 training
 %
 %  [inImg, outImg, pType] = dataGet(obj, nImg, varargin)
@@ -87,6 +87,7 @@ optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', o
     if sensorGet(sensor, 'auto exposure')
         expTime = autoExposure(oi, sensor);
         sensor = sensorSet(sensor, 'sensor exp time', expTime);
+        obj.camera.sensor = sensor;
     end
     
     % Set the noise free sensor
@@ -113,17 +114,17 @@ optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', o
     sensorNF = sensorSet(sensorNF, 'size', sensorGet(sensor, 'size') * upscaleFactor);
     
     % Set the exposure time for the NF sensor
-    if NFExpTime == 0
-        NFExpTime = autoExposure(oi, sensorNF);
-    end
-    sensorNF = sensorSet(sensorNF, 'exp time', NFExpTime);
+%     if NFExpTime == 0
+%         NFExpTime = autoExposure(oi, sensorNF);
+%     end
+    sensorNF = sensorSet(sensorNF, 'exp time', 1);
     
-    %{
-        % Comments this line out since we want to use the voltage
-        outImg{ii} = sensorComputeFullArray(sensorNF, oi, idealCF);
-    %}
+
+    % Comments this line out since we want to use the voltage
+    outImg{ii} = sensorComputeFullArray(sensorNF, oi, idealCF);
+
     
-    outImg{ii} = sensorGet(sensorCompute(sensorNF, oi), 'volts');
+%     outImg{ii} = sensorGet(sensorCompute(sensorNF, oi), 'volts');
     %{
         % Compare the image processed from the sensor and the outImg
         ip = ipCreate;
