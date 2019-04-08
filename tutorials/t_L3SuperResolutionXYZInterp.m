@@ -1,18 +1,12 @@
-%% t_L3SuperResolution
-%
-% Explore the super resolution based on L3 approach. The idea is change the
-% pixel size according to the upscale factor. In this way, we can adjust
-% the resolution of the sensor and thus the resolution of the final image.
-%
-% SR:  Super resolution
-%
-% Zheng Lyu, BW 2019
+%% t_L3SuperResolutionInterp
 
 %% Initiation
 ieInit;
+
 %% Set the destination folder
 
 dFolder = fullfile(L3rootpath,'local','scenes');
+
 %% Download the scene from RDT
 % rdt = RdtClient('scien');
 % rdt.readArtifacts('/L3/quad/scenes','destinationFolder',dFolder);
@@ -22,10 +16,10 @@ dFolder = fullfile(L3rootpath,'local','scenes');
 
 format = 'mat';
 scenes = loadScenes(dFolder, format, 1:22);
-% scenes{3} = sceneCreate('uniform'); 
-% scenes{1} = sceneSet(scenes{1}, 'fov', 15);
-% scenes{2} = sceneSet(scenes{2}, 'fov', 15);
-
+scenes{23} = sceneCreate('uniform');
+scenes{24} = sceneCreate;
+scenes{23} = sceneSet(scenes{23}, 'fov', 15);
+scenes{24} = sceneSet(scenes{24}, 'fov', 15);
 %% Use l3DataSimulation to generate raw and desired RGB image
 
 % 
@@ -36,10 +30,11 @@ l3dSR = l3DataSuperResolution();
 % sceneSampleTwo = sceneSet(sceneCreate('sweep'))
 
 % Take the first scene for training.
-l3dSR.sources = scenes(1:10);
+l3dSR.sources = scenes(14:end);
 
-% Set the upscale factor to be 3
+% Set the upscale factor to be 2
 l3dSR.upscaleFactor = 2;
+
 %% Adjust the settings of the camera
 camera = l3dSR.camera;
 
@@ -50,25 +45,39 @@ sensor = cameraGet(camera,'sensor');
 fillFactor = 1;
 sensor = pixelCenterFillPD(sensor,fillFactor);
 
-camera = cameraSet(camera,'sensor',sensor);
 
-% data = load('NikonD100Sensor.mat', 'isa'); sensor = data.isa;
-% camera = cameraSet(camera, 'sensor', sensor);
-% The default photodetector position has an offset.  We should look
-% into this generally for ISETCam.
-% camera = cameraSet(camera, 'pixel pdXpos', 0);
-% camera = cameraSet(camera, 'pixel pdYpos', 0);
-% 
-% % set the fill factor to be 1
-% pixelSize  = cameraGet(camera, 'pixel size');
-% camera = cameraSet(camera, 'pixel pdWidth', pixelSize(1));
-% camera = cameraSet(camera, 'pixel pdHeight', pixelSize(2));
+xyzCF = l3dSR.get('ideal cmf'); xyzCF = xyzCF./ max(max(max(xyzCF)));
+% plot(xyzCF);
+sensor = sensorSet(sensor, 'filterspectra', xyzCF);
+
+camera = cameraSet(camera,'sensor',sensor);
 
 % Give the camera back to the L3 data instance.
 l3dSR.camera = camera;
-%% Specify the super-resolution classifier
 
-l3tSuperResolution = l3TrainRidge('l3c', l3ClassifySR);
+%%
+[raw, tgt, pType, expTime] = l3dSR.dataGet();
+
+[rawInterp, pTypeInterp] = sensorInterpolation(raw, pType, l3dSR);
+%{
+
+    sensorSR = sensorSet(sensor, 'pixel size same fill factor',...
+        sensorGet(sensor, 'pixel size')/l3dSR.upscaleFactor); % Change the pixel size
+    sensorSR = sensorSet(sensorSR, 'volts', rawInterp{1});
+    sensorSR = sensorSet(sensorSR, 'digital value',...
+                    analog2digital(sensorSR, 'linear'));
+    sensorWindow(sensorSR);
+%}
+%%
+l3dInterp = l3DataSuperResolution();
+l3dInterp.sources = l3dSR.sources;
+l3dInterp.upscaleFactor = 1;
+l3dInterp.inImg = rawInterp;
+l3dInterp.outImg = tgt;
+
+
+%% Invoke the training instance
+l3tSuperResolutionInterp = l3TrainRidge('l3c', l3ClassifySR);
 
 %% Set the parameters for the L3 training instance
 
@@ -84,30 +93,30 @@ nSatSituation = (1:(2^numel(l3dSR.cfa) - 1));
 % Set up the cut pointsl  The first term is with respect to the
 % voltage swing.  The second terms is for contrast.  The third is for
 % saturation classes.
-l3tSuperResolution.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
+l3tSuperResolutionInterp.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
                                         [], nSatSituation};
                                     
 % Set the size of the patch                                    
-l3tSuperResolution.l3c.patchSize = [9 9];
-l3tSuperResolution.l3c.numMethod = 2;
+l3tSuperResolutionInterp.l3c.patchSize = [5 5];
+l3tSuperResolutionInterp.l3c.numMethod = 2;
 
 % Add this line to change the size of the SR target patches
-l3tSuperResolution.l3c.srPatchSize = [7 7] * l3dSR.upscaleFactor;
+l3tSuperResolutionInterp.l3c.srPatchSize = [1 1] * l3dInterp.upscaleFactor;
 
 %% Invoke the training algorithm
 
 % By default, the training algorithm uses least squares.  We will add
-% other minimization training algorithms in the future.dnpu-
-l3tSuperResolution.train(l3dSR);
+% other minimization training algorithms in the future.
+l3tSuperResolutionInterp.train(l3dInterp);
 
-%{
-% Save the trained model
-modelName = 'L3DirectXYZ.mat'; modelTimedName = strcat(date, modelName);
-save(fullfile(L3rootpath, 'local', 'saved_model', modelTimedName), 'l3tSuperResolution','-v7.3');
+
+%% Save the trained model
+modelName = 'L3InterpXYZ_bicubic.mat'; modelTimedName = strcat(date, modelName);
+save(fullfile(L3rootpath, 'local', 'saved_model', modelTimedName), 'l3tSuperResolutionInterp','-v7.3');
 %}
 
 
-%% Evaluation process. 
+%% Evaluation process.
 
 %{
 thisKernel = 100;
@@ -124,7 +133,7 @@ identityLine;
 cList = 10:20:100
 % How many classes have fewer than 10 examples?
 % How many kernels are empty?
-kernels = l3tSuperResolution.kernels;
+kernels = l3tSuperResolutionInterp.kernels;
 emptyKernels  = cellfun(@(x)(isempty(x)),kernels);
 filledKernels = 1 - emptyKernels;
 fprintf('Empty kernels: %d\nFilled kernels %d\n',sum(emptyKernels), sum(filledKernels));
@@ -144,24 +153,24 @@ fprintf('Empty kernels: %d\nFilled kernels %d\n',sum(emptyKernels), sum(filledKe
 
 % Choose a level less than this
 %   nLevels = numel(l3tSuperResolution.l3c.cutPoints{1})
-thisLevel = 6; thisCenterPixel = 4; thisSatCondition = 1;
-thisOutChannel = 1;
-[X, y_pred, y_true] = checkLinearFit(l3tSuperResolution, thisLevel,...
+thisLevel = 6; thisCenterPixel = 2; thisSatCondition = 1;
+thisOutChannel = 2;
+[X, y_pred, y_true] = checkLinearFit(l3tSuperResolutionInterp, thisLevel,...
     thisCenterPixel, thisSatCondition, thisOutChannel, l3dSR.cfa,...
     l3dSR.upscaleFactor);
 
 %% Simulate the HR image
 % Set a test scene
-thisScene = 5;
-source = scenes{thisScene};
+% thisScene = 24;
+% source = scenes{thisScene};
 % sceneWindow(source);
 
 % Other options for evaluation
 % source = sceneCreate;
 % source = sceneCreate('uniform');
 % source = sceneCreate('rings rays');
-% source = sceneCreate('sweep frequency');
-
+source = sceneCreate('sweep frequency');
+source = sceneSet(source, 'mean luminance', 110);
 % Converte the source to optical image if input is a scene.
 switch source.type
     case 'scene'
@@ -173,10 +182,9 @@ switch source.type
 end
 % oiWindow(oiSource);
 
-
-
 % Get the sensor from the camera
 sensor = cameraGet(l3dSR.camera, 'sensor');
+sensor = sensorSetSizeToFOV(sensor, oiGet(oiSource, 'fov'));
 
 % Set the noise free sensor
 sensorNF = sensorSet(sensor, 'noise flag', -1);
@@ -186,9 +194,13 @@ sensorNF = sensorSet(sensorNF, 'pixel size same fill factor',...
     sensorGet(sensor, 'pixel size')/l3dSR.upscaleFactor); % Change the pixel size
 
 sensorNF = sensorSet(sensorNF, 'size', sensorGet(sensor, 'size') * l3dSR.upscaleFactor);
-sensorNF = sensorSet(sensorNF, 'expTime',1);
-idealCF = l3dSR.get('ideal cmf');  idealCF = idealCF./ max(max(max(idealCF)));
-hrImg = xyz2srgb(sensorComputeFullArray(sensorNF, oiSource, idealCF));
+
+sensorNF = sensorSet(sensorNF, 'exp time', 1);
+% idealCF = l3dSR.get('ideal cmf');  idealCF = idealCF./ max(max(max(idealCF)));
+xyzHR_img = sensorComputeFullArray(sensorNF, oiSource, xyzCF);
+xyzHR_img = xyzHR_img / max(max(max(xyzHR_img)));
+hrImg = xyz2srgb(xyzHR_img);
+
 ieNewGraphWin; imshow(hrImg);
 %{
     % Use these commands when outImg is L3 rendered sensor data 
@@ -214,28 +226,29 @@ ieNewGraphWin; imshow(hrImg);
 
 %% Render a scene to evaluate the training result
 l3rSR = l3RenderSR();
-% sensor = sensorSet(sensor, 'noise flag', -1);
+
+
+
 % Generate the LR sensor data
-sensor = sensorSetSizeToFOV(sensor, oiGet(oiSource, 'fov'));
+% sensor = sensorSetSizeToFOV(sensor, oiGet(oiSource, 'fov'));
 sensor = sensorCompute(sensor, oiSource);
 
 % sensorWindow(sensor);
 cfa     = cameraGet(l3dSR.camera, 'sensor cfa pattern');
 cmosaic = sensorGet(sensor, 'volts');
-
-% Get the ip for the low resolution
-ipLR = cameraGet(l3dSR.camera, 'ip');
-ipLR = ipCompute(ipLR, sensor);
-lrImg = ipGet(ipLR, 'data srgb');
-% ipWindow(ipLR);
+thisPType = cfa2ptype(size(cfa), size(cmosaic));
+cmosaicInterp = sensorInterpolation({cmosaic}, {thisPType}, l3dSR);
+sensor = sensorSet(sensor, 'size', size(cmosaicInterp{1}));
+xyzLR_img = ieBilinear(plane2rgb(cmosaicInterp{1}, sensor, 0), cfa);
+xyzLR_img = xyzLR_img / max(max(max(xyzLR_img)));
+lrImg = xyz2srgb(xyzLR_img);
+ieNewGraphWin; imshow(lrImg);
 
 % Compute L3 rendered image
-outImg = l3rSR.render(cmosaic, cfa, l3tSuperResolution, l3dSR);
-
+outImg = l3rSR.render(cmosaicInterp{1}, cfa, l3tSuperResolutionInterp, l3dInterp);
+outImg = outImg / max(max(max(outImg)));
 % Use this command when outImg is XYZ image
 ieNewGraphWin; l3SR = xyz2srgb(outImg); imshow(l3SR);
-
-
 %{
     % Use these commands when outImg is L3 rendered sensor data
     sensorSR = sensorSet(sensor, 'pixel size same fill factor',...
@@ -251,8 +264,38 @@ ieNewGraphWin; l3SR = xyz2srgb(outImg); imshow(l3SR);
 
 %% Plot the result
 ieNewGraphWin;
-subplot(1, 3, 1); imshow(lrImg); title('low resolution img using IP');
+subplot(1, 3, 1); imshow(lrImg); title('low resolution img using ip');
 subplot(1, 3, 2); imshow(hrImg); title('high resolution img using xyz2srgb');
 subplot(1, 3, 3); imshow(l3SR); title('l3 rendered img using xyz2srgb');
+%% Compute the scielab value
+displayFile = fullfile(isetRootPath,'data','displays','crt');
+dsp = displayCreate(displayFile);
+whiteXYZ = displayGet(dsp,'white point');
+vDist = 1;          % 12 inches
 
+% Adjust the xyzHR_img size
+% crpSz = (l3tSuperResolutionInterp.l3c.patchSize -...
+%             l3tSuperResolutionInterp.l3c.srPatchSize/l3dInterp.upscaleFactor)/2*...
+%                         l3dInterp.upscaleFactor;
+crpSz = [size(xyzHR_img, 1) - size(outImg, 1),...
+            size(xyzHR_img, 2) - size(outImg, 2)]/2;
+xyzHR_img_crp = xyzHR_img(crpSz(1)+1:end-crpSz(1), crpSz(2)+1:end-crpSz(2), :);
+dots     = size(xyzHR_img_crp);
+imgWidth = dots(2)*displayGet(dsp,'meters per dot');  % Image width (meters)
+fov      = ieRad2deg(2*atan2(imgWidth/2,vDist));      % Horizontal fov in deg
+sampPerDeg = dots(2)/fov;
+
+% Run spatial CIELAB using the CIELAB 2000
+params.deltaEversion = '2000';
+params.sampPerDeg  = sampPerDeg;
+params.imageFormat = 'xyz';
+params.filterSize  = sampPerDeg;
+params.filters = [];
+
+% clip out image to be at least 0
+outImgClip = outImg; outImgClip(outImgClip < 0) = 0;
+[errorImage, params] = scielab(xyzHR_img_crp, outImgClip, whiteXYZ, params);
+
+% Show the errorImage
+ieNewGraphWin; imagesc(errorImage); colorbar; caxis([0 3])
 %% END

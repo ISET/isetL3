@@ -12,7 +12,7 @@ for ii=1:length(raw)
     pTypeInterp{ii} = interpedPType;
     for jj=1:length(uniPType)
         thisTypeData = reshape(curSensorData(pType{ii} == uniPType(jj)), [size(curSensorData)./size(l3dSR.cfa)]);
-        interpThisTypeData = imresize(thisTypeData, size(thisTypeData)*l3dSR.upscaleFactor, 'bilinear');
+        interpThisTypeData = imresize(thisTypeData, size(thisTypeData)*l3dSR.upscaleFactor, 'bicubic');
         interpSensorData(interpedPType == uniPType(jj)) = interpThisTypeData;
     end
     
