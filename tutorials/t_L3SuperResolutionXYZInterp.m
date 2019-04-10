@@ -18,8 +18,15 @@ format = 'mat';
 scenes = loadScenes(dFolder, format, 1:22);
 scenes{23} = sceneCreate('uniform');
 scenes{24} = sceneCreate;
+scenes{25} = sceneCreate('checkerboard');
+scenes{26} = sceneCreate('slanted edge');
+scenes{27} = sceneCreate('reflectance chart');
+
 scenes{23} = sceneSet(scenes{23}, 'fov', 15);
 scenes{24} = sceneSet(scenes{24}, 'fov', 15);
+scenes{25} = sceneSet(scenes{25}, 'fov', 15);
+scenes{26} = sceneSet(scenes{26}, 'fov', 15);
+scenes{27} = sceneSet(scenes{27}, 'fov', 15);
 %% Use l3DataSimulation to generate raw and desired RGB image
 
 % 
@@ -97,7 +104,7 @@ l3tSuperResolutionInterp.l3c.cutPoints = {logspace(-1.7, -0.12, 30),...
                                         [], nSatSituation};
                                     
 % Set the size of the patch                                    
-l3tSuperResolutionInterp.l3c.patchSize = [5 5];
+l3tSuperResolutionInterp.l3c.patchSize = [9 9];
 l3tSuperResolutionInterp.l3c.numMethod = 2;
 
 % Add this line to change the size of the SR target patches
@@ -153,24 +160,25 @@ fprintf('Empty kernels: %d\nFilled kernels %d\n',sum(emptyKernels), sum(filledKe
 
 % Choose a level less than this
 %   nLevels = numel(l3tSuperResolution.l3c.cutPoints{1})
-thisLevel = 6; thisCenterPixel = 2; thisSatCondition = 1;
-thisOutChannel = 2;
+thisLevel = 25; thisCenterPixel = 2; thisSatCondition = 1;
+thisOutChannel = 3;
 [X, y_pred, y_true] = checkLinearFit(l3tSuperResolutionInterp, thisLevel,...
     thisCenterPixel, thisSatCondition, thisOutChannel, l3dSR.cfa,...
     l3dSR.upscaleFactor);
 
 %% Simulate the HR image
 % Set a test scene
-% thisScene = 24;
+% thisScene = 11; % Checked: 1 2 3 11
 % source = scenes{thisScene};
 % sceneWindow(source);
 
 % Other options for evaluation
 % source = sceneCreate;
+% source = sceneCreate('reflectance chart');
 % source = sceneCreate('uniform');
-% source = sceneCreate('rings rays');
-source = sceneCreate('sweep frequency');
-source = sceneSet(source, 'mean luminance', 110);
+source = sceneCreate('rings rays');
+% source = sceneCreate('sweep frequency');
+% source = sceneSet(source, 'mean luminance', 110);
 % Converte the source to optical image if input is a scene.
 switch source.type
     case 'scene'
@@ -268,34 +276,25 @@ subplot(1, 3, 1); imshow(lrImg); title('low resolution img using ip');
 subplot(1, 3, 2); imshow(hrImg); title('high resolution img using xyz2srgb');
 subplot(1, 3, 3); imshow(l3SR); title('l3 rendered img using xyz2srgb');
 %% Compute the scielab value
-displayFile = fullfile(isetRootPath,'data','displays','crt');
-dsp = displayCreate(displayFile);
-whiteXYZ = displayGet(dsp,'white point');
-vDist = 1;          % 12 inches
 
-% Adjust the xyzHR_img size
-% crpSz = (l3tSuperResolutionInterp.l3c.patchSize -...
-%             l3tSuperResolutionInterp.l3c.srPatchSize/l3dInterp.upscaleFactor)/2*...
-%                         l3dInterp.upscaleFactor;
-crpSz = [size(xyzHR_img, 1) - size(outImg, 1),...
-            size(xyzHR_img, 2) - size(outImg, 2)]/2;
-xyzHR_img_crp = xyzHR_img(crpSz(1)+1:end-crpSz(1), crpSz(2)+1:end-crpSz(2), :);
-dots     = size(xyzHR_img_crp);
-imgWidth = dots(2)*displayGet(dsp,'meters per dot');  % Image width (meters)
-fov      = ieRad2deg(2*atan2(imgWidth/2,vDist));      % Horizontal fov in deg
-sampPerDeg = dots(2)/fov;
+% First for HR and SR image
+crpSz = [size(hrImg, 1) - size(l3SR, 1),...
+            size(hrImg, 2) - size(l3SR, 2)]/2;
+hrImg_crp = hrImg(crpSz(1)+1:end-crpSz(1), crpSz(2)+1:end-crpSz(2), :);
 
-% Run spatial CIELAB using the CIELAB 2000
-params.deltaEversion = '2000';
-params.sampPerDeg  = sampPerDeg;
-params.imageFormat = 'xyz';
-params.filterSize  = sampPerDeg;
-params.filters = [];
 
-% clip out image to be at least 0
-outImgClip = outImg; outImgClip(outImgClip < 0) = 0;
-[errorImage, params] = scielab(xyzHR_img_crp, outImgClip, whiteXYZ, params);
+vDist = 0.3;               % 15 inches
+dispCal = 'crt.mat';  % Calibrated display
+errorImage = scielabRGB(hrImg_crp, l3SR, dispCal, vDist);
 
 % Show the errorImage
-ieNewGraphWin; imagesc(errorImage); colorbar; caxis([0 3])
+ieNewGraphWin; imagesc(errorImage); colorbar; caxis([0 4])
+
+%%
+% Second for HR and LR interpolated image
+crpSz2 = [size(hrImg, 1) - size(lrImg, 1),...
+            size(hrImg, 2) - size(lrImg, 2)]/2;
+hrImg_crp2 = hrImg(crpSz2(1)+1:end-crpSz2(1), crpSz2(2)+1:end-crpSz2(2), :);
+errorImage2 = scielabRGB(hrImg_crp2, lrImg, dispCal, vDist);
+ieNewGraphWin; imagesc(errorImage2); colorbar; caxis([0 4])
 %% END
