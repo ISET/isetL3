@@ -118,6 +118,7 @@ l3tSuperResolutionInterp.train(l3dInterp);
 
 
 %% Save the trained model
+%{
 modelName = 'L3InterpXYZ_bicubic.mat'; modelTimedName = strcat(date, modelName);
 save(fullfile(L3rootpath, 'local', 'saved_model', modelTimedName), 'l3tSuperResolutionInterp','-v7.3');
 %}

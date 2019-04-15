@@ -23,7 +23,7 @@ classdef l3DataSuperResolution < l3DataS
         idealCMF;           % Target color space (string or vector)
         upscaleFactor;      % The upscaleFactor for the images
         verbose;            % Print progress information or not
- 
+        refPType;           % A reference for quad pattern
     end
     
     
@@ -45,7 +45,7 @@ classdef l3DataSuperResolution < l3DataS
             p.addParameter('idealCMF', 'XYZQuanta');
             p.addParameter('verbose', true);
             p.addParameter('upscaleFactor', 1);
-            
+            p.addParameter('refPType', []);
             % parse and set to the obj properties
             p.parse(varargin{:});
             

@@ -92,7 +92,8 @@ optics = opticsSet(optics,'off axis method', 'skip'); oi = oiSet(oi, 'optics', o
     
     % Set the noise free sensor
     sensorNF = sensorSet(sensor, 'noise flag', -1);
-    
+    sensorNF = sensorSet(sensorNF, 'analog offset', 0);
+
     
     % 
     % Adjust the pixel size, but keep the same fill factor

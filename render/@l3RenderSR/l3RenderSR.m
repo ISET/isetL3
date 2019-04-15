@@ -57,7 +57,7 @@ classdef l3RenderSR < hiddenHandle
             assert(isa(l3t, 'l3TrainS'), 'Unsupported l3t type');
             if iscell(rawData)
                 if numel(rawData)>1, warning('Only process the 1st cell');end
-                rawData = rawData{1}
+                rawData = rawData{1};
             end
             
             % Convert the data to be double format
@@ -70,6 +70,7 @@ classdef l3RenderSR < hiddenHandle
             upscaleFactor = l3dSR.upscaleFactor;
             l3d.camera = l3dSR.camera;
             pType = l3d.pType;
+            l3d.refPType = l3dSR.refPType;
             
             if useMex && exist('l3ApplyFilters', 'file') == 3
                 l3c.storeData = false;

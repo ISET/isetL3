@@ -23,6 +23,7 @@ classdef l3DataCamera < l3DataS
         cfa;      % cfa pattern
         camera;
         upscaleFactor; % The upsampling factor
+        refPType;
     end
     
     methods (Access = public)

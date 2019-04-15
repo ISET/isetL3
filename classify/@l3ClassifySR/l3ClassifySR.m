@@ -225,8 +225,14 @@ classdef l3ClassifySR < l3ClassifyS
                 % Compute the statistics
                 stat = [];
                 for jj = 1 : length(obj.statFunc)
-                    stat = cat(1, stat, obj.statFunc{jj}(raw{ii}, ...
+
+                    if jj == 3
+                         stat = cat(1, stat, obj.statFunc{jj}(raw{ii}, ...
+                         cfa, obj.patchSize, obj.statFuncParam{jj}{:}, l3d.refPType));
+                    else
+                         stat = cat(1, stat, obj.statFunc{jj}(raw{ii}, ...
                          cfa, obj.patchSize, obj.statFuncParam{jj}{:}));
+                    end
                 end
                 
                 if obj.verbose

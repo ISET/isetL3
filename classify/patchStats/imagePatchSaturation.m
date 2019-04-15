@@ -16,16 +16,23 @@ function s = imagePatchSaturation(raw, cfa, patchSz, voltThres, varargin)
     if notDefined('raw'), error('raw image data required'); end
     if notDefined('cfa'), error('color filter array required'); end
     if notDefined('patchSz'), error('patch size required'); end
+    if ~isempty(varargin), refPType = varargin{1}; end
+    
     
     % generate pType kernel
-    k = pTypeKernel(cfa, patchSz);
+    if ~notDefined('refPType')
+        s = saturationTypeRef(raw, patchSz, refPType, voltThres);
+    else
+        
+        k = pTypeKernel(cfa, patchSz);
+        % Check the saturation situation and return a corresponding number
+        s = saturationType(raw, k, voltThres);
+    end
     
-    % Check the saturation situation and return a corresponding numer
-    
-    s = saturationType(raw, k, voltThres);
+
 end
 
-function kernel = pTypeKernel(cfa, patchSz, varargin)
+function kernel = pTypeKernel(cfa, patchSz, refPType, varargin)
 % Generate pixel type for each patch
 %   kernel = pTypeKernel(cfa, patchSz)
 % 
@@ -42,11 +49,21 @@ function kernel = pTypeKernel(cfa, patchSz, varargin)
 if notDefined('cfa'), error('cfa pattern required'); end
 if notDefined('patchSz'), error('patch size required'); end
 
-% Check if input is cfa or pType
-if any(size(cfa) < patchSz)
-    cfa = cfa2ptype(size(cfa), ceil(patchSz./size(cfa)).*size(cfa));
+if ~notDefined('refPType') 
+    if any(size(refPType) < patchSz)
+        newCfa = repmat(refPType, ceil(patchSz./size(refPType)));
+    else
+        newCfa = refPType;
+    end
+    
+else
+    if any(size(cfa) < patchSz)
+        newCfa = cfa2ptype(size(cfa), ceil(patchSz./size(cfa)).*size(cfa));
+    else
+        newCfa = cfa;
+    end
 end
-kernel = cfa(1:patchSz(1), 1:patchSz(2));
+kernel = newCfa(1:patchSz(1), 1:patchSz(2));
 
 end
 
@@ -66,3 +83,20 @@ function satClass = saturationType(raw, kernel, voltThres, varargin)
     satClass = satClass(:)';
 end
 
+function satClass = saturationTypeRef(raw, patchSz, refPType, voltThres)
+    pTypeMap = repmat(refPType, ceil(size(raw)./size(refPType)));
+    satClass = zeros(size(raw) - patchSz + 1);
+    for ii = 1 : size(raw, 1) - patchSz(1) + 1
+        for jj = 1 : size(raw, 2) - patchSz(2) + 1
+            curPatch = raw(ii:ii+patchSz(1)-1, jj:jj+patchSz(2) - 1);
+            kernel = pTypeMap(ii:ii+patchSz(1)-1, jj:jj+patchSz(2) - 1);
+            satPixelType = unique(kernel(curPatch > voltThres));
+            if ~isempty(satPixelType)
+                satClass(ii, jj) = sum(sum(2.^(satPixelType-1)));
+            end
+            satClass(ii, jj) = satClass(ii, jj) + 1;
+        end
+    end
+    
+    satClass = satClass(:)';
+end
