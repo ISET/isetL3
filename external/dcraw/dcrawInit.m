@@ -52,3 +52,5 @@ for ii = 1 : length(ext)
         imformats('add', formatS);
     end
 end
+
+end
